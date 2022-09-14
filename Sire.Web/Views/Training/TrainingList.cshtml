@@ -1,0 +1,119 @@
+﻿@model IEnumerable<Sire.Data.Dto.Training.TrainingDto>
+@{
+    ViewBag.Title = "Training List";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+    int i = 0;
+}
+
+
+
+
+
+!-- Navigation Fixed Bar-->
+<div class="row fix-head">
+    <div class="col-md-12">
+        <div class="card m-b-0">
+            <div class="card-body head-tit">
+                <div class="col-sm-5">
+                    <h5 class="head-tit-fnt">Training List</h5>
+                </div>
+                <div class="col-sm-7 pt-2">
+                    <a class="n-btn btn-danger float-right" asp-action="Index">Back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Navigation Fixed Bar-->
+<div class="col-sm-12">
+    <div class="card">
+        <div class="card-body">
+
+            <hr>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover js-basic-example dataTable" id="example1">
+                            <thead>
+                                <tr role="row">
+                                    <th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending" style="width: 158px;">
+                                        Operator_Id
+                                    </th>
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                        Vessel_Id
+                                    </th>
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                        Training Number
+                                    </th>
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                        Description
+                                    </th>
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                        Start Date
+                                    </th>
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                        Complete Date
+                                    </th>
+
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending" style="width: 155px;">
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    var satus = item.IsDeleted == false ? "Active" : "Deactive";
+                                    <tr>
+                                        <td>
+                                            @item.Operator_id
+                                        </td>
+                                        <td>
+                                            @item.Vessel_Id
+                                        </td>
+                                        <td>
+                                            @item.Training_number
+                                        </td>
+                                        <td>
+                                            @item.Description
+                                        </td>
+                                         <td>
+                                            @item.Started_at
+                                        </td>
+                                        <td>
+                                            @item.Completed_at
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-success" asp-action="Index" asp-route-Id="@item.Id" style="padding:4px;font-size:9px;" title="Edit"><i class="fa fa-fw fa-edit"></i></a>
+                                            <a class="btn btn-danger" asp-action="Delete" asp-route-Id="@item.Id" style="padding:4px;font-size:9px;" title="delete"><i class="fas fa-trash-alt"></i></a>
+
+                                        </td>
+                                    </tr>
+
+                                    i = i + 1;
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="~/assets/lib/jquery/jquery.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#example1').DataTable({
+            'paging': true,
+            'lengthChange': true,
+            'searching': true,
+            'ordering': true,
+            'info': true,
+            'autoWidth': false,
+            "order": [[0, "desc"]]
+        });
+    });
+</script>
+<script src="~/js/pagescript/common.js"></script>

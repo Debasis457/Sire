@@ -1,0 +1,55 @@
+﻿@model IEnumerable<Sire.Data.Dto.Master.QuetionSectionDto>
+@{
+    ViewBag.Title = "Assesor";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+    int n = 1;
+}
+
+<script src="~/assets/lib/jquery/jquery-3.3.1.min.js"></script>
+<script src="~/js/PageScript/AsseserReviewer.js"></script>
+<!-- End Navigation Fixed Bar-->
+
+<div class="col-md-12">
+    <h5>Assesor Reviewer</h5>
+    <hr />
+    <div class="row">
+        <input id="hdninspectionId" type="hidden" value="@ViewBag.InspectionId" />
+        <input id="hdnsectionId" type="hidden"  />
+
+        <div class="col-md-6">
+            <div class="">
+                <div id="accordion">
+                    @foreach (var item in Model)
+                    {
+                        <div class="card" style="margin-bottom:5px">
+                            <div class="card-header" style="padding: 8px 10px;">
+                                <a class="card-link" data-toggle="collapse" href="#collapse_@n">
+                                    @*<input type="checkbox" id="chk_section_@item.Id">*@
+                                    <span style="font-weight:500">@n</span>.  @item.Name
+                                </a>
+                            </div>
+                            <div id="collapse_@n" class="collapse" data-parent="#accordion">
+                                <div class="card-body">
+                                    @foreach (var child in item.QuetionSubSection)
+                                    {
+                                        @*<input type="checkbox" id="chk_sub_section_@child.Id">*@
+                                        <a style="text-decoration:underline; color:blue; cursor:pointer" onclick="GetQuestionBySection(@child.Id)">@child.Name</a> <br />
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        n++;
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="bindPartialQuetion">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

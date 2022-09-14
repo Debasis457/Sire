@@ -1,0 +1,142 @@
+﻿@model Sire.Data.Dto.UserMgt.UserDto
+@{
+    ViewBag.Title = "User";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+}
+
+<div class="row fix-head">
+        <div class="col-md-12">
+            <div class="card m-b-0">
+                <div class="card-body head-tit">
+                    <div class="col-sm-5">
+                        <h5 class="head-tit-fnt">Add User </h5>
+                    </div>
+                    <div class="col-sm-7 pt-2">
+                       </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Navigation Fixed Bar-->
+<div class="tab-pane fade show active" id="User" role="tabpanel" aria-labelledby="pills-home-tab">
+    <!-- End Navigation Fixed Bar-->
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-body">
+                 
+                  <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.Raw(@ViewBag.Alert)
+                    </div>
+                </div>
+            </div>
+               @* @Html.ValidationSummary(true)*@
+                  <form asp-action="AddEdit">
+                    <hr>
+                    @if (@ViewBag.IsEdit)
+                    {
+                        <input type="hidden" asp-for="Id" />
+                    }
+                  
+
+                    <div class="col-sm-2 pr-0 h-40">
+                        <label class="fnt-lable" for="Operator_Id">Operator Name</label>
+                    </div>
+                    <div class="col-sm-2 pr-4 h-40">
+                       @* <input type="text" asp-for="Operator_Id"  class="form-control inp" />*@
+                        @Html.DropDownList("Operator_Id",new SelectList(ViewBag.Operator_Id, "Id", "Value"),"--Select--" ,new { @class = "form-control select2"} )
+                   
+           @*   
+              <select name="Operator" class="form-control" asp-for="Operator_Id" asp-items="@(new SelectList(ViewBag.Operator_Id, "Id", "Value"))"></select>
+              *@
+              </div>
+                    <div class="col-sm-2 pr-0 h-40">
+                        <label class="fnt-lable" for="Name">Full Name</label>
+                    </div>
+                    <div class="col-sm-2 pr-4 h-40">
+                        <input type="text" asp-for="Full_Name" class="form-control inp" />
+                    </div>
+
+                   
+                    <div class="col-sm-2 pr-0 h-40">
+                        <label class="fnt-lable" for="EmailId">Email Id</label>
+                    </div>
+                    <div class="col-sm-2 pr-4 h-40">
+                        <input type="text" asp-for="EmailId" class="form-control inp" />
+                    </div>
+                   
+                     <div class="col-sm-2 pr-0 h-40">
+                        <label class="fnt-lable">Rank Name</label>
+                    </div>
+                    <div class="col-sm-2 pr-4 h-40">
+                       @* <input type="text" asp-for="RankName" class="form-control inp" />*@
+                        @Html.DropDownList("Rank_Id",new SelectList(ViewBag.Rank_Id, "Id", "Value"),"Select" , new { @class = "form-control select2"})
+                      @* @Html.DropDownListFor(m => m.Rank_Id, new List<SelectListItem>
+                   { new SelectListItem{Text="aa", Value="1"},
+                     new SelectListItem{Text="bb", Value="2"}}, "Please select" ,new { @class = "form-control select2"})*@
+
+                    </div>
+                     <div class="col-sm-2 pr-0 h-40">
+                        <label class="fnt-lable" for="Rank_Group_Id">Rank Group Name</label>
+                    </div> 
+                    <div class="col-sm-2 pr-4 h-40">
+                    @Html.DropDownList("Rank_Group_Id",new SelectList(ViewBag.Rank_Group, "Id", "Value"),"Select" , new { @class = "form-control select2"})
+                        
+                   @*    @Html.DropDownListFor(m => m.Rank_Group_Id, new List<SelectListItem>
+                   { new SelectListItem{Text="aa", Value="1"},
+                     new SelectListItem{Text="bb", Value="2"}}, "Please select" ,new { @class = "form-control select2"})*@
+
+                    </div>
+
+                    <div class="col-sm-2 pr-0 h-40">
+                        <label class="fnt-lable" for="Password">Password</label>
+                    </div>
+                    <div class="col-sm-2 pr-4 h-40">
+                        <input type="password" asp-for="Password" class="form-control inp" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-sm-2 pr-0 h-40">
+                        <label class="fnt-lable" asp-for="ConfirmPassword">Confirm Password</label>
+                    </div>
+                    <div class="col-sm-2 pr-4 h-40">
+                        <input type="password" asp-for="ConfirmPassword" class="form-control inp" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+
+
+                      <div class="col-sm-2 pr-0 h-40">
+                        <label class="fnt-lable" for="is_admin">Is Admin</label>
+                    </div>
+
+                      <div class="col-sm-2 pr-4 h-40">
+                     @*  @Html.CheckBoxFor(m => m.is_admin)*@
+                           @* <input type="text"  asp-for="is_admin" class="form-control inp" />*@
+                        <label class="switch">
+                            <input class="switch-input" id="is_admin" type="checkbox" value="is_admin"  />
+                            <span class="switch-label" data-on="Yes" data-off="No"></span>
+                            <span class="switch-handle"></span>
+                        </label>
+
+                    </div>
+                    @* <div class="col-sm-2 pr-0 h-40">
+                        <label class="fnt-lable " for="UserID">User Id</label>
+                    </div>
+                    <div class="col-sm-2 pr-4 h-40">
+                        <input type="text" asp-for="UserID"  class="form-control inp" />
+                    </div>*@
+
+                    <div class="col-sm-7 pt-2">
+                        <button type="submit" class="n-btn  btn-success" id="btnSubmitOpt" onclick="return setMd5Password('Password', 'ConfirmPassword');">Submit</button>
+                                        <a class="n-btn btn-danger" asp-action="Index">Back</a>
+                       <input type="reset" name="Clear" value="Clear" class="n-btn btn-warning" />
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+

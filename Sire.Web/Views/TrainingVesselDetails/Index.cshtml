@@ -1,0 +1,274 @@
+﻿@model Sire.Data.Dto.Training.TrainingDto
+
+@{
+    ViewBag.Title = "TrainingVesselDetails";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+    int i = 0;
+}
+
+
+<script src="~/assets/lib/jquery/jquery-3.3.1.min.js"></script>
+<script src="~/assets/lib/jquery/jquery.js"></script>
+<script src="~/js/pagescript/trainingvesseldetails.js"></script>
+
+<style type="text/css">
+    .btn-circle.btn-xl {
+        width: 100px;
+        height: 100px;
+        padding: 13px 18px;
+        border-radius: 60px;
+        font-size: 13px;
+        text-align: center;
+    }
+</style>
+<!-- Navigation Fixed Bar-->
+<div class="row fix-head">
+    <div class="col-md-12">
+        <div class="card m-b-0">
+            <div class="card-body head-tit">
+                <div class="col-sm-5">
+                    <h5 class="head-tit-fnt">Training Vessel Details</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Table-->
+@*<div class="col-sm-12">
+    <div class="card">
+        <div class="card-body">
+
+            <hr>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="table-responsive" >
+                        <table class="table table-bordered table-striped table-hover js-basic-example dataTable" id="example1">
+                            <thead>
+                                <tr role="row">
+                                    <th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending" style="width: 158px;">
+                                        IMO Number
+                                    </th>
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                        Flag
+                                    </th>
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                        Type
+                                    </th>
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                        Fleet
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var item in Model)
+                                {
+                                    var satus = item.IsDeleted == false ? "Active" : "Deactive";
+                                    <tr>
+                                        <td>
+                                            @item.Name
+                                        </td>
+                                        <td>
+                                            @item.Name
+                                        </td>
+                                        <td>
+                                             @item.Name
+                                         </td>
+                                        <td>
+                                            @item.Name
+                                        </td>
+                                    </tr>
+                                    i = i + 1;
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<hr />*@
+<br />
+
+<div class="tab-pane fade show active" id="User" role="tabpanel" aria-labelledby="pills-home-tab">
+    <!-- End Navigation Fixed Bar-->
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-body">
+                <form asp-action="Index">
+                    <hr>
+                    @if (@ViewBag.IsEdit)
+                    {
+                        <input type="hidden" asp-for="Id" />
+                    }
+
+
+                    <div class="col-sm-2 pr-0 h-40">
+                        <label class="fnt-lable" for="Operator_Id">Operator Name</label>
+                    </div>
+                    <div class="col-sm-4 pr-4 h-40">
+
+                        @Html.DropDownList("Operator_Id",new SelectList(ViewBag.Operator_Id, "Id", "Value"),"--Select--" ,new { @class = "form-control select2"} )
+
+
+                        <span asp-validation-for="Operator_id" class="text-danger"></span>
+                    </div>
+                    <div class="col-sm-2 pr-0 h-40">
+                        <label class="fnt-lable" for="Vessel_Id">Vessel Name</label>
+                    </div>
+                    <div class="col-sm-4 pr-4 h-40">
+
+
+                        <select class="form-control select2" asp-for="Vessel_Id" ,
+                                asp-items="@(new SelectList(String.Empty ,"Vessel_Id", "Name"))" onchange="GetSubMaster()">
+                            <option>Select Vessel</option>
+                        </select>
+                        <span asp-validation-for="@Model.Vessel_Id" class="text-danger"></span>
+                    </div>
+                </form>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered fixed_header" id="veselTableDetails">
+                    <thead style="background-color:#fff !important;">
+                        <tr>
+                            <th>
+                                <div style="width:720px;">Vessel Value</div>
+                            </th>
+                            <th>
+                                <div style="width:720px;">Vessel Type</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+    <!--Card-->
+
+    <div class="container">
+        <div class="row">
+            <!--First Half-->
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Repository</h5>
+                        <p class="card-text">
+                            <ol class="list-group list-group-numbered">
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">PIQ Status</div>
+                                        Number :
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill">14</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">HVPQ Status</div>
+                                        Number :
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill">14</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">Status Monitoring</div>
+                                        Number :
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill">14</span>
+                                </li>
+                            </ol>
+                        </p>
+
+                        <a href="#" class="btn btn-outline-primary btn-sm">
+                            Card link
+                        </a>
+                        <a href="#" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!--Second Half-->
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Additional Pages</h5>
+                        <p class="card-text">
+                            <ol class="list-group list-group-numbered">
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">Confugration</div>
+                                    </div>
+                                    <i class="fa-solid fa-gear"></i>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">Data Analytics</div>
+                                        <a href="#" class="btn btn-outline-secondary btn-sm">
+
+                                        </a>
+                                    </div>
+                                    <i class="fa-solid fa-database"></i>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">Training</div>
+
+                                    </div>
+                                    <i class="fa-solid fa-laptop-file"></i>
+                                </li>
+                            </ol>
+                        </p>
+
+                        <a href="#" class="btn btn-outline-primary btn-sm">
+                            Vessel list
+                        </a>
+                        <a href="#" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3">
+                <button type="button" class="btn btn-primary btn-circle btn-xl">Sire Report</button>
+            </div>
+            <div class="col-lg-3">
+                <button type="button" class="btn btn-secondary btn-circle btn-xl" onclick="@("window.location.href='" + @Url.Action("Index", "Training") + "'");">Training Page</button>
+            </div>
+            <div class="col-lg-6">
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">75%</div>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">100%</div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+

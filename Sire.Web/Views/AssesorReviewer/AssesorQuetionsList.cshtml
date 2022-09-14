@@ -1,0 +1,84 @@
+﻿@model IEnumerable<Sire.Data.Dto.Inspection.Inspection_QuestionDto>
+@{
+    int l = 0;
+}
+<script src="~/js/PageScript/AsseserReviewer.js"></script>
+
+<form>
+    <div class="row">
+        <div class="col-lg-12  col-sm-12  pl-5 pr-5">
+            <div class="table-responsive">
+                <div class="row mb-2">
+                    <div class="col-md-2">
+                        <label>Assesor</label>
+                    </div>
+                    <div class="col-md-2">
+                        @Html.DropDownList("AssesorId",new SelectList(ViewBag.User_Id, "Id", "Value"),"select", new { @class = "form-control select2"})
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="n-btn  btn-success" id="btnSubmitAss">Submit</button>
+                    </div>
+                    <div class="col-md-2">
+                        <label>Reviewer</label>
+                    </div>
+                    <div class="col-md-2">
+                        @Html.DropDownList("ReviewerId",new SelectList(ViewBag.User_Id, "Id", "Value"),"select",  new { @class = "form-control select2"})
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="n-btn  btn-success" id="btnSubmitRew">Submit</button>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-md-12">
+
+                        <table id="ASSREWDetails" class="table table-bordered table-hover piqhvpq" style="display:block;table-layout: fixed;" cellspacing="0" width="100%">
+                            <thead>
+                                <tr role="row">
+                                    <th><input type="checkbox" id="selectAll"></th>
+                                    <th class="nav-link active"><div class="p-1 pl-0">Question</div></th>
+                                    <th>Assesor</th>
+                                    <th>Reviewer</th>
+
+                                </tr>
+                            </thead>
+
+                            <tbody id="ASSREWDetailsBody">
+
+                                @foreach (var rec in Model)
+                                {
+                                    <tr>
+                                        <td style="display:none">
+                                            @rec.Question_Id
+                                        </td>
+                                        <td>
+                                            <input type="checkbox" class="quetionlist" id="chk_child_@rec.Id" data-quetionid=@rec.Question_Id>
+
+                                        </td>
+                                        <td>
+
+                                            @rec.Question_Text
+                                        </td>
+                                        <td>
+                                            @rec.Assessor_Name
+                                        </td>
+                                        <td>
+                                            @rec.Reviewer_Name
+
+                                        </td>
+
+
+                                    </tr>
+
+                                    l = l + 1;
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

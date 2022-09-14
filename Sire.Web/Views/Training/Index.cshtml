@@ -1,0 +1,125 @@
+﻿@model Sire.Data.Dto.Training.TrainingDto
+
+@{
+    ViewBag.Title = "Training";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+    int i = 0;
+}
+
+
+
+!-- Navigation Fixed Bar-->
+<div class="row fix-head">
+    <div class="col-md-12">
+        <div class="card m-b-0">
+            <div class="card-body head-tit">
+                <div class="col-sm-5">
+                    <h5 class="head-tit-fnt">Training</h5>
+                </div>
+                <div class="col-sm-7 pt-2">
+                    <a class="btn btn-primary float-right" asp-action="TrainingList">Training List</a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Navigation Fixed Bar-->
+
+<div class="tab-pane fade show active" id="User" role="tabpanel" aria-labelledby="pills-home-tab">
+    <!-- End Navigation Fixed Bar-->
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-body">
+                @*<h5 class="head-tit-fnt">Add User</h5>*@
+
+
+                <form asp-action="Index">
+                    <hr>
+                    @if (@ViewBag.IsEdit)
+                    {
+                        <input type="hidden" asp-for="Id" />
+                    }
+
+
+                    <div class="col-sm-2 pr-0 h-40">
+                        <label class="fnt-lable" for="Operator_Id">Operator Name</label>
+                    </div>
+                    <div class="col-sm-2 pr-4 h-40">
+                        @* <input type="text" asp-for="Operator_Id"  class="form-control inp" />*@
+                        @Html.DropDownList("Operator_Id",new SelectList(ViewBag.Operator_Id, "Id", "Value"),"--Select--" ,new { @class = "form-control select2"} )
+
+
+                        @*  <select Id="Operator_Id" asp-items="@(new SelectList(ViewBag.Operator_Id,"Value","Id"))" class="form-control select2">
+                        <option>Select Operator</option>
+                        </select>
+                        *@
+
+                        <span asp-validation-for="Operator_id" class="text-danger"></span>
+                    </div>
+                    <div class="col-sm-2 pr-0 h-40">
+                        <label class="fnt-lable" for="Vessel_Id">Vessel Name</label>
+                    </div>
+                    <div class="col-sm-2 pr-4 h-40">
+
+                        @* @Html.DropDownList("Vessel_Id",new SelectList(string.Empty, "Vessel_Id", "Name"),"--Select--" ,new { @class = "form-control select2"} )
+                        *@
+
+
+
+                        <select class="form-control select2" asp-for="Vessel_Id"
+                                asp-items="@(new SelectList(String.Empty ,"Vessel_Id", "Name"))">
+                            <option>Select Vessel</option>
+                        </select>
+
+
+
+                        <span asp-validation-for="@Model.Vessel_Id" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="col-sm-2 pr-0 h-40">
+                        <label class="fnt-lable" for="Training_number ">Training Number</label>
+                    </div>
+                    <div class="col-sm-2 pr-4 h-40">
+                        <input type="text" asp-for="Training_number" class="form-control inp" />
+                        <span asp-validation-for="@Model.Training_number" class="text-danger"></span>
+                    </div>
+                    <div class="col-sm-2 pr-0 h-40">
+                        <label class="fnt-lable" for="Description ">Description</label>
+                    </div>
+                    <div class="col-sm-2 pr-4 h-40">
+                        <input type="text" asp-for="Description" class="form-control inp" />
+                    </div>
+                    <div class="col-sm-2 pr-0 h-40">
+                        <label class="fnt-lable" for="Started_at ">Started AT</label>
+                    </div>
+                    <div class="col-sm-2 pr-4 h-40">
+                        <input type="date" asp-for="Started_at" class="form-control inp" />
+                    </div>
+
+                    <div class="col-sm-2 pr-0 h-40">
+                        <label class="fnt-lable" for="Completed_at ">Completed AT</label>
+                    </div>
+                    <div class="col-sm-2 pr-4 h-40">
+                        <input type="date" asp-for="Completed_at" class="form-control inp" />
+                    </div>
+
+                    <div class="col-sm-7 pt-2">
+                        <button type="submit" class="n-btn  btn-success" id="btnSubmitOpt" >Submit</button>
+                        <a class="n-btn btn-danger" asp-action="Index">Back</a>
+                        <input type="reset" name="Clear" value="Clear" class="n-btn btn-warning" />
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+
+<script src="~/assets/lib/jquery/jquery-3.3.1.min.js"></script>
+<script src="~/js/pagescript/training.js"></script>

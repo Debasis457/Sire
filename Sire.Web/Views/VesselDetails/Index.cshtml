@@ -1,0 +1,182 @@
+﻿@model Sire.Data.Dto.Master.VesselDto
+
+@{
+    ViewBag.Title = "VesselDetails";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+    int i = 0;
+}
+
+<!-- Navigation Fixed Bar-->
+<div class="row fix-head">
+    <div class="col-md-12">
+        <div class="card m-b-0">
+            <div class="card-body head-tit">
+                <div class="col-sm-5">
+                    <h5 class="head-tit-fnt">Vessel Details</h5>
+                </div> 
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Table-->
+
+<div class="col-sm-12">
+    <div class="card">
+        <div class="card-body">
+
+            <hr>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover js-basic-example dataTable" id="example1">
+                            <thead>
+                                <tr role="row">
+                                    <th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending" style="width: 158px;">
+                                        IMO Number  : @Model.IMO
+                                    </th>
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                        Flag  : True
+                                    </th>
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                        Type : @Model.Vessel_Type
+                                    </th>
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                        Fleet @Model.Fleet?.Name
+                                    </th>
+                                </tr>
+                            </thead>
+                            
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<hr />
+<br />
+
+<!--Card-->
+
+<div class="container">
+    <div class="row">
+        <!--First Half-->
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Repository</h5>
+                    <p class="card-text">
+                        <ol class="list-group list-group-numbered">
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">PIQ Status</div>
+                                    Number :
+                                </div>
+                                <span class="badge bg-primary rounded-pill">14</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">HVPQ Status</div>
+                                    Number :
+                                </div>
+                                <span class="badge bg-primary rounded-pill">14</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">Status Monitoring</div>
+                                    Number :
+                                </div>
+                                <span class="badge bg-primary rounded-pill">14</span>
+                            </li>
+                        </ol>
+                    </p>
+
+                    <a href="#" class="btn btn-outline-primary btn-sm">
+                        Card link
+                    </a>
+                    <a href="#" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-info-circle"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!--Second Half-->
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Additional Pages</h5>
+                    <p class="card-text">
+                        <ol class="list-group list-group-numbered">
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">Confugration</div>
+                                </div>
+                                <i class="fa-solid fa-gear"></i>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">Data Analytics</div>
+                                        <a href="#" class="btn btn-outline-secondary btn-sm">
+                                            
+                                        </a>
+                                </div>
+                                <i class="fa-solid fa-database"></i>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">Training</div>
+                                        
+                                </div>
+                                <i class="fa-solid fa-laptop-file"></i>
+                            </li>
+                        </ol>
+                    </p>
+
+                    <a href="#" class="btn btn-outline-primary btn-sm">
+                        Vessel list
+                    </a>
+                    <a href="#" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-info-circle"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-3">
+            <button type="button" class="btn btn-primary btn-circle btn-xl">Sire Report</button>
+        </div>
+        <div class="col-lg-3">
+            <button type="button" class="btn btn-secondary btn-circle btn-xl" onclick="@("window.location.href='" + @Url.Action("Index", "Inspection") + "'");" />Inspection Page</button>
+        </div>
+        <div class="col-lg-6">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+            </div>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+            </div>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
+            </div>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">75%</div>
+            </div>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">100%</div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+

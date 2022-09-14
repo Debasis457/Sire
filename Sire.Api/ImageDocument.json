@@ -1,0 +1,11 @@
+{
+  "ImagePath": {
+    "ImageDir": "C:\\SireImage",
+    "OriginalDir": "Original",
+    "ThumbnailDir": "Thumbnail"
+  },
+  "DocPath": {
+    "DocDir": "",
+    "SavedDoc": ""
+  }
+}

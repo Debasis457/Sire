@@ -1,0 +1,66 @@
+﻿@model Sire.Data.Dto.Question.QuestionDto
+
+@{
+
+    int i = 1;
+   
+   ViewBag.Title = "InspectionFlow";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+
+}
+
+<script src="~/assets/lib/jquery/jquery-3.3.1.min.js"></script>
+<script src="~/js/PageScript/InspectionResponse.js"></script>
+
+<div class="tab-pane fade show active" id="User" role="tabpanel" aria-labelledby="pills-home-tab">
+    <!-- End Navigation Fixed Bar-->
+    <div class="col-sm-12">
+        <div class="card">
+<p> @Model.Chapter . @Model.Section . @i. @Model.Questions</p>
+ </div>
+  </div>
+   </div>
+
+<div class="col-md-12">
+    <div class="card m-b-0">
+        <div class="card-header sub-head-tit">
+            <ul class="nav nav-pills nav-fill mt-3 border-bottom pb-3" id="pills-tab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#InspCheckList" role="tab" aria-controls="pills-home" aria-selected="true" onclick="GetQueCheckList(@Model.Id)">CheckList</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#Response" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="GetQuestionResponse(@Model.Id)">Response</a>
+                </li>
+               <li class="nav-item">
+                    <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#Operator_Supplied_Content" role="tab" aria-controls="pills-contact" aria-selected="false" onclick="GetOpContent()">Operator Supplied Content</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#Guidance" role="tab" aria-controls="pills-contact" aria-selected="false" onclick="GetQuestionDetails(@Model.Id)">Guidance</a>
+                </li>
+
+            </ul>
+        </div>
+        <div class="card-body p-0  pb-5" id="card5_b">
+            <div class="tab-content" id="pills-tabContent">
+                <div class="tab-pane fade show active" id="InspCheckList" role="tabpanel" aria-labelledby="pills-home-tab">
+                </div>
+                <div class="tab-pane fade" id="Response" role="tabpanel" aria-labelledby="pills-home-tab">
+             
+                </div>
+                 <div class="tab-pane fade" id="Operator_Supplied_Content" role="tabpanel" aria-labelledby="pills-home-tab">
+                </div>
+                <div class="tab-pane fade" id="Guidance" role="tabpanel" aria-labelledby="pills-home-tab">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/assets/lib/jquery/jquery-3.3.1.min.js"></script>
+
+<script src="~/js/pagescript/InspectionFlow.js"></script>
+
+<script src="~/assets/lib/Bootstap-Datepicker/bootstrap-datepicker.min.js"></script>
+<script src="~/assets/js/plugins/bootstrap.min.js"></script>
+

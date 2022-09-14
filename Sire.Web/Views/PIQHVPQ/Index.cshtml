@@ -1,0 +1,109 @@
+﻿@*@model IEnumerable<Sire.Data.Dto.ShipManagement.Piq_HvpqDto>*@
+@{
+    ViewBag.Title = "PIQHVPQ";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+}
+<style>
+    .qudiv {
+        white-space: normal;
+        font-size: 11px;
+        text-align: left;
+    }
+
+    .qudivtd {
+        white-space: normal;
+        font-size: 11px;
+        text-align: left;
+    }
+</style>
+
+<script src="~/assets/lib/jquery/jquery-3.3.1.min.js"></script>
+
+<script src="~/js/PageScript/PIQHVPQ.js"></script>
+
+<div class="row fix-head">
+    <div class="col-lg-12 col-md-12">
+        <div class="card m-b-0">
+            <div class="card-body head-tit">
+                <div class="col-sm-5">
+                    <h5 class="head-tit-fnt">PIQ HVPQ</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="m-t-40" style="width:100%">
+    <div class="col-lg-12 mb-2">
+        <div class="card table-card mb-0">
+            <div class="card-header sub-head-tit">
+            </div>
+            <div class="card-body p-0 pb-1">
+                <input type="hidden" id="ShiftDieFloorId" value="-1" />
+                <div class="row pl-4 pr-4">
+                    <div class="col-sm-1 pr-0 h-40 text-center">
+                        <label class="fnt-lable" for="VesselId">Type Of Vessel</label>
+                    </div>
+                    <div class="col-sm-2 pr-4 h-40">
+
+                        @Html.DropDownList("VesselId",new SelectList(ViewBag.VesselList, "Id", "Value"),"Select", new { @class = "form-control  select2"})
+
+                    </div>
+
+                    <div class="col-sm-1 pr-0 h-40 text-center ">
+                        <label class="fnt-lable" for="typeQuestionId">Type Of Question</label>
+                    </div>
+                    <div class="col-sm-2 pr-4 h-40 ">
+                        <select class="form-control  select2" id="typeQuestionId">
+                            <option value="Full">Full</option>
+                            <option value="Short">Short</option>
+                        </select>
+                    </div>
+
+                    <div class="col-sm-1 pr-0 h-40 text-center">
+                        <a class="n-btn btn-primary text-white mr-2 float-right" onclick="SearchBasicAttributes()">Generate</a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="col-md-12">
+    <div class="col-md-5 pl-0 pr-0">
+        <div class="card m-b-0">
+            <div class="card-header sub-head-tit">
+                <ul class="nav nav-pills nav-fill mt-3 border-bottom pb-3" id="pills-tab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#PIQ" role="tab" aria-controls="pills-home" aria-selected="true" onclick="GetPIQLoad()">PIQ</a>
+
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#HVPQ" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="GetHVPQLoad()">HVPQ</a>
+                    </li>
+
+                </ul>
+            </div>
+            <div class="card-body p-0  pb-5" id="card5_b">
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade show active" id="PIQ" role="tabpanel" aria-labelledby="pills-home-tab">
+                    </div>
+                    <div class="tab-pane fade" id="HVPQ" role="tabpanel" aria-labelledby="pills-home-tab">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*<div class="col-md-7  pl-0 pr-0">
+    @Html.Partial("BasicAttributes")
+    </div>*@
+
+</div>
+
+
+
+
+
+

@@ -1,0 +1,110 @@
+﻿body {
+    font-size: 12px !important;
+}
+.sidebar .sidebar-menu .treeview-menu > li > a {
+    font-size: 12px !important;
+}
+.pagenationn
+{
+  line-height: 26px;
+  display:grid;
+}
+
+.pagenationn span
+{
+  padding: 5px;
+  border: solid 1px #477B0E;
+  text-decoration: none;
+  white-space: nowrap;
+  background: #000000;
+  color: #fff;
+}
+
+.pagenationn a, 
+.pagenationn a:visited
+{
+  text-decoration: none;
+  padding: 6px;
+  white-space: nowrap;
+}
+.pagenationn a:hover, 
+.pagenationn a:active
+{
+  padding: 5px;
+  border: solid 1px #9ECDE7;
+  text-decoration: none;
+  white-space: nowrap;
+  background: #486694;
+}
+
+.content-header {
+    padding:5px 15px 5px 15px;
+}
+.content-header h1 {
+font-size: 20px;
+font-family: 'Kaushan Script', cursive;
+font-weight: 500;
+display: block;
+width:80%;
+}
+.content-header > .breadcrumb {
+    top:5px;
+}
+.sidebar-menu > li.treeview {
+   border-top: 1px #ccc dashed;
+}
+
+.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {
+    padding: 2px;
+    margin-left: 40px;
+    vertical-align: middle;
+    height: 35px;
+    text-align: center;
+}
+
+.box .box-header > .box-tools
+{
+    padding:0px;
+}
+.table > tbody > tr > th {
+    background:#989898;
+}
+
+table>caption {
+    font-weight:bold;
+    text-align: left;
+    border-bottom:1px dashed #000;
+    margin-top:10px;
+
+}
+.table>thead>tr>th {
+    cursor:pointer;
+}
+
+.dataTable>thead> tr {
+    background-color: #1068aa;
+    color: white;
+    /* text-align: center; */
+    height: 30px;
+    vertical-align: middle;
+}
+.table>tbody>tr>td {
+    font-size: 13px !important;
+    height: 30px !important;
+}
+
+.pagination {
+    float: right !important;
+    margin-top: 3px;
+}
+.collapseBtn{
+    float:right;
+    padding-right:15px;
+    cursor:pointer;
+}
+
+.navbar-nav > li > a {
+    padding-top: 15px;
+    padding-bottom: 0px !important;
+    cursor: pointer;
+}

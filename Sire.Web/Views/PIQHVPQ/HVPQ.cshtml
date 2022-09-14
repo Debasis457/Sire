@@ -1,0 +1,93 @@
+﻿@using Sire.Data.Dto.ShipManagement
+
+@{ 
+    IEnumerable<Sire.Data.Dto.ShipManagement.Piq_HvpqDto> HVPQList = (IEnumerable<Sire.Data.Dto.ShipManagement.Piq_HvpqDto>)ViewBag.HVPQList;
+    int l = 0;
+  
+  
+}
+
+
+
+
+        <div class="row">
+        <div class="col-lg-12  col-sm-12  pl-5 pr-5">
+              <form>
+            <div class="table-responsive">
+                <table id="HVPQDetails" class="table table-bordered table-hover piqhvpq" style="display:block;table-layout: fixed;" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th><div class="p-1 pl-0">Question</div></th>
+                            <th><div class="p-1 pl-0">Response</div></th>
+                        </tr>
+                    </thead>
+           
+                       <tbody>
+                               
+
+                         
+                                @foreach (var rec in HVPQList)
+                        {
+                            <tr>
+                              <td style="width:70%">
+                                
+                                   @rec.piq_hvpq_question
+                              </td>
+                            
+
+                              <td style="width:30%">
+
+                                    @switch (@rec.ResponseType)
+                                    {
+                                        case ResponseTypePIQ.Dropdown:
+                                            @*
+                                <select asp-for="Response" asp-items="@(new SelectList(rec.PIQ_HVPQ_Response,"Id","Value"))"></select>*@
+
+                                            <span>
+
+                                                <select class="form-control inp select2" id="PIQId_@l" data-responsetype="@rec.ResponseType">
+
+                                                    @foreach (var ent in rec.PIQ_HVPQ_Response)
+                                                    {
+                                                        <option value="@ent.value" data-id="@ent.Id" data-desc="@rec.piq_hvpq_question" data-ID_Q="@rec.Id">@ent.value</option>
+                                                    }
+                                                </select>
+
+                                            </span>
+                                            break;
+                                        case ResponseTypePIQ.Textbox:
+                                            <span>  <input type="text" class="form-control inp" /></span>
+                                            break;
+                                        case ResponseTypePIQ.Switch:
+                                            <span>
+                                                @{
+                                                    int yes = rec.PIQ_HVPQ_Response.Where(x => x.value.ToUpper() == "YES").Select(x => x.Id).FirstOrDefault();
+                                                    int No = rec.PIQ_HVPQ_Response.Where(x => x.value.ToUpper() == "NO").Select(x => x.Id).FirstOrDefault();
+                                                }
+                                                <label class="switch" onclick="ToggelYesNo('PIQId_@l','yesNoChkid_@l')" data-responsetype="@rec.ResponseType">
+                                                    <input class="switch-input" data-desc="@rec.piq_hvpq_question" data-yes="@yes" data-no="@No" data-ID_Q="@rec.Id" id="PIQId_@l" data-responsetype="@rec.ResponseType" type="checkbox" checked />
+                                                    <span class="switch-label" data-on="Yes" data-off="No"></span>
+                                                    <span class="switch-handle"></span>
+                                                </label>
+                                            </span>
+                                            break;
+                                        default:
+                                            <span>No Control</span>
+                                            break;
+                                    }
+
+                                </td>
+                            </tr>
+
+                            l = l + 1;
+                        }
+
+
+                            </tbody>
+           
+                </table>
+            </div>
+            <button type="button" class="n-btn  btn-success" id="btnSubmitHVPQ">Submit</button>
+     </form>
+        </div>
+    </div>

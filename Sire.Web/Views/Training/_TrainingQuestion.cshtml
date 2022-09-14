@@ -1,0 +1,36 @@
+﻿@model QuestionTrainingModel
+@{
+    int i = 1;
+    int trainingId = Convert.ToInt32(TempData["TrainingId"]);
+    TempData.Keep();
+    string trainingAttended = "card bg-c-green";
+}
+@foreach (var item in Model.QuestionDtos)
+{
+    trainingAttended = Model.TraningResponseDtos != null ? ((Model.TraningResponseDtos.Where(d => d.Question_Id == item.Id).Count() > 0) ? "card bg-c-green" : "card") : "card";
+    <div class="@trainingAttended" style="margin-bottom:5px">
+        <div class="card-body">
+            <div class="row">
+                <a asp-action="GetDetails" asp-controller="TrainingQuestion" asp-route-trainingId="@trainingId" asp-route-questionId="@item.Id"> @item.Chapter . @item.Section . @i. @item.Questions</a>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <i class="fa fa-eye" aria-hidden="true"></i> <b>2</b>
+                </div>
+                <div class="col-md-3">
+                    <i class="fa fa-camera" aria-hidden="true"></i>
+                    <b>3</b>
+                </div>
+                <div class="col-md-3">
+                    <i class="fa fa-microphone" aria-hidden="true"></i>  <b>0</b>
+                </div>
+                <div class="col-md-3">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                    <b>0</b>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    i++;
+}

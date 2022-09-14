@@ -1,0 +1,37 @@
+﻿@using Microsoft.AspNetCore.Http;
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+    int i = 0;
+}
+
+
+!-- Navigation Fixed Bar-->
+<div class="row fix-head">
+    <div class="col-md-12">
+        <div class="card m-b-0">
+            <div class="card-body head-tit">
+                <div class="col-sm-5">
+                    <h5 class="head-tit-fnt">Dashboard</h5>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class ="tab-pane fade show active">
+    <div class="col-sm-12">
+    <div class="card">
+        <div class="card-body">
+        <h5>Email Id:   @Context.Session.GetString("Email")</h5>
+                <h5>Token No:   @Context.Session.GetString("Token")</h5>
+                        <h5>User ID:  @Context.Session.GetString("UserId")</h5>
+
+    </div>
+    </div>
+    </div>
+    </div>
+
+
+   

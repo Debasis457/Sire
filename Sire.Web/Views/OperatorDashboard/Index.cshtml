@@ -1,0 +1,209 @@
+﻿@model IEnumerable<Sire.Data.Dto.Operator.OperatorDto>
+@{
+    ViewBag.Title = "Operator";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+    int i = 0;
+}
+
+<!-- Navigation Fixed Bar-->
+<div class="row fix-head">
+    <div class="col-md-12">
+        <div class="card m-b-0">
+            <div class="card-body head-tit">
+                <div class="col-sm-5">
+                    <h5 class="head-tit-fnt">Operator Admin Dashboard</h5>
+                </div> 
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--Upper-Section-->
+    <div class="container-fluid">
+    <div class="row">
+        <div class="card">
+            <div class="card-body">
+                <div class="col">
+                    <div class="btn-group-vertical">
+                        <hr />
+                        <button type="button" class="btn btn-primary">Training</button>
+                        <button type="button" class="btn btn-primary">Inspection</button>
+                        <button type="button" class="btn btn-primary">Alert Conf</button>
+                        <button type="button" class="btn btn-primary">Procedure</button>
+                    </div>
+                    <hr />
+                </div>
+            </div>
+
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+
+                    <hr />
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Message for broadcasting">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit">Send</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+
+
+    </div>
+    </div>    
+
+            
+
+
+<div class="container-fluid">
+    <div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-body">
+                <div class="input-group">
+                        <label for="formFileLg" class="form-label">Upload your pdf file here</label>
+                        <input class="form-control form-control-lg" id="formFileLg" type="file" />
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    </div>
+</div>
+
+        
+
+    
+    
+
+
+
+<!--Status-Tables-->
+<div class="col-sm-12">
+    <div class="card">
+        <div class="card-body">
+            <hr />
+
+            <div class="row">
+                <div class="col">
+                    <div class="table-responsive">
+                        <h3>Repository Status</h3>
+                        <table class="table table-bordered table-striped table-hover js-basic-example dataTable" id="example1">
+                            <thead>
+                                <tr role="row">
+                                    <th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending" style="width: 158px;">
+                                        Sl. No
+                                    </th>
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                        Ship
+                                    </th>
+
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending" style="width: 155px;">
+                                        Type
+                                    </th>
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                        Photo 
+                                    </th>
+
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending" style="width: 155px;">
+                                        Certification
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                
+
+                    </div>
+
+                </div>
+
+                <div class="col">
+                    <div class="table-responsive">
+                        <h3>Upcoming Sire</h3>
+                        <table class="table table-bordered table-striped table-hover js-basic-example dataTable" id="example1">
+                            <thead>
+                                <tr role="row">
+                                    <th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending" style="width: 158px;">
+                                        Sl No.
+                                    </th>
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                        Fleet
+                                    </th>
+
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending" style="width: 155px;">
+                                        Ship
+                                    </th>
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                        Type
+                                    </th>
+
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending" style="width: 155px;">
+                                        Sire Due Date
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-12">
+    <div class="card">
+        <div class="card-body">
+            <hr />
+
+            <div class="row">
+                <div class="col">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover js-basic-example dataTable" id="example1">
+                            <thead>
+                                <tr role="row">
+                                    <th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending" style="width: 158px;">
+                                        Sl. No
+                                    </th>
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                        Fleet
+                                    </th>
+
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending" style="width: 155px;">
+                                        Ship
+                                    </th>
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                        type
+                                    </th>
+
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending" style="width: 155px;">
+                                        Manage
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

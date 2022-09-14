@@ -1,0 +1,79 @@
+﻿@model Sire.Data.Dto.Master.UserMasterDto
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>SIRE2.0 | Log in</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    @*    <link rel="stylesheet" href="~/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+        <link rel="stylesheet" href="~/dist/css/AdminLTE.min.css">
+        <link rel="stylesheet" href="~/plugins/iCheck/square/blue.css">*@
+    <link href="~/assets/css/style.css" rel="stylesheet" />
+    <link href="~/assets/css/NewStyle.css" rel="stylesheet" />
+</head>
+<body class="hold-transition login-page">
+    @using (Html.BeginForm("Index", "Login", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+
+        <div class="auth-wrapper N-auth-wrapper">
+            <div class="auth-content N-Auto-containe">
+                <div class="card">
+                    <div class="row align-items-right text-center">
+                        <div class="col-md-12">
+                            <div class="card-body">
+                                <h4 class="mb-3 f-w-400 N-h-log-head">SIRE<lable style="font-weight:normal;color: #565454;">2.0<lable></h4>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="feather icon-mail"></i></span>
+                                    </div>
+                                    @Html.TextBoxFor(model => model.UserName, new { @class = "form-control", @placeholder = "Username", @required = "true"/*, @maxlength = "10" */})
+                                </div>
+                                <div class="input-group mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="feather icon-lock"></i></span>
+                                    </div>
+                                    @Html.PasswordFor(model => model.Password, new { @class = "form-control", @placeholder = "Password", @required = "true" })
+                                </div>
+                                <button class="btn btn-block btn-primary btn-color mb-4" type="submit" onclick="return setMd5Password('Password');">SIGN IN</button>
+                                <div class="col-md-12">
+                                    @*@if (TempData["LogMessage"] != null)
+                                    {
+                                        <div style="color: #f71100 !important;">
+                                            @TempData["LogMessage"].ToString()
+                                        </div>
+                                    }*@
+                                    
+
+                                    @if (ViewBag.errormessage != null)
+                                        {
+                                            <p class="alert alert-danger" id="successMessage">@ViewBag.errormessage</p>
+                                        }
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="~/assets/js/vendor-all.min.js"></script>
+        <script src="~/assets/js/plugins/bootstrap.min.js"></script>
+        <script src="~/assets/js/waves.min.js"></script>
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/js/jquery.md5.min.js"></script>
+        <script src="~/js/PageScript/common.js"></script>
+    }
+
+</body>
+</html>
+
