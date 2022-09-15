@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Amqp.Framing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -230,6 +231,44 @@ namespace Sire.Web.Controllers
                 }
             }
             return PartialView();
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> SaveQuestionResponse(List<InspectionResponseDto> data)
+
+        {
+            //return Json(null);
+            var Id = data[0].Inspection_Question_id;
+
+            if (ModelState.IsValid)
+            {
+                var endquestion = apiBaseResponseUrl + "/" + Id;
+                try
+                {
+                    using (HttpClient client = new HttpClient())
+                    {
+                        StringContent content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+                        using (var Response = await client.PostAsync(apiBaseResponseUrl, content))
+                        {
+                            if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                            {
+                                return Json("Data Saved");
+                            }
+                            else
+                            {
+                                ModelState.Clear();
+                                ModelState.AddModelError(string.Empty, "Invalid data");
+                                return Json(ModelState);
+                            }
+                        }
+                    }
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+            }
+            return Json("Data Saved");
         }
 
         public async Task<PartialViewResult> GetOpContent()

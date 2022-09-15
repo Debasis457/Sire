@@ -40,10 +40,10 @@ function GetQueCheckList(Id) {
 
 function GetResponseList() {
     debugger;
-    
+
     /*if ($check.prop('checked') == true) {*/
     $("#Reversetab").load("/InspectionFlow/GetQuestionResponse/", function () {
-       cbbx
+        cbbx
     });
     //}
     //else {
@@ -66,7 +66,7 @@ function GetOpContent() {
 
 function InspUploadFile() {
     debugger;
-    $("#Operator_Supplied_Content").load("/InspectionFlow/FileUpload/" , function () {
+    $("#Operator_Supplied_Content").load("/InspectionFlow/FileUpload/", function () {
 
     });
 }
@@ -105,18 +105,72 @@ function GetQuestionDetails(Id) {
 }
 
 function GetQuestionResponse(Id) {
-    debugger;
+    //debugger;
     $("#Response").empty();
     /*var id = 1;*/
     $("#Response").load("/InspectionFlow/GetQuestionResponse/" + Id, function () {
         debugger;
         $(document).ready(function () {
-
-            $('.btn-copy').click(function () {
-                var type = $(this).text();
+            $('#selResponseType > option:gt(0)').each(function () {
+                var type = $(this).val();
                 $('.QuestionContainer').append($('.' + type).html());
-                $('.' + type).empty();
+                generateIds();
+            });
+            $('.btn-copy').click(function () {
+                var type = $('#selResponseType').val();
+                if (type != "") {
+                    $('.QuestionContainer').append($('.' + type).html());
+                    generateIds();
+                }
             });
         });
     });
+}
+
+function generateIds() {
+    $('.QuestionContainer').last('div.table-responsive').find('input,textarea').each(function () {
+        var index = $(this).closest('div.table-responsive').index();
+        debugger
+        if ($(this).attr('type') == 'checkbox') {
+            $(this).attr('id', $(this).attr('type') + '_' + index);
+            $(this).next('label').attr('for', $(this).attr('type') + '_' + index);
+        }
+        else if ($(this).attr('type') == 'radio') {
+            $(this).attr('id', $(this).attr('type') + '_' + $(this).val() + '_' + index);
+            $(this).attr('name', $(this).attr('name') + '_' + index);
+            $(this).next('label').attr('for', $(this).attr('type') + '_' + $(this).val() + '_' + index);
+        }
+        else {
+            $(this).attr('id', 'Response_Comment_' + index);
+        }
+    });
+}
+
+function saveResponseData(questionId) {
+    var responseDataArr = [];
+    $('.QuestionContainer > div.table-responsive').each(function () {
+        var responseData = {};
+        responseData.Inspection_Question_id = questionId;
+        responseData.ResponseType = $(this).attr('data-responsetype');
+        responseData.Is_Answerable = $(this).find('input[type="checkbox"]')[0].checked;
+        if (responseData.Is_Answerable == false) {
+            responseData.Response_Value = $(this).find('input[type="radio"]:checked').val();
+        }
+        responseData.Response_Comment = $(this).find('textarea').val();
+        responseDataArr.push(responseData);
+    });
+    $.ajax({
+        type: "POST",
+        url: "/InspectionFlow/SaveQuestionResponse/",
+        dataType: "json",
+        data: { data: responseDataArr },
+
+        success: function (data) {
+            alert(data);
+        },
+        error: function (ex) {
+            alert("Failed to Save" + ex);
+        }
+    });
+    debugger
 }

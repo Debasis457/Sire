@@ -26,131 +26,153 @@
             var processResponse = Model.questionResponseDtos.Where(d => Convert.ToInt32(d.Response_Type) == 1 && Convert.ToInt32(d.Response_Type_Cateogary) == processQuestion);
             var humanResponse = Model.questionResponseDtos.Where(d => Convert.ToInt32(d.Response_Type) == 2 && Convert.ToInt32(d.Response_Type_Cateogary) == humanQuestion);
 
-                <button type="button" class="btn-copy btn btn-info" style="min-width:100px;">Hardware</button>
-                <button type="button" class="btn-copy btn btn-info" style="min-width:100px;">Process</button>
-                <button type="button" class="btn-copy btn btn-info" style="min-width:100px;">Human</button>
-
-                <div class="Hardware" style="display:none">
-                <div class="table-responsive" id="Response1" style="min-width:100%!important;">
-                        <table id="HardwareDetails" class="table table-bordered table-hover" cellspacing="0">
-                            <tbody>
-                                <tr>
-                                    <td colspan="2"><h5><b>Hardware</b></h5></td>
-                                    <td colspan="2">
-                                        <input id="HQuestion_Id" type="checkbox" name="NotAnswarble" value="NotAnswarble" />
-                                        <label class="fnt-lable" for="NOT ANSWARABLE ">NOT ANSWARABLE</label>
-                                    </td>
-                                </tr>
-                                @foreach (Sire.Data.Dto.Question.QuestionResponseDto res in hardwareResponse)
+            //<button type="button" class="btn-copy btn btn-info" style="min-width:100px;">Hardware</button>
+            //<button type="button" class="btn-copy btn btn-info" style="min-width:100px;">Process</button>
+            //<button type="button" class="btn-copy btn btn-info" style="min-width:100px;">Human</button>
+            <div class="row">
+                <div class="col-3">
+                    <select class="form-control" id="selResponseType">
+                        <option value="">Select Response Type</option>
+                        @if (hardwareResponse.Count() > 0)
+                        {
+                            <option value="Hardware">Hardware</option>
+                        }
+                        @if (processResponse.Count() > 0)
+                        {
+                            <option value="Process">Process</option>
+                        }
+                        @if (humanResponse.Count() > 0)
+                        {
+                            <option value="Human">Human</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-3">
+                    <button type="button" class="btn-copy btn btn-info" style="min-width:100px;">Add Response</button>
+                </div>
+            </div>
+            
+            
+            <div class="Hardware" style="display:none">
+                <div class="table-responsive" style="min-width:100%!important;" data-responsetype="0">
+                    <table class="table table-bordered table-hover" cellspacing="0">
+                        <tbody>
+                            <tr>
+                                <td colspan="2" style="width:30%"><h5><b>Hardware</b></h5></td>
+                                <td colspan="2">
+                                    <input type="checkbox" name="NotAnswarble" value="NotAnswarble" />
+                                    <label class="fnt-lable">NOT ANSWARABLE</label>
+                                </td>
+                            </tr>
+                            @foreach (Sire.Data.Dto.Question.QuestionResponseDto res in hardwareResponse)
                             {
-                                    <tr>
-                                        <td colspan="4">
-                                            <input type="radio" name="questionoption" id="@res.Id" /><label class="fnt-lable" for="@res.Id">@res.Value</label>
-                                        </td>
-                                    </tr>
-                            }
                                 <tr>
                                     <td colspan="4">
-                                        <textarea class="form-control z-depth-1" id="HardBinComment" rows="3" placeholder="Comment..."></textarea>
+                                        <input type="radio" name="questionoption" value="@res.Id" /><label class="fnt-lable">@res.Value</label>
                                     </td>
                                 </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="Process" style="display:none">
-                <div class="table-responsive" id="Response2" style="min-width:100%!important;">
-                        <table id="HardwareDetails" class="table table-bordered table-hover" cellspacing="0">
-                            <tbody>
-                                <tr>
-                                    <td colspan="2"><h5><b>Process</b></h5></td>
-                                    <td colspan="2">
-                                        <input id="PQuestion_Id" type="checkbox" name="NotAnswarble" value="NotAnswarble" />
-                                        <label class="fnt-lable" for="NOT ANSWARABLE ">NOT ANSWARABLE</label>
-                                    </td>
-                                </tr>
-                                @foreach (Sire.Data.Dto.Question.QuestionResponseDto res in processResponse)
-                            {
-                                    <tr>
-                                        <td colspan="4">
-                                            <input type="radio" name="questionoption" id="@res.Id" /><label class="fnt-lable" for="@res.Id">@res.Value</label>
-                                        </td>
-                                    </tr>
                             }
+                            <tr>
+                                <td colspan="4">
+                                    <textarea class="form-control z-depth-1" rows="3" placeholder="Comment..."></textarea>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="Process" style="display:none">
+                <div class="table-responsive" style="min-width:100%!important;" data-responsetype="1">
+                    <table class="table table-bordered table-hover" cellspacing="0">
+                        <tbody>
+                            <tr>
+                                <td colspan="2" style="width:30%"><h5><b>Process</b></h5></td>
+                                <td colspan="2">
+                                    <input id="PQuestion_Id" type="checkbox" name="NotAnswarble" value="NotAnswarble" />
+                                    <label class="fnt-lable" for="PQuestion_Id">NOT ANSWARABLE</label>
+                                </td>
+                            </tr>
+                            @foreach (Sire.Data.Dto.Question.QuestionResponseDto res in processResponse)
+                            {
                                 <tr>
                                     <td colspan="4">
-                                        <textarea class="form-control z-depth-1" id="ProdBinComment" rows="3" placeholder="Comment..."></textarea>
+                                        <input type="radio" name="questionoption" value="@res.Id" /><label class="fnt-lable">@res.Value</label>
                                     </td>
                                 </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="Human" style="display:none">
-                    <div class="table-responsive" id="Response3" style="min-width:100%!important;">
-                        <table id="HardwareDetails" class="table table-bordered table-hover" cellspacing="0">
-                            <tbody>
-                                <tr>
-                                    <td colspan="2"><h5><b>Human</b></h5></td>
-                                    <td colspan="2">
-                                        <input id="HQuestion_Id" type="checkbox" name="NotAnswarble" value="NotAnswarble" />
-                                        <label class="fnt-lable" for="NOT ANSWARABLE ">NOT ANSWARABLE</label>
-                                    </td>
-                                </tr>
-                                @foreach (Sire.Data.Dto.Question.QuestionResponseDto res in humanResponse)
-                            {
-                                    <tr>
-                                        <td colspan="4">
-                                            <input type="radio" name="questionoption" id="@res.Id" /><label class="fnt-lable" for="@res.Id">@res.Value</label>
-                                        </td>
-                                    </tr>
                             }
+                            <tr>
+                                <td colspan="4">
+                                    <textarea class="form-control z-depth-1" rows="3" placeholder="Comment..."></textarea>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="Human" style="display:none">
+                <div class="table-responsive" style="min-width:100%!important;" data-responsetype="2">
+                    <table class="table table-bordered table-hover" cellspacing="0">
+                        <tbody>
+                            <tr>
+                                <td colspan="2" style="width:30%"><h5><b>Human</b></h5></td>
+                                <td colspan="2">
+                                    <input id="HQuestion_Id" type="checkbox" name="NotAnswarble" value="NotAnswarble" />
+                                    <label class="fnt-lable" for="HQuestion_Id">NOT ANSWARABLE</label>
+                                </td>
+                            </tr>
+                            @foreach (Sire.Data.Dto.Question.QuestionResponseDto res in humanResponse)
+                            {
                                 <tr>
                                     <td colspan="4">
-                                        <textarea class="form-control z-depth-1" id="HumdBinComment" rows="3" placeholder="Comment..."></textarea>
+                                        <input type="radio" name="questionoption" value="@res.Id" /><label class="fnt-lable">@res.Value</label>
                                     </td>
                                 </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                            }
+                            <tr>
+                                <td colspan="4">
+                                    <textarea class="form-control z-depth-1" rows="3" placeholder="Comment..."></textarea>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <hr />
-                <form>
+            </div>
+            <hr />
 
-                    <div class="col-lg-12 col-sm-12">
-                        <div class="QuestionContainer" style="width:100%!important">
-                        </div>
-                        <div class="modal fade bd-example-modal-lg2" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel2" aria-hidden="true">
-                            <div class="modal-dialog modal-lg" style="margin-top:15em;">
-                                <div class="modal-content">
-                                    <div class="modal-header p-3">
-                                        <h5 class="modal-title h4 mod-tit" id="myLargeModalLabel">Response </h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    </div>
-                                    <div class="modal-body" id="Reversetab">
-                                    </div>
+             
+            <form>
 
-                                    <div class="modal-footer p-3">
-                                        <button type="button" class="btn  btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="button" class="btn  btn-primary" id="FinalSaveLimits">Submit</button>
-                                    </div>
+                <div class="col-lg-12 col-sm-12">
+                    <div class="QuestionContainer" style="width:100%!important">
+                    </div>
+                    <div class="modal fade bd-example-modal-lg2" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel2" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" style="margin-top:15em;">
+                            <div class="modal-content">
+                                <div class="modal-header p-3">
+                                    <h5 class="modal-title h4 mod-tit" id="myLargeModalLabel">Response </h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                </div>
+                                <div class="modal-body" id="Reversetab">
+                                </div>
+
+                                <div class="modal-footer p-3">
+                                    <button type="button" class="btn  btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn  btn-primary" id="FinalSaveLimits">Submit</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-sm">
-                            <div class="modal-content">
-                            </div>
-                        </div>
-                    </div>
+                </div>
+                
+                <div class="col-lg-12 col-sm-12">
+                    <button type="button" class="n-btn  btn-success" onclick="saveResponseData(@Model.questionDto.Id)">Save</button>
+                </div>
 
 
+                <button type="button" class="n-btn  btn-success invisible" onclick="ResponseValue(@Model.questionDto.Id)">Submit</button>
 
-                    <button type="button" class="n-btn  btn-success" onclick="ResponseValue(@Model.questionDto.Id)">Submit</button>
 
-
-                </form>
+            </form>
         }
     </div>
 </div>
