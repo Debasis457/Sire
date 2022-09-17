@@ -106,16 +106,17 @@ function GetQuestionDetails(Id) {
 
 function GetQuestionResponse(Id) {
     //debugger;
-    $("#Response").empty();
+    //$("#Response").empty();
     /*var id = 1;*/
     $("#Response").load("/InspectionFlow/GetQuestionResponse/" + Id, function () {
-        debugger;
         $(document).ready(function () {
-            $('#selResponseType > option:gt(0)').each(function () {
-                var type = $(this).val();
-                $('.QuestionContainer').append($('.' + type).html());
-                generateIds();
-            });
+            if ($("#Response").text() == "") {
+                $('#selResponseType > option:gt(0)').each(function () {
+                    var type = $(this).val();
+                    $('.QuestionContainer').append($('.' + type).html());
+                    generateIds();
+                });
+            } 
             $('.btn-copy').click(function () {
                 var type = $('#selResponseType').val();
                 if (type != "") {
@@ -130,12 +131,13 @@ function GetQuestionResponse(Id) {
 function generateIds() {
     $('.QuestionContainer').last('div.table-responsive').find('input,textarea').each(function () {
         var index = $(this).closest('div.table-responsive').index();
-        debugger
         if ($(this).attr('type') == 'checkbox') {
+            //$(this).addClass('form-control checkbox-inline');
             $(this).attr('id', $(this).attr('type') + '_' + index);
             $(this).next('label').attr('for', $(this).attr('type') + '_' + index);
         }
         else if ($(this).attr('type') == 'radio') {
+            //$(this).addClass('form-control');
             $(this).attr('id', $(this).attr('type') + '_' + $(this).val() + '_' + index);
             $(this).attr('name', $(this).attr('name') + '_' + index);
             $(this).next('label').attr('for', $(this).attr('type') + '_' + $(this).val() + '_' + index);
@@ -151,6 +153,7 @@ function saveResponseData(questionId) {
     $('.QuestionContainer > div.table-responsive').each(function () {
         var responseData = {};
         responseData.Inspection_Question_id = questionId;
+        responseData.Id = $(this).attr('data-id');
         responseData.ResponseType = $(this).attr('data-responsetype');
         responseData.Is_Answerable = $(this).find('input[type="checkbox"]')[0].checked;
         if (responseData.Is_Answerable == false) {

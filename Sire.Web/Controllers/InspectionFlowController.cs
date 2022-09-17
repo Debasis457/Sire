@@ -117,11 +117,11 @@ namespace Sire.Web.Controllers
 
             var questionresponse = apiBaseQuestionResponseUrl + "/GetResponse";
 
+            var inspectionuestionresponse = apiBaseResponseUrl + "/GetByInspectionQuestionId" + "/" + Id;
+
             using (HttpClient client = new HttpClient())
             {
                
-                   
-             
                 using (var Response = await client.GetAsync(endquestion))
                 {
 
@@ -138,6 +138,14 @@ namespace Sire.Web.Controllers
                             if (QResponse.StatusCode == System.Net.HttpStatusCode.OK)
                             {
                                 questionResponseModel.questionResponseDtos = JsonConvert.DeserializeObject<IList<QuestionResponseDto>>(QResponse.Content.ReadAsStringAsync().Result).ToList();
+                            }
+                        }
+
+                        using (var IResponse = await client.GetAsync(inspectionuestionresponse))
+                        {
+                            if (IResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                            {
+                                questionResponseModel.inspectionResponseDtos = JsonConvert.DeserializeObject<IList<InspectionResponseDto>>(IResponse.Content.ReadAsStringAsync().Result).ToList();
                             }
                         }
 
