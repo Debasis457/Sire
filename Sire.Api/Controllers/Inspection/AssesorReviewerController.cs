@@ -127,16 +127,52 @@ namespace Sire.Api.Controllers
         }
 
         [AllowAnonymous]
+        [HttpGet("GetSectionListByInspectionId/{id}")]
+        public IActionResult GetSectionListByInspectionId(int id)
+        {
+            var tests = _quetionSectionRepository.FindByInclude(x => x.Id > 0, x => x.QuetionSubSection)
+                .ToList();
+            var testsDto = _mapper.Map<IEnumerable<QuetionSectionDto>>(tests);
+            foreach (var item in testsDto)
+            {
+                var count = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == item.Id)
+                             join sub in _uow.Context.QuetionSubSection on sec.Id equals sub.QuetionSectionId
+                             join que in _uow.Context.Question on sub.Id equals que.Section
+                             join ins in _uow.Context.Inspection_Question.Where(x => x.inspection_id == id) on que.Id equals ins.question_id
+                             select new
+                             {
+                                 que.Id
+
+                             }).ToList().Count;
+
+                foreach (var subb in item.QuetionSubSection)
+                {
+                    subb.Total = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == item.Id)
+                                  join sub in _uow.Context.QuetionSubSection.Where(x => x.Id == subb.Id) on sec.Id equals sub.QuetionSectionId
+                                  join que in _uow.Context.Question on sub.Id equals que.Section
+                                  join ins in _uow.Context.Inspection_Question.Where(x => x.inspection_id == id) on que.Id equals ins.question_id
+                                  select new
+                                  {
+                                      que.Id
+
+                                  }).ToList().Count;
+                }
+                item.Total = count;
+            }
+            return Ok(testsDto);
+        }
+
+        [AllowAnonymous]
         [HttpGet("GetAssesordataByInspection/{id}/{sectionId}")]
         public IActionResult GetAssesordataByInspection(int? id, int? sectionId)
         {
             var data = (from quetion in _uow.Context.Question.Where(x => x.Section == sectionId)
-                        join assque in _uow.Context.Inspection_Question.Where(x => x.inspection_id == id) on quetion.Id equals assque.question_id into g
-                        from assque in g.DefaultIfEmpty()
-                        join userrew in _uow.Context.User on assque.reviewer_id equals userrew.Id into r
-                        from userrew in r.DefaultIfEmpty()
-                        join userass in _uow.Context.User on assque.assessor_id equals userass.Id into a
-                        from userass in a.DefaultIfEmpty()
+                        join assque in _uow.Context.Inspection_Question.Where(x => x.inspection_id == id) on quetion.Id equals assque.question_id //into g
+                        //from assque in g.DefaultIfEmpty()
+                        join userrew in _uow.Context.User on assque.reviewer_id equals userrew.Id //into r
+                        //from userrew in r.DefaultIfEmpty()
+                        join userass in _uow.Context.User on assque.assessor_id equals userass.Id //into a
+                        //from userass in a.DefaultIfEmpty()
                         select new Inspection_QuestionDto
                         {
                             Id = assque != null ? assque.Id : 0,

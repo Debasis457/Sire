@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Sire.Data.Dto.Master.QuetionSectionDto>
+﻿@model InspectionQuestionSectionModel
 
 @{
     ViewData["Title"] = "Index";
@@ -9,12 +9,13 @@
 <script src="~/assets/lib/jquery/jquery-3.3.1.min.js"></script>
 
 <script src="~/js/PageScript/AsseserReviewer.js"></script>
+
 <div class="col-md-12">
     <div class="row">
         <div class="col-md-5">
             <div class="">
                 <div id="accordion">
-                    @foreach (var item in Model)
+                    @foreach (var item in Model.QuetionSectionDtos)
                     {
                         <div class="card" style="margin-bottom:5px">
                             <div class="card-header" style="padding: 8px 10px;">
@@ -29,7 +30,7 @@
                                     @foreach (var child in item.QuetionSubSection)
                                     {
                                         <div style="    padding: 2px; border: 1px solid;   margin-bottom: 4px;  border-radius: 5px; cursor:pointer">
-                                            <a onclick="aaaaa(@child.Id)">@child.Name</a>
+                                            <a onclick="aaaaa(@child.Id, @Model.InspectionDto.Id)">@child.Name</a>
                                             <span style="float:right; min-width: 60px; border-radius:10px; background: #65adff;color:white;padding: 0px 5px; padding: 0px 5px; white-space:nowrap; text-align:center;"> <b>0 / @child.Total</b></span>
                                         </div>
                                     }
@@ -46,6 +47,22 @@
         <div class="col-md-7">
             <div class="bindPartialQuetion">
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="card" style="margin-left: 10px margin-bottom:15px">
+    <div class="row">
+        <div class="col-md-12">
+            @if (@Model.InspectionDto.Completed_At == DateTime.MinValue)
+            {
+                <button id="completeInspection" type="button" class="btn btn-success pull-right" style="min-width:100px;" onclick="CompleteInspection(@Model.InspectionDto.Id)">Complete</button>
+                @*<button type="button" class="btn btn-success pull-right" style="min-width:100px;">Complete</button>*@
+            }
+            else
+            {
+                <button disabled type="button" class="btn btn-success pull-right" style="min-width:100px;">Complete</button>
+            }
         </div>
     </div>
 </div>

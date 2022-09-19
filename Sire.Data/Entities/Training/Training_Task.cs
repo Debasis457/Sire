@@ -11,22 +11,22 @@ namespace Sire.Data.Entities.Training
         public string Task_Title { get; set; }
         public string Assessor { get; set; }
         public string Reviewer { get; set; }
-        public int Master { get; set; }
-        public int CH_Off { get; set; }
-        public int Second_Off { get; set; }
-        public int Third_Off { get; set; }
-        public int Jr_Off { get; set; }
-        public int CH_Eng { get; set; }
-        public int Second_Eng { get; set; }
-        public int Third_Eng { get; set; }
-        public int Fourth_Eng { get; set; }
-        public int ETO_Sr { get; set; }
-        public int ETO_Jr { get; set; }
-        public int Cargo_Eng_Sr { get; set; }
-        public int Cargo_Eng_Jr { get; set; }
-        public int Deck_Rating { get; set; }
-        public int Eng_Rating { get; set; }
-        public int Catering { get; set; }
+        public int? Master { get; set; }
+        public int? CH_Off { get; set; }
+        public int? Second_Off { get; set; }
+        public int? Third_Off { get; set; }
+        public int? Jr_Off { get; set; }
+        public int? CH_Eng { get; set; }
+        public int? Second_Eng { get; set; }
+        public int? Third_Eng { get; set; }
+        public int? Fourth_Eng { get; set; }
+        public int? ETO_Sr { get; set; }
+        public int? ETO_Jr { get; set; }
+        public int? Cargo_Eng_Sr { get; set; }
+        public int? Cargo_Eng_Jr { get; set; }
+        public int? Deck_Rating { get; set; }
+        public int? Eng_Rating { get; set; }
+        public int? Catering { get; set; }
         public string Others { get; set; }
         public string Accompanying_Officer { get; set; }
         public string Familiar1_RG_1 { get; set; }

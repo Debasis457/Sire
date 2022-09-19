@@ -156,6 +156,20 @@ function GetQuestionBySection(id) {
     });
 }
 
+function CompleteInspection(id) {
+    $.ajax({
+        type: "GET",
+        url: "/InspectionQuestion/CompleteInspection/" + id,
+        success: function () {
+            alert("Inspection Completed");
+            window.location = window.location;
+            //$('#completeInspection').attr('disabled', 'disabled');
+            window.onkeydown = null;
+            window.onfocus = null;
+        }
+    });
+}
+
 $("#selectAll").click(function () {
     $(".quetionlist").prop('checked', $(this).prop('checked'));
 });

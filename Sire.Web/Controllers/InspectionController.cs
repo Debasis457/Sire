@@ -24,6 +24,8 @@ namespace Sire.Web.Controllers
         string apiBaseOperatorUrl = string.Empty;
         string apiBaseVesselUrl = string.Empty;
         string apiBaseQuestionUrl = string.Empty;
+        string apiBaseAssesorReviewerUrl = string.Empty;
+
         public InspectionController(ILogger<InspectionController> logger,
             Microsoft.Extensions.Configuration.IConfiguration iConfig
             )
@@ -34,6 +36,7 @@ namespace Sire.Web.Controllers
             apiBaseOperatorUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/operator";
             apiBaseVesselUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/vessel";
             apiBaseQuestionUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Question";
+            apiBaseAssesorReviewerUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/AssesorReviewer";
         }
 
         public async Task<IActionResult> Index(int? Id)
@@ -214,9 +217,10 @@ namespace Sire.Web.Controllers
 
         }
 
-        public async Task<PartialViewResult> GetQuestionBySection(int? id)
+        public async Task<PartialViewResult> GetQuestionBySection(int? id, int? inspectionId = 1)
         {
             var endquestion = apiBaseQuestionUrl + "/GetQuestionBySection/" + id;
+            var inspectionQuestion = apiBaseAssesorReviewerUrl + "/GetAssesordataByInspection/" + inspectionId + "/" + id;
 
             using (HttpClient client = new HttpClient())
             {
@@ -227,6 +231,17 @@ namespace Sire.Web.Controllers
                         var result = Response.Content.ReadAsStringAsync().Result;
 
                         var data = JsonConvert.DeserializeObject<IEnumerable<QuestionDto>>(Response.Content.ReadAsStringAsync().Result);
+
+                        using (var inspectionQuestionResponse = await client.GetAsync(inspectionQuestion))
+                        {
+                            if (inspectionQuestionResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                            {
+                                var inspectionQuestionResult = inspectionQuestionResponse.Content.ReadAsStringAsync().Result;
+                                var inspectionQuestionData = JsonConvert.DeserializeObject<IEnumerable<Inspection_QuestionDto>>(inspectionQuestionResult);
+
+                                data = data.Where(x => inspectionQuestionData.Any(b => b.Question_Id == x.Id));
+                            }
+                        }
 
                         return PartialView("_InspectionQuetions", data);
                         //return View("Index", data);
@@ -286,9 +301,5 @@ namespace Sire.Web.Controllers
 
             return View();
         }
-
-
-
-
     }
 }

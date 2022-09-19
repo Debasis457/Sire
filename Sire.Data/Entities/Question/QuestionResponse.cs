@@ -17,17 +17,17 @@ namespace Sire.Data.Entities.Question
 
     public enum Response_Type_Category
     {
-        Binary,
-        None,
-        Graduated,
-        NotAnswerable
+        Binary = 0,
+        None = 1,
+        Graduated = 2,
+        NotAnswerable = 3
     }
 
 
     public enum ResponseTypes
     {
-        Hardware,
-        Process,
-        Human
+        Hardware = 0,
+        Process = 1,
+        Human = 2
     }
 }
