@@ -51,17 +51,18 @@
     </div>
 </div>
 
-<div class="card" style="margin-left: 10px margin-bottom:15px">
+<div class="col-md-12">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-5" style="text-align: center;">
+            <div class="col-md-12" style="margin-top: 10px; margin-bottom: 10px; border-top: 1px solid #c1c1c1;"></div>
             @if (@Model.InspectionDto.Completed_At == DateTime.MinValue)
             {
-                <button id="completeInspection" type="button" class="btn btn-success pull-right" style="min-width:100px;" onclick="CompleteInspection(@Model.InspectionDto.Id)">Complete</button>
+                <button id="completeInspection" type="button" class="btn btn-success" style="min-width:100px;" onclick="CompleteInspection(@Model.InspectionDto.Id)">Complete</button>
                 @*<button type="button" class="btn btn-success pull-right" style="min-width:100px;">Complete</button>*@
             }
             else
             {
-                <button disabled type="button" class="btn btn-success pull-right" style="min-width:100px;">Complete</button>
+                <button disabled type="button" class="btn btn-success" style="min-width:100px;">Complete</button>
             }
         </div>
     </div>

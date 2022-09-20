@@ -1,7 +1,6 @@
 ﻿var Question = [];
 var QuestionResult = [];
 
-
 function GetQueCheckList(Id) {
     debugger;
     $("#InspCheckList").empty();
@@ -106,11 +105,11 @@ function GetQuestionDetails(Id) {
 
 function GetQuestionResponse(Id) {
     //debugger;
-    //$("#Response").empty();
+    $("#Response").empty();
     /*var id = 1;*/
     $("#Response").load("/InspectionFlow/GetQuestionResponse/" + Id, function () {
         $(document).ready(function () {
-            if ($("#Response").text() == "") {
+            if ($(".QuestionContainer").text().trim() == "") {
                 $('#selResponseType > option:gt(0)').each(function () {
                     var type = $(this).val();
                     $('.QuestionContainer').append($('.' + type).html());
