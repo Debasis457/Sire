@@ -189,6 +189,14 @@ namespace Sire.Api.Controllers
             return Ok(data);
         }
 
+        [AllowAnonymous]
+        [HttpGet("GetInspectionQuestion/{id}")]
+        public IActionResult GetInspectionQuestion(int id)
+        {
+            var inspectionQuestion = _uow.Context.Inspection_Question.First(x => x.Id == id);
+            var inspectionQuestioDto = _mapper.Map<InspectionDto>(inspectionQuestion);
 
+            return Ok(inspectionQuestioDto);
+        }
     }
 }

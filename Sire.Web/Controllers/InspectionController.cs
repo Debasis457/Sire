@@ -7,17 +7,20 @@ using Newtonsoft.Json;
 using Sire.Data.Dto.Inspection;
 using Sire.Data.Dto.Master;
 using Sire.Data.Dto.Question;
+using Sire.Web.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace Sire.Web.Controllers
 {
     [Authorize]
     public class InspectionController : Controller
     {
+        private readonly IMapper _mapper;
         private readonly ILogger<InspectionController> _logger;
         private readonly Microsoft.Extensions.Configuration.IConfiguration _iConfig;
         string apiBaseUrl = string.Empty;
@@ -26,11 +29,13 @@ namespace Sire.Web.Controllers
         string apiBaseQuestionUrl = string.Empty;
         string apiBaseAssesorReviewerUrl = string.Empty;
 
-        public InspectionController(ILogger<InspectionController> logger,
-            Microsoft.Extensions.Configuration.IConfiguration iConfig
-            )
+        public InspectionController(
+            ILogger<InspectionController> logger,
+            IMapper mapper,
+            IConfiguration iConfig)
         {
             _logger = logger;
+            _mapper = mapper;
             _iConfig = iConfig;
             apiBaseUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Inspection";
             apiBaseOperatorUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/operator";
@@ -165,10 +170,7 @@ namespace Sire.Web.Controllers
                                 var data = JsonConvert.DeserializeObject<List<InspectionDto>>(InspectionDtoData.Content.ReadAsStringAsync().Result);
 
                                 return RedirectToAction("Index", "AssesorReviewer", new { @inspectionid = adddata });
-
-
                             }
-
                         }
                         else
                         {
@@ -228,6 +230,7 @@ namespace Sire.Web.Controllers
                 {
                     if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
+                        var inspectionQuestionDtoModel = new List<InspectionQuestionDtoModel>();
                         var result = Response.Content.ReadAsStringAsync().Result;
 
                         var data = JsonConvert.DeserializeObject<IEnumerable<QuestionDto>>(Response.Content.ReadAsStringAsync().Result);
@@ -239,11 +242,22 @@ namespace Sire.Web.Controllers
                                 var inspectionQuestionResult = inspectionQuestionResponse.Content.ReadAsStringAsync().Result;
                                 var inspectionQuestionData = JsonConvert.DeserializeObject<IEnumerable<Inspection_QuestionDto>>(inspectionQuestionResult);
 
-                                data = data.Where(x => inspectionQuestionData.Any(b => b.Question_Id == x.Id));
+                                foreach (var item in inspectionQuestionData)
+                                {
+                                    var eachQuestion = data.FirstOrDefault(x => x.Id == item.Question_Id);
+                                    if (eachQuestion != null)
+                                    {
+                                        var mappedInspectionQuestion = _mapper.Map<InspectionQuestionDtoModel>(eachQuestion);
+                                        mappedInspectionQuestion.InspectionQuestionId = item.Id;
+
+                                        inspectionQuestionDtoModel.Add(mappedInspectionQuestion);
+                                    }
+                                }
+                                //data = data.Where(x => inspectionQuestionData.Any(b => b.Question_Id == x.Id));
                             }
                         }
 
-                        return PartialView("_InspectionQuetions", data);
+                        return PartialView("_InspectionQuetions", inspectionQuestionDtoModel);
                         //return View("Index", data);
                     }
                     else

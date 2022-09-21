@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -19,19 +20,18 @@ namespace Sire.Web.Controllers
     [Authorize]
     public class InspectionQuestionController : Controller
     {
-
         private readonly ILogger<FleetController> _logger;
-        private readonly Microsoft.Extensions.Configuration.IConfiguration _iConfig;
+        private readonly IMapper _mapper;
+        private readonly IConfiguration _iConfig;
         string apiBaseUrl = string.Empty;
         string apiBaseUserUrl = string.Empty;
         string apiBaseQuestionUrl = string.Empty;
         string apiBaseInspectionUrl = string.Empty;
 
-        public InspectionQuestionController(ILogger<FleetController> logger,
-            Microsoft.Extensions.Configuration.IConfiguration iConfig
-            )
+        public InspectionQuestionController(ILogger<FleetController> logger, IMapper mapper, IConfiguration iConfig)
         {
             _logger = logger;
+            _mapper = mapper;
             _iConfig = iConfig;
             apiBaseUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/AssesorReviewer";
             apiBaseQuestionUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Question";
@@ -83,41 +83,37 @@ namespace Sire.Web.Controllers
             return View();
         }
 
-        public async Task<IActionResult> AddEdit(int? Id)
+        public async Task<IActionResult> AddEdit(int? id)
         {
-            var endquestion = apiBaseQuestionUrl + "/" + Id;
+            var inspectionQuestionUrl = apiBaseUrl + "/GetInspectionQuestion" + "/" + id;
             try
-
             {
-                using (HttpClient client = new HttpClient())
+                using HttpClient client = new();
+                using var inspectionQuestionResponse = await client.GetAsync(inspectionQuestionUrl);
+                if (inspectionQuestionResponse.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    using (var Response = await client.GetAsync(endquestion))
+                    var inspectionQuestionData = JsonConvert.DeserializeObject<Inspection_QuestionDto>(inspectionQuestionResponse.Content.ReadAsStringAsync().Result);
+
+                    var questionUrl = apiBaseQuestionUrl + "/" + inspectionQuestionData.Question_Id;
+                    using var questionResponse = await client.GetAsync(questionUrl);
+                    if (questionResponse.StatusCode == System.Net.HttpStatusCode.OK)
                     {
-                        if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                        {
+                        var questionResponseData = JsonConvert.DeserializeObject<QuestionDto>(questionResponse.Content.ReadAsStringAsync().Result);
+                        var data = _mapper.Map<InspectionQuestionDtoModel>(questionResponseData);
+                        data.InspectionQuestionId = inspectionQuestionData.Id;
 
-                            var data = JsonConvert.DeserializeObject<QuestionDto>(Response.Content.ReadAsStringAsync().Result);
-                            //  return View(data);
-                            ViewBag.Question=data;
-                            return View("~/Views/InspectionFlow/Index.cshtml", data);
-                        }
-                        else
-                        {
-                            ModelState.Clear();
-                            ModelState.AddModelError(string.Empty, "Invalid Data");
-                            return View();
-                        }
+                        return View("~/Views/InspectionFlow/Index.cshtml", data);
                     }
-
-
                 }
+
+                ModelState.Clear();
+                ModelState.AddModelError(string.Empty, "Invalid Data");
+                return View();
             }
             catch (DbUpdateConcurrencyException)
             {
                 throw;
             }
-
-            return View();
         }
 
         public async Task<IActionResult> GetDetails(int? id)

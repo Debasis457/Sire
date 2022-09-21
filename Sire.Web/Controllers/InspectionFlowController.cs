@@ -22,22 +22,20 @@ namespace Sire.Web.Controllers
     [Authorize]
     public class InspectionFlowController : Controller
     {
-
         private readonly ILogger<InspectionController> _logger;
         private readonly Microsoft.Extensions.Configuration.IConfiguration _iConfig;
         string apiBaseUrl = string.Empty;
         string apiBaseQuestionUrl = string.Empty;
         string apiBaseResponseUrl = string.Empty;
         string apiBaseQuestionResponseUrl = string.Empty;
+        string apiBaseAssesorReviewerUrl = string.Empty;
 
-        public InspectionFlowController(ILogger<InspectionController> logger,
-            Microsoft.Extensions.Configuration.IConfiguration iConfig
-            )
+        public InspectionFlowController(ILogger<InspectionController> logger, IConfiguration iConfig)
         {
             _logger = logger;
             _iConfig = iConfig;
-           
-            apiBaseUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/training";
+
+            apiBaseUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/AssesorReviewer";
             apiBaseQuestionUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Question";
             apiBaseResponseUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/InspectionResponse";
             apiBaseQuestionResponseUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/QuestionResponse";
@@ -45,11 +43,8 @@ namespace Sire.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-           
-                return View();
-
+            return View();
         }
-        
 
         public async Task<PartialViewResult> GetQueCheckList(int? id)
         {
@@ -80,9 +75,9 @@ namespace Sire.Web.Controllers
                 }
             }
         }
+
         public async Task<PartialViewResult> GetQuestionDetails(int? Id)
         {
-
             var endquestion = apiBaseQuestionUrl + "/" + Id;
 
             using (HttpClient client = new HttpClient())
@@ -94,8 +89,6 @@ namespace Sire.Web.Controllers
                         var result = Response.Content.ReadAsStringAsync().Result;
 
                         var data = JsonConvert.DeserializeObject<QuestionDto>(Response.Content.ReadAsStringAsync().Result);
-
-
 
                         return PartialView("Guidance", data);
                     }
@@ -112,64 +105,54 @@ namespace Sire.Web.Controllers
 
         public async Task<PartialViewResult> GetQuestionResponse(int? Id)
         {
+            var inspectionQuestionUrl = apiBaseUrl + "/GetInspectionQuestion" + "/" + Id;
+            var questionResponseUrl = apiBaseQuestionResponseUrl + "/GetResponse";
+            var inspectionQuestionResponseUrl = apiBaseResponseUrl + "/GetByInspectionQuestionId" + "/" + Id;
 
-            var endquestion = apiBaseQuestionUrl + "/" + Id;
-
-            var questionresponse = apiBaseQuestionResponseUrl + "/GetResponse";
-
-            var inspectionuestionresponse = apiBaseResponseUrl + "/GetByInspectionQuestionId" + "/" + Id;
-
-            using (HttpClient client = new HttpClient())
+            using HttpClient client = new();
+            using var inspectionQuestionResponse = await client.GetAsync(inspectionQuestionUrl);
+            if (inspectionQuestionResponse.StatusCode == System.Net.HttpStatusCode.OK)
             {
-               
-                using (var Response = await client.GetAsync(endquestion))
+                var inspectionQuestionResponseData = JsonConvert.DeserializeObject<Inspection_QuestionDto>(inspectionQuestionResponse.Content.ReadAsStringAsync().Result);
+
+                InspectionQuestionResponseModel questionResponseModel = new()
                 {
+                    inspectionQuestionDto = inspectionQuestionResponseData
+                };
 
-                    if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                var questionUrl = apiBaseQuestionUrl + "/" + inspectionQuestionResponseData.Question_Id;
+                using var questionResponse = await client.GetAsync(questionUrl);
+                if (questionResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var questionData = JsonConvert.DeserializeObject<QuestionDto>(questionResponse.Content.ReadAsStringAsync().Result);
+
+                    questionResponseModel.questionDto = questionData;
+
+                    using var QResponse = await client.GetAsync(questionResponseUrl);
+                    if (QResponse.StatusCode == System.Net.HttpStatusCode.OK)
                     {
-                        var result = Response.Content.ReadAsStringAsync().Result;
+                        questionResponseModel.questionResponseDtos = JsonConvert.DeserializeObject<IList<QuestionResponseDto>>(QResponse.Content.ReadAsStringAsync().Result).ToList();
 
-                        var data = JsonConvert.DeserializeObject<QuestionDto>(Response.Content.ReadAsStringAsync().Result);
-
-                        QuestionResponseModel questionResponseModel = new QuestionResponseModel();
-                        questionResponseModel.questionDto = data;
-                        using (var QResponse = await client.GetAsync(questionresponse))
+                        using var IResponse = await client.GetAsync(inspectionQuestionResponseUrl);
+                        if (IResponse.StatusCode == System.Net.HttpStatusCode.OK)
                         {
-                            if (QResponse.StatusCode == System.Net.HttpStatusCode.OK)
-                            {
-                                questionResponseModel.questionResponseDtos = JsonConvert.DeserializeObject<IList<QuestionResponseDto>>(QResponse.Content.ReadAsStringAsync().Result).ToList();
-                            }
-                        }
+                            questionResponseModel.inspectionResponseDtos = JsonConvert.DeserializeObject<IList<InspectionResponseDto>>(IResponse.Content.ReadAsStringAsync().Result).ToList();
 
-                        using (var IResponse = await client.GetAsync(inspectionuestionresponse))
-                        {
-                            if (IResponse.StatusCode == System.Net.HttpStatusCode.OK)
-                            {
-                                questionResponseModel.inspectionResponseDtos = JsonConvert.DeserializeObject<IList<InspectionResponseDto>>(IResponse.Content.ReadAsStringAsync().Result).ToList();
-                            }
+                            return PartialView("Response", questionResponseModel);
                         }
-
-                        return PartialView("Response", questionResponseModel);
-                    }
-                    else
-                    {
-                        ModelState.Clear();
-                        ModelState.AddModelError(string.Empty, "Invalid Data");
-                        return PartialView();
                     }
                 }
-
-            
-
-
             }
 
+            ModelState.Clear();
+            ModelState.AddModelError(string.Empty, "Invalid Data");
+            return PartialView();
         }
 
         public async Task<JsonResult> PassQuestionResponse(int Id)
         {
 
-            var endquestion = apiBaseResponseUrl + "/" + Id ;
+            var endquestion = apiBaseResponseUrl + "/" + Id;
 
             using (HttpClient client = new HttpClient())
             {
@@ -180,7 +163,7 @@ namespace Sire.Web.Controllers
                         var result = Response.Content.ReadAsStringAsync().Result;
 
                         var data = JsonConvert.DeserializeObject<QuestionDto>(Response.Content.ReadAsStringAsync().Result);
-                         
+
                         return Json(data);
                     }
                     else
@@ -218,7 +201,7 @@ namespace Sire.Web.Controllers
                                 {
                                     var result = Response.Content.ReadAsStringAsync().Result;
 
-                                    
+
                                     var data1 = JsonConvert.DeserializeObject<QuestionDto>(FleetData.Content.ReadAsStringAsync().Result);
                                     return PartialView("Response", data1);
                                 }
