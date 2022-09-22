@@ -2,7 +2,7 @@
 @{
     int l = 0;
     var index = -1;
-    var inspectionCompleted = Convert.ToBoolean(TempData["InspectionCompleted"]) == true ? "disabled" : "";
+    var inspectionQuestionCompleted = Model.inspectionQuestionDto.Assesment_Completed ? "disabled" : ""; //Convert.ToBoolean(TempData["InspectionCompleted"]) == true ? "disabled" : "";
     TempData.Keep();
 }
 <style>
@@ -31,7 +31,7 @@
 
                 <div class="row">
                     <div class="col-3">
-                        <select class="form-control" id="selResponseType" @inspectionCompleted>
+                        <select class="form-control" id="selResponseType" @inspectionQuestionCompleted>
                             <option value="">Select Response Type</option>
                             @if (hardwareResponse.Count() > 0)
                         {
@@ -48,7 +48,7 @@
                         </select>
                     </div>
                     <div class="col-3">
-                        <button type="button" class="btn-copy btn btn-info" style="min-width:100px;" @inspectionCompleted>Add Response</button>
+                        <button type="button" class="btn-copy btn btn-info" style="min-width:100px;" @inspectionQuestionCompleted>Add Response</button>
                     </div>
                 </div>
 
@@ -157,7 +157,7 @@
                                                 <tr>
                                                     <td colspan="2" style="width:30%"><h5><b>Hardware</b></h5></td>
                                                     <td colspan="2">
-                                                        <input type="checkbox" name="NotAnswarble" value="NotAnswarble" @Is_Answerable id="@checkboxid" @inspectionCompleted />
+                                                        <input type="checkbox" name="NotAnswarble" value="NotAnswarble" @Is_Answerable id="@checkboxid" @inspectionQuestionCompleted />
                                                         <label class="fnt-lable" for="@checkboxid">NOT ANSWARABLE</label>
                                                     </td>
                                                 </tr>
@@ -167,13 +167,13 @@
                                                 var optionchecked = res.Id.ToString() == inspectionData.Response_Value ? "checked=checked" : "";
                                                     <tr>
                                                         <td colspan="4">
-                                                            <input type="radio" name="@radioname" value="@res.Id" @optionchecked id="@radioid" @inspectionCompleted /><label class="fnt-lable" for="@radioid">@res.Value</label>
+                                                            <input type="radio" name="@radioname" value="@res.Id" @optionchecked id="@radioid" @inspectionQuestionCompleted /><label class="fnt-lable" for="@radioid">@res.Value</label>
                                                         </td>
                                                     </tr>
                                             }
                                                 <tr>
                                                     <td colspan="4">
-                                                        <textarea class="form-control z-depth-1" id="@textareaid" rows="3" placeholder="Comment..." @inspectionCompleted>@inspectionData.Response_Comment</textarea>
+                                                        <textarea class="form-control z-depth-1" id="@textareaid" rows="3" placeholder="Comment..." @inspectionQuestionCompleted>@inspectionData.Response_Comment</textarea>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -193,7 +193,7 @@
                                                 <tr>
                                                     <td colspan="2" style="width:30%"><h5><b>Process</b></h5></td>
                                                     <td colspan="2">
-                                                        <input type="checkbox" name="NotAnswarble" value="NotAnswarble" @Is_Answerable id="@checkboxid" @inspectionCompleted/>
+                                                        <input type="checkbox" name="NotAnswarble" value="NotAnswarble" @Is_Answerable id="@checkboxid" @inspectionQuestionCompleted/>
                                                         <label class="fnt-lable" for="@checkboxid">NOT ANSWARABLE</label>
                                                     </td>
                                                 </tr>
@@ -203,13 +203,13 @@
                                                 var optionchecked = res.Id.ToString() == inspectionData.Response_Value ? "checked=checked" : "";
                                                     <tr>
                                                         <td colspan="4">
-                                                            <input type="radio" name="@radioname" value="@res.Id" @optionchecked id="@radioid" @inspectionCompleted /><label class="fnt-lable" for="@radioid">@res.Value</label>
+                                                            <input type="radio" name="@radioname" value="@res.Id" @optionchecked id="@radioid" @inspectionQuestionCompleted /><label class="fnt-lable" for="@radioid">@res.Value</label>
                                                         </td>
                                                     </tr>
                                             }
                                                 <tr>
                                                     <td colspan="4">
-                                                        <textarea class="form-control z-depth-1" id="@textareaid" rows="3" placeholder="Comment..." @inspectionCompleted>@inspectionData.Response_Comment</textarea>
+                                                        <textarea class="form-control z-depth-1" id="@textareaid" rows="3" placeholder="Comment..." @inspectionQuestionCompleted>@inspectionData.Response_Comment</textarea>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -229,7 +229,7 @@
                                                 <tr>
                                                     <td colspan="2" style="width:30%"><h5><b>Human</b></h5></td>
                                                     <td colspan="2">
-                                                        <input type="checkbox" name="NotAnswarble" value="NotAnswarble" @Is_Answerable id="@checkboxid" @inspectionCompleted />
+                                                        <input type="checkbox" name="NotAnswarble" value="NotAnswarble" @Is_Answerable id="@checkboxid" @inspectionQuestionCompleted />
                                                         <label class="fnt-lable" for="@checkboxid">NOT ANSWARABLE</label>
                                                     </td>
                                                 </tr>
@@ -239,13 +239,13 @@
                                                 var optionchecked = res.Id.ToString() == inspectionData.Response_Value ? "checked=checked" : "";
                                                     <tr>
                                                         <td colspan="4">
-                                                            <input type="radio" name="@radioname" value="@res.Id" @optionchecked id="@radioid" @inspectionCompleted/><label class="fnt-lable" for="@radioid">@res.Value</label>
+                                                            <input type="radio" name="@radioname" value="@res.Id" @optionchecked id="@radioid" @inspectionQuestionCompleted/><label class="fnt-lable" for="@radioid">@res.Value</label>
                                                         </td>
                                                     </tr>
                                             }
                                                 <tr>
                                                     <td colspan="4">
-                                                        <textarea class="form-control z-depth-1" id="@textareaid" rows="3" placeholder="Comment..." @inspectionCompleted>@inspectionData.Response_Comment</textarea>
+                                                        <textarea class="form-control z-depth-1" id="@textareaid" rows="3" placeholder="Comment..." @inspectionQuestionCompleted>@inspectionData.Response_Comment</textarea>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -276,7 +276,8 @@
                     <div class="col-md-12" style="margin-top: 10px; margin-bottom: 10px; border-top: 1px solid #c1c1c1;"></div>
 
                     <div class="col-lg-12 col-sm-12" style="text-align:center">
-                        <button type="button" class="btn btn-success" style="min-width:100px;" onclick="saveResponseData(@Model.inspectionQuestionDto.Id)" @inspectionCompleted>Save</button>
+                        <button type="button" class="btn btn-success" style="min-width:100px;" onclick="saveResponseData(@Model.inspectionQuestionDto.Id)" @inspectionQuestionCompleted>Save</button>
+                        <button type="button" class="btn btn-success" style="min-width:100px;" onclick="CompleteInspection(@Model.inspectionQuestionDto.Id)" @inspectionQuestionCompleted>Complete</button>
                     </div>
 
                 </form>

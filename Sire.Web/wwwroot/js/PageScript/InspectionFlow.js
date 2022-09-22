@@ -176,3 +176,20 @@ function saveResponseData(questionId) {
     });
     debugger
 }
+
+function CompleteInspection(id) {
+    $.ajax({
+        type: "GET",
+        url: "/InspectionFlow/CompleteInspectionQuestion/" + id,
+        success: function (data) {
+            window.history.back();
+            //window.location.href = 'InspectionQuestion/' + id;           
+
+            //alert("Inspection Completed");
+            //window.location = window.location;
+            //$('#completeInspection').attr('disabled', 'disabled');
+            window.onkeydown = null;
+            window.onfocus = null;
+        }
+    });
+}
