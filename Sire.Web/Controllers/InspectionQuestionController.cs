@@ -43,36 +43,32 @@ namespace Sire.Web.Controllers
             var inspectionQuestionSectionModel = new InspectionQuestionSectionModel();
             try
             {
-                using (HttpClient client = new HttpClient())
+                using HttpClient client = new();
+                using (var inspectionResponse = await client.GetAsync(apiBaseInspectionUrl + "/" + id))
                 {
-                    using (var inspectionResponse = await client.GetAsync(apiBaseInspectionUrl + "/" + id))
+                    if (inspectionResponse.StatusCode == System.Net.HttpStatusCode.OK)
                     {
-                        if (inspectionResponse.StatusCode == System.Net.HttpStatusCode.OK)
-                        {
-                            var data = JsonConvert.DeserializeObject<InspectionDto>(inspectionResponse.Content.ReadAsStringAsync().Result);
-                            inspectionQuestionSectionModel.InspectionDto = data;
+                        var data = JsonConvert.DeserializeObject<InspectionDto>(inspectionResponse.Content.ReadAsStringAsync().Result);
+                        inspectionQuestionSectionModel.InspectionDto = data;
 
-                            TempData["InspectionCompleted"] = data.Completed_At == DateTime.MinValue ? false : true;
-                        }
+                        TempData["InspectionCompleted"] = data.Completed_At != DateTime.MinValue;
                     }
+                }
 
-                    var url = apiBaseUrl + "/GetSectionListByInspectionId" + "/" + id;
-                    using (var Response = await client.GetAsync(url))
-                    {
-                        if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                        {
-                            var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
-                            inspectionQuestionSectionModel.QuetionSectionDtos = data;
+                var url = apiBaseUrl + "/GetSectionListByInspectionId" + "/" + id;
+                using var Response = await client.GetAsync(url);
+                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
+                    inspectionQuestionSectionModel.QuetionSectionDtos = data;
 
-                            return View(inspectionQuestionSectionModel);
-                        }
-                        else
-                        {
-                            ModelState.Clear();
-                            ModelState.AddModelError(string.Empty, "Invalid Data");
-                            return View();
-                        }
-                    }
+                    return View(inspectionQuestionSectionModel);
+                }
+                else
+                {
+                    ModelState.Clear();
+                    ModelState.AddModelError(string.Empty, "Invalid Data");
+                    return View();
                 }
             }
             catch (DbUpdateConcurrencyException)

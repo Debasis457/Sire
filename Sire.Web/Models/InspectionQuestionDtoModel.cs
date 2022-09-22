@@ -1,5 +1,4 @@
-﻿using Sire.Data.Dto.Inspection;
-using Sire.Data.Dto.Question;
+﻿using Sire.Data.Dto.Question;
 
 namespace Sire.Web.Models
 {
