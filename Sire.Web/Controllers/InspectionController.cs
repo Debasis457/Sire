@@ -249,6 +249,8 @@ namespace Sire.Web.Controllers
                                     {
                                         var mappedInspectionQuestion = _mapper.Map<InspectionQuestionDtoModel>(eachQuestion);
                                         mappedInspectionQuestion.InspectionQuestionId = item.Id;
+                                        mappedInspectionQuestion.AssesmentCompleted = item.Assesment_Completed;
+                                        mappedInspectionQuestion.ReviewCompleted = item.Review_Completed;
 
                                         inspectionQuestionDtoModel.Add(mappedInspectionQuestion);
                                     }

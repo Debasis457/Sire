@@ -113,13 +113,13 @@ namespace Sire.Api.Controllers
                 foreach (var subb in item.QuetionSubSection)
                 {
                     subb.Total = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == item.Id)
-                                 join sub in _uow.Context.QuetionSubSection.Where(x=>x.Id == subb.Id) on sec.Id equals sub.QuetionSectionId
-                                 join que in _uow.Context.Question on sub.Id equals que.Section
-                                 select new
-                                 {
-                                     que.Id
+                                  join sub in _uow.Context.QuetionSubSection.Where(x => x.Id == subb.Id) on sec.Id equals sub.QuetionSectionId
+                                  join que in _uow.Context.Question on sub.Id equals que.Section
+                                  select new
+                                  {
+                                      que.Id
 
-                                 }).ToList().Count;
+                                  }).ToList().Count;
                 }
                 item.Total = count;
             }
@@ -194,9 +194,26 @@ namespace Sire.Api.Controllers
         public IActionResult GetInspectionQuestion(int id)
         {
             var inspectionQuestion = _uow.Context.Inspection_Question.First(x => x.Id == id);
-            var inspectionQuestioDto = _mapper.Map<InspectionDto>(inspectionQuestion);
+            var inspectionQuestioDto = _mapper.Map<Inspection_QuestionDto>(inspectionQuestion);
 
             return Ok(inspectionQuestioDto);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("CompleteInspectionQuestion")]
+        public IActionResult Post([FromBody] Inspection_QuestionDto InspectionQuestionDto)
+        {
+            if (!ModelState.IsValid) return new UnprocessableEntityObjectResult(ModelState);
+            var mappedData = _mapper.Map<Inspection_Question>(InspectionQuestionDto);
+
+            if (InspectionQuestionDto.Id == 0)
+                _inspection_QuestionRepository.Add(mappedData);
+            else
+                _inspection_QuestionRepository.Update(mappedData);
+
+            if (_uow.Save() <= 0) throw new Exception("Creating Test failed on save.");
+            return Ok(mappedData.Id);
+
         }
     }
 }

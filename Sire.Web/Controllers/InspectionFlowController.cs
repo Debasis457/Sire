@@ -187,33 +187,27 @@ namespace Sire.Web.Controllers
                 var endquestion = apiBaseResponseUrl + "/" + Id;
                 try
                 {
-                    using (HttpClient client = new HttpClient())
+                    using HttpClient client = new();
+                    StringContent content = new(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+                    using var Response = await client.PostAsync(apiBaseResponseUrl, content);
+                    if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
-                        StringContent content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
-                        using (var Response = await client.PostAsync(apiBaseResponseUrl, content))
-                        {
-                            if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                            {
 
-                                // Get Response Here
+                        // Get Response Here
 
-                                using (var FleetData = await client.GetAsync(endquestion))
-                                {
-                                    var result = Response.Content.ReadAsStringAsync().Result;
+                        using var FleetData = await client.GetAsync(endquestion);
+                        var result = Response.Content.ReadAsStringAsync().Result;
 
 
-                                    var data1 = JsonConvert.DeserializeObject<QuestionDto>(FleetData.Content.ReadAsStringAsync().Result);
-                                    return PartialView("Response", data1);
-                                }
+                        var data1 = JsonConvert.DeserializeObject<QuestionDto>(FleetData.Content.ReadAsStringAsync().Result);
+                        return PartialView("Response", data1);
 
-                            }
-                            else
-                            {
-                                ModelState.Clear();
-                                ModelState.AddModelError(string.Empty, "Invalid data");
-                                return View();
-                            }
-                        }
+                    }
+                    else
+                    {
+                        ModelState.Clear();
+                        ModelState.AddModelError(string.Empty, "Invalid data");
+                        return View();
                     }
                 }
                 catch (DbUpdateConcurrencyException)
@@ -236,22 +230,18 @@ namespace Sire.Web.Controllers
                 var endquestion = apiBaseResponseUrl + "/" + Id;
                 try
                 {
-                    using (HttpClient client = new HttpClient())
+                    using HttpClient client = new();
+                    StringContent content = new(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+                    using var Response = await client.PostAsync(apiBaseResponseUrl, content);
+                    if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
-                        StringContent content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
-                        using (var Response = await client.PostAsync(apiBaseResponseUrl, content))
-                        {
-                            if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                            {
-                                return Json("Data Saved");
-                            }
-                            else
-                            {
-                                ModelState.Clear();
-                                ModelState.AddModelError(string.Empty, "Invalid data");
-                                return Json(ModelState);
-                            }
-                        }
+                        return Json("Data Saved");
+                    }
+                    else
+                    {
+                        ModelState.Clear();
+                        ModelState.AddModelError(string.Empty, "Invalid data");
+                        return Json(ModelState);
                     }
                 }
                 catch (DbUpdateConcurrencyException)
@@ -305,6 +295,31 @@ namespace Sire.Web.Controllers
                 throw;
             }
             return isCopied;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CompleteInspectionQuestion(int id)
+        {
+            using var client = new HttpClient();
+            using var inspectionQuestionResponse = await client.GetAsync(apiBaseUrl + "/GetInspectionQuestion/" + id);
+            if (inspectionQuestionResponse.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var data = JsonConvert.DeserializeObject<Inspection_QuestionDto>(inspectionQuestionResponse.Content.ReadAsStringAsync().Result);
+                data.Assesment_Completed = true;
+
+                var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+                using var inspectionUpdateResponse = await client.PostAsync(apiBaseUrl + "/CompleteInspectionQuestion", content);
+
+                if (inspectionUpdateResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    return Json(data.Inspection_Id);
+                    //return RedirectToAction("Index", "InspectionQuestion", new { @id = data.Inspection_Id });
+                }
+            }
+
+            ModelState.Clear();
+            ModelState.AddModelError(string.Empty, "Invalid data");
+            return PartialView();
         }
     }
 }
