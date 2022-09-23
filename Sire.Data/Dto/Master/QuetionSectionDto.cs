@@ -11,5 +11,6 @@ namespace Sire.Data.Dto.Master
         public string Name { get; set; }
         public virtual List<QuetionSubSectionDto> QuetionSubSection { get; set; }
         public int? Total { get; set; }
+        public int? AssesmentCompletionTotal { get; set; }
     }
 }

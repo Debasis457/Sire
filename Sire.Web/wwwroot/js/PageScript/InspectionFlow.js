@@ -169,6 +169,7 @@ function saveResponseData(questionId) {
 
         success: function (data) {
             alert(data);
+            GetQuestionResponse(questionId);
         },
         error: function (ex) {
             alert("Failed to Save" + ex);
@@ -182,8 +183,14 @@ function CompleteInspection(id) {
         type: "GET",
         url: "/InspectionFlow/CompleteInspectionQuestion/" + id,
         success: function (data) {
-            window.history.back();
-            //window.location.href = 'InspectionQuestion/' + id;           
+            alert("Assessment Completed");
+            if ('referrer' in document) {
+                window.location = document.referrer;
+            }
+            else {
+                window.history.back();
+            }
+            //window.location = 'InspectionQuestion/' + id;           
 
             //alert("Inspection Completed");
             //window.location = window.location;
