@@ -43,7 +43,7 @@ namespace Sire.Domain.Context
 
         public DbSet<User_Rank> User_Rank { get; set; }
         public DbSet<RankGroup> RankGroup { get; set; }
-       
+        public DbSet<QuestionRoviq> QuestionRoviq { get; set; }
         public DbSet<License> License { get; set; }
         public DbSet<Inspection_Question> Inspection_Question { get; set; }
         public DbSet<TraningResponse> TraningResponse { get; set; }

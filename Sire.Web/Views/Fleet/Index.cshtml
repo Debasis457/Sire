@@ -68,7 +68,7 @@
 
                                         <td>
                                             <a class="btn btn-success" asp-action="AddEdit" asp-route-Id="@item.Id" style="padding:4px;font-size:9px;" title="Edit"><i class="fa fa-fw fa-edit"></i></a>
-                                            <a class="btn btn-danger" asp-action="Delete" asp-route-Id="@item.Id" style="padding:4px;font-size:9px;" title="delete" onclick="return confirm('Are you sure you want to delete this item?');"><i class="fas fa-trash-alt"></i></a>
+                                            <a class="btn btn-danger" asp-action="Delete" asp-route-Id="@item.Id" style="padding:4px;font-size:9px;" title="delete" onclick="return confirm('Are you sure you want to delete this item?');"><i class="fa-solid fa-trash"></i></a>
                                             @* @Html.ActionLink("Delete", "Delete", "Fleet", new { Id = item.Id }, new { onclick = "return confirm('Are you sure you wish to delete this record?');" })*@
                                         </td>
                                     </tr>

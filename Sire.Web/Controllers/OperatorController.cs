@@ -121,6 +121,7 @@ namespace SIREWEB.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddEdit(OperatorDto operatorDto)
         {
 
@@ -158,7 +159,7 @@ namespace SIREWEB.Controllers
                             {
                                 ViewBag.IsEdit = true;
                                 ModelState.Clear();
-                                ViewBag.Alert = CommonServices.ShowAlert(Alerts.Warning, "Record Already Exists");
+                                ViewBag.Alert = CommonServices.ShowAlert(Alerts.Warning, "Operator Name Already Exists");
                              //   ModelState.AddModelError(string.Empty, "Invalid Data");
                                 return View();
                             }
@@ -170,6 +171,8 @@ namespace SIREWEB.Controllers
                     throw;
                 }
             }
+            ViewBag.IsEdit = false;
+            ViewBag.Alert = "";
             return View();
         }
 

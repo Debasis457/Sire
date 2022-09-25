@@ -207,12 +207,13 @@ namespace Sire.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddEdit(LicenseDto licenseDto)
         {
 
-            //   if (ModelState.IsValid)
-            //{
-            try
+            if (ModelState.IsValid)
+            {
+                try
             {
                 using (HttpClient client = new HttpClient())
                 {
@@ -253,7 +254,49 @@ namespace Sire.Web.Controllers
             {
                 throw;
             }
-            //  }
+             
+            }
+
+
+            using (HttpClient client = new HttpClient())
+            {
+                var enduser = apiBaseUserUrl + "/GetUserDropDown";
+                var endvessel = apiBaseVesselUrl + "/GetVesselDropDown";
+              
+                
+
+
+                        using (var IUserResponse = await client.GetAsync(enduser))
+                        {
+                            if (IUserResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                            {
+                                var UserData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+                                ViewBag.Fleet_Head_Id = UserData;
+                            }
+                            else
+                            {
+                                ModelState.Clear();
+                            }
+                        }
+
+                        using (var IUserResponse = await client.GetAsync(endvessel))
+                        {
+                            if (IUserResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                            {
+                                var UserData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+                                ViewBag.Vessel = UserData;
+
+                            }
+                            else
+                            {
+                                ModelState.Clear();
+                            }
+                        }
+                        //   return View;
+                   
+            }
+            ViewBag.IsEdit = false;
+            ViewBag.Alert = "";
             return View();
         }
 

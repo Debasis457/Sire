@@ -18,7 +18,7 @@
         </div>
     </div>
     <!-- End Navigation Fixed Bar-->
-
+    
 
 <div class="tab-pane fade show active" id="User" role="tabpanel" aria-labelledby="pills-home-tab">
     <!-- End Navigation Fixed Bar-->
@@ -42,25 +42,43 @@
                     <div class="col-sm-1 pr-0 h-40">
                         <label class="fnt-lable" for="Name">Name</label>
                     </div>
-                    <div class="col-sm-2 pr-4 h-40">
-                        <input type="text" asp-for="Name" class="form-control inp" />
-                        <span asp-validation-for="Name" class="text-danger"></span>
+                    <div class="col-sm-3 pr-4 h-40">
+                        <input type="text" asp-for="Name" class="form-control inp required" />
+                     <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
-                    <div class="col-sm-2 pr-0 h-40">
+                      <div class="col-sm-1 pr-0 h-40">
+                        <label class="fnt-lable" for="Imo_Number">IMO Number</label>
+                    </div>
+                    <div class="col-sm-3 pr-4 h-40">
+                        <input type="text" asp-for="Imo_Number" class="form-control inp" />
+                        <span asp-validation-for="Imo_Number" class="text-danger"></span>
+                    </div>
+                     <div class="col-sm-1 pr-0 h-40">
+                        <label class="fnt-lable" for="Vessel_Count">Vessel Count</label>
+                    </div>
+                    <div class="col-sm-3 pr-4 h-40">
+                        <input type="text" asp-for="Vessel_Count" class="form-control inp" />
+                        <span asp-validation-for="Vessel_Count" class="text-danger"></span>
+                    </div>
+                    <div class="col-sm-1 pr-0 h-40">
                         <label class="fnt-lable" for="Description">Description</label>
                     </div>
-                    <div class="col-sm-2 pr-4 h-40">
-                        <input type="text" asp-for="Description" class="form-control inp" />
-                        <span asp-validation-for="Description" class="text-danger"></span>
+                    <div class="col-sm-3 pr-4 h-40">
+                        <input type="text" asp-for="Description" class="form-control inp required" />
+                      <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
                     <div class="col-sm-7 pt-2">
 
 
 
-                        <button type="submit" class="n-btn  btn-success" id="btnSubmitOpt">Submit</button>
+                        <button type="submit" class="btn-submit" id="btnSubmitOpt">Submit</button>
                         <a class="n-btn btn-danger" asp-action="Index">Back</a>
                         <input type="reset" name="Clear" value="Clear" class="n-btn btn-warning" />
                     </div>
+                    <div class="col-sm-7 pt-2">
+   
+     
+                        </div>
                 </form>
             </div>
 

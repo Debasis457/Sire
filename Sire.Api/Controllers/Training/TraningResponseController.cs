@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Cryptography;
 
 namespace Sire.Api.Controllers.Training
 {
@@ -73,6 +74,25 @@ namespace Sire.Api.Controllers.Training
 
             var testsDto = _mapper.Map<IEnumerable<TraningResponseDto>>(tests);
 
+            return Ok(testsDto);
+        }
+
+
+        [AllowAnonymous]
+        [HttpPost("GetTraningTaskByQuetion")]
+        public IActionResult GetTraningTaskByQuetion(TraningResponseDto obj)
+        {
+            //var tests = _traningResponseRepository.FindBy(x => x.Trainee_Id == userId && x.Training_Id == traningId && x.Question_Id == quetionId).OrderByDescending(x => x.Id).ToList();
+            var Question = _uow.Context.Question.Where(x => x.Id == obj.Question_Id).FirstOrDefault();
+            string questionText = Question.Chapter + "." + Question.Section + "." + Question.Question_Number;
+            var data = _uow.Context.Training_Task.Where(x => x.Wbs_Number == questionText).FirstOrDefault();
+            var ResponseData = _uow.Context.TraningResponse.Where(x => x.Question_Id == obj.Question_Id && x.Trainee_Id == obj.Trainee_Id && x.Training_Id == obj.Training_Id ).FirstOrDefault();
+
+            var testsDto = _mapper.Map<Training_TaskDto>(data);
+            if(ResponseData != null)
+            {
+                testsDto.IsResponse = true;
+            }
             return Ok(testsDto);
         }
     }

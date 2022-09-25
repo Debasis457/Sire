@@ -21,6 +21,7 @@ namespace Sire.Web.Controllers
         private readonly ILogger<RoleController> _logger;
         private readonly Microsoft.Extensions.Configuration.IConfiguration _iConfig;
         string apiBaseUrl = string.Empty;
+        string apiBaseUserUrl = string.Empty;
 
         public RoleController(ILogger<RoleController> logger,
             Microsoft.Extensions.Configuration.IConfiguration iConfig
@@ -30,7 +31,7 @@ namespace Sire.Web.Controllers
             _iConfig = iConfig;
             
             apiBaseUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/role";
-
+            apiBaseUserUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/UserMaster";
 
         }
         public async Task<IActionResult> Index(string? alert)
@@ -64,14 +65,53 @@ namespace Sire.Web.Controllers
             {
                 throw;
             }
+
+
             return View();
         }
 
         public async Task<IActionResult> AddEdit(int? Id)
         {
+
+            string endpoint = apiBaseUrl + "/" + Id;
             if (Id == null)
             {
                 ViewBag.IsEdit = false;
+                using (HttpClient client = new HttpClient())
+                {
+
+
+                    using (var Response = await client.GetAsync(endpoint))
+                    {
+                        if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                        {
+                            ViewBag.IsEdit = true;
+
+                            var enduser = apiBaseUserUrl + "/GetUserDropDown";
+
+                            using (var IUserResponse = await client.GetAsync(enduser))
+                            {
+                                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                                {
+                                    var UserData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+                                    ViewBag.UserId = UserData;
+
+                                }
+                                else
+                                {
+                                    ModelState.Clear();
+                                }
+                            }
+
+                        }
+                        else
+                        {
+                            ModelState.Clear();
+                            ModelState.AddModelError(string.Empty, "Invalid Data");
+                            return View();
+                        }
+                    }
+                }
                 return View();
             }
             else
@@ -80,13 +120,27 @@ namespace Sire.Web.Controllers
                 using (HttpClient client = new HttpClient())
                 {
 
-                    string endpoint = apiBaseUrl + "/" + Id;
+
                     using (var Response = await client.GetAsync(endpoint))
                     {
                         if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                         {
                             ViewBag.IsEdit = true;
                             var data = JsonConvert.DeserializeObject<RoleDto>(Response.Content.ReadAsStringAsync().Result);
+                            var enduser = apiBaseUserUrl + "/GetUserDropDown";
+                            using (var IUserResponse = await client.GetAsync(enduser))
+                            {
+                                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                                {
+                                    var UserData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+                                    ViewBag.UserId = UserData;
+
+                                }
+                                else
+                                {
+                                    ModelState.Clear();
+                                }
+                            }
                             return View(data);
                         }
                         else
@@ -99,6 +153,8 @@ namespace Sire.Web.Controllers
                 }
             }
         }
+
+
 
         public async Task<IEnumerable<RoleDto>> GetData()
         {
@@ -116,9 +172,10 @@ namespace Sire.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddEdit(RoleDto RoleDto)
         {
-
+            
             if (ModelState.IsValid)
             {
                 try
@@ -165,6 +222,42 @@ namespace Sire.Web.Controllers
                     throw;
                 }
             }
+           
+            using (HttpClient client = new HttpClient())
+                {
+                var enduser = apiBaseUserUrl + "/GetUserDropDown";
+
+                using (var Response = await client.GetAsync(enduser))
+                    {
+                        if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                        {                         
+                            
+                           
+                            using (var IUserResponse = await client.GetAsync(enduser))
+                            {
+                                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                                {
+                                    var UserData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+                                    ViewBag.UserId = UserData;
+
+                                }
+                                else
+                                {
+                                    ModelState.Clear();
+                                }
+                            }
+                            
+                        }
+                        else
+                        {
+                            ModelState.Clear();
+                            ModelState.AddModelError(string.Empty, "Invalid Data");
+                            return View();
+                        }
+                    }
+                }
+            ViewBag.IsEdit = false;
+            ViewBag.Alert = "";
             return View();
         }
 

@@ -10,7 +10,8 @@ namespace Sire.Data.Dto.Master
     {
         public int QuetionSectionId { get; set; }
         public string Name { get; set; }
-        public int? Total { get; set; }
-        public int? AssesmentCompletionTotal { get; set; }
+        public int?  Total{ get; set; }
+        public int? ResTotal { get; set; }
+
     }
 }

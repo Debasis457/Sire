@@ -1,0 +1,69 @@
+﻿
+@model Sire.Data.Dto.Master.VesselDto
+@{
+    ViewBag.Title = "Vessel";
+    Layout = null;
+}
+
+
+  
+
+@*<div class="tab-pane fade show active" id="User" role="tabpanel" aria-labelledby="pills-home-tab">
+    <!-- End Navigation Fixed Bar-->
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-body">
+                 
+              
+                <form asp-action="GetVesselDetails">
+                    <hr>
+                    @if (@ViewBag.IsEdit)
+                    {
+                        <input type="hidden" asp-for="Id" />
+                    }
+                   
+                    
+                     <div class="col-sm-2 pr-0 h-40">
+                        <label class="fnt-lable" for="Name">Select Vessel</label>
+                    </div>
+                    <div class="col-sm-3 pr-4 h-40">
+                        @Html.DropDownList("Id",new SelectList(ViewBag.Vessel, "Id", "Value"),"select", new { @class = "form-control select2"})
+                    <span asp-validation-for="Id" class="text-danger"></span>       
+                    </div>
+                   
+
+                   
+                    <div class="col-sm-7 pt-2">                      
+                     
+                           <button type="submit" class="n-btn  btn-success" asp-action="GetVesselDetails">Submit</button>
+                       
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+</div>*@
+
+<div class="row pl-4 pr-4">
+    <div class="col-sm-12">
+        <div class="table-responsive">
+            <form asp-action="GetVesselDetails">
+                <div class="col-sm-2 pr-0 h-40">
+                    <label class="fnt-lable" for="Id">Select Vessel</label>
+                </div>
+                <div class="col-sm-3 pr-4 h-40">
+                    @Html.DropDownList("Id",new SelectList(ViewBag.Vessel, "Id", "Value"),"select", new { @class = "form-control select2"})
+</div>
+                <div class="col-sm-7 pt-2">
+                    <button type="submit" class="n-btn  btn-success" asp-action="GetVesselDetails">Submit</button>
+                     <a class="n-btn btn-danger" onclick="@("window.location.href='" + @Url.Action("Index", "Dashboard") + "'");">Close</a>
+                 </div>    
+                  
+            </form>
+            
+        </div>
+    </div>
+</div>
+ 

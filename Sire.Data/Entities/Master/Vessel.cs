@@ -18,6 +18,7 @@ namespace Sire.Data.Entities.Master
         public Sire.Data.Entities.Operator.Operator Operator { get; set; }
         public Fleet Fleet { get; set; }
         public string IMO{ get; set; }
+        public string Flag { get; set; }
 
 
     }

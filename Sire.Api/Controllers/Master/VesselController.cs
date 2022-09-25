@@ -60,12 +60,12 @@ namespace Sire.Api.Controllers.Master
             if (!ModelState.IsValid) return new UnprocessableEntityObjectResult(ModelState);
             //VesselDto.Id = 0;
             var test = _mapper.Map<Vessel>(VesselDto);
-            /* var validate = _vesselRepository.Duplicate(test);
-             if (!string.IsNullOrEmpty(validate))
-             {
-                 ModelState.AddModelError("Message", validate);
-                 return BadRequest(ModelState);
-             }*/
+            var validate = _vesselRepository.Duplicate(test);
+            if (!string.IsNullOrEmpty(validate))
+            {
+                ModelState.AddModelError("Message", validate);
+                return BadRequest(ModelState);
+            }
 
             if (VesselDto.Id == 0)
                 _vesselRepository.Add(test);
@@ -140,6 +140,18 @@ namespace Sire.Api.Controllers.Master
         public IActionResult getVesselDetails(int id)
         {
             var test = _vesselRepository.Find(id);
+            var VesselDto = _mapper.Map<VesselDto>(test);
+            return Ok(VesselDto);
+
+        }
+
+
+        [HttpGet]
+        [Route("GetVesselData/{id}")]
+        public IActionResult GetVesselData(int id)
+        {
+            if (id <= 0) return BadRequest();
+            var test = _vesselRepository.FindByInclude(x => x.Id == id, x => x.Fleet).FirstOrDefault();
             var VesselDto = _mapper.Map<VesselDto>(test);
             return Ok(VesselDto);
 

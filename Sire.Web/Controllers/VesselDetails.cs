@@ -8,6 +8,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
+using Sire.Data.Dto.Inspection;
+using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace Sire.Web.Controllers
 {
@@ -41,5 +44,12 @@ namespace Sire.Web.Controllers
             }
 
         }
+
+
+     
+
+
+
+
     }
 }

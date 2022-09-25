@@ -1,56 +1,182 @@
-﻿@model IEnumerable<Sire.Data.Dto.Training.TraningResponseDto>
+﻿@model Sire.Data.Dto.Training.Training_TaskDto
 @{
-    string trainingAttended = Model != null ? ((Model.Count() > 0) ? "form-group btn-default float-right" : "form-group btn-success float-right") : "form-group btn-success float-right";
-    string buttonType = Model != null ? ((Model.Count() > 0) ? "button" : "submit") : "submit";
+    string trainingAttended = Model?.IsResponse == true ? "form-group btn-default float-right" : "form-group btn-success float-right";
+    string buttonType = Model?.IsResponse == true ? "button" : "submit";
 }
+<style>
+    .taskHeader {
+        background-color: #9bc3e6 !important;
+        color: white;
+        font-size: medium;
+        border-radius:5px;
+        padding: 7px;
+    }
+
+    .taskBody {
+        /*border: 1px solid green;*/
+        padding: 4px;
+        background-color: #edf7ff;
+        border-radius: 5px;
+    }
+    .header
+    {
+        font-size: medium;
+        font-weight: 700;
+    }
+</style>
 <div class="tab-pane fade" id="Tasks" role="tabpanel" aria-labelledby="pills-home-tab">
-
-    <div class="col-sm-12">
-        <div class="card">
-            <div class="card-body">
-
-                <hr />
-                @* <div class="row">*@
-                <div class="col-lg-12  col-sm-12  pl-5 pr-5">
-
-                    <label for="Human"><h2>Human<i class="fa fa-question-circle" style="font-size:36px;color:Green; cursor:pointer"></i></h2></label>
-                    
-                    @using (Html.BeginForm("SaveTask", "TrainingFlow", FormMethod.Post))
+    @using (Html.BeginForm("SaveTask", "TrainingFlow", FormMethod.Post))
+    {
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    @if (Model != null)
                     {
 
-                        <div class="form-group purple-border">
-                            <label for="Acc_Inspector">Accompanying the Inspector : </label>
-                            <textarea class="form-control" id="Acc_Inspector" rows="1"></textarea>
-                        </div>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <span class="header">
+                                    Human Tasks
+                                </span>
+                                <hr>
+                                @*Familiar  Procedure*@
+                                <div>
+                                    <span class="taskHeader row">
+                                        Familliarity 1
+                                    </span>
+                                    <span class="row taskBody mb-1">
+                                        <span class="col-md-12"> Rank Group 1 : @Model.Familiar1_RG_1 </span>
+                                        <span class="col-md-12"> Rank Group 2 : @Model.Familiar1_RG_2  </span>
+                                        <span class="col-md-12">
+                                            @Model.Familiar1_Procedure
+                                        </span>
 
-                        <div class="form-group purple-border">
-                            <div class="form-group purple-border">
-                                <label for="Familiarity">Familiarity : </label>
-                                <textarea class="form-control" id="Familiarity" rows="3"></textarea>
+                                    </span>
+                                </div>
+                                <div>
+                                    <span class="taskHeader row">
+                                        Familliarity 2
+                                    </span>
+                                    <span class="row taskBody mb-1">
+                                        <span class="col-md-12"> Rank Group 1 : @Model.Familiar2_RG_1 </span>
+                                        <span class="col-md-12"> Rank Group 2 : @Model.Familiar2_RG_2  </span>
+                                        <span class="col-md-12">
+                                            @Model.Familiar2_Procedure
+                                        </span>
+
+                                    </span>
+                                </div>
+
+                                @*Interviewe  Procedure*@
+                                <div>
+                                    <span class="taskHeader row">
+                                        Interview 1
+                                    </span>
+                                    <span class="row taskBody mb-1">
+                                        <span class="col-md-12"> Rank Group 1 : @Model.Interview1_RG1</span>
+                                        <span class="col-md-12"> Rank Group 2 : @Model.Interview1_RG2  </span>
+                                        <span class="col-md-12">
+                                            @Model.Interview1_Procedure
+                                        </span>
+
+                                    </span>
+                                </div>
+                                <div>
+                                    <span class="taskHeader row">
+                                        Interview 2
+                                    </span>
+                                    <span class="row taskBody mb-1">
+                                        <span class="col-md-12"> Rank Group 1 : @Model.Interview2_RG1</span>
+                                        <span class="col-md-12"> Rank Group 2 : @Model.Interview2_RG2  </span>
+                                        <span class="col-md-12">
+                                            @Model.Interview2_Procedure
+                                        </span>
+
+                                    </span>
+                                </div>
+
+                                @*Demonstrate*@
+                                <div>
+                                    <span class="taskHeader row">
+                                        Demonstrate 1
+                                    </span>
+                                    <span class="row taskBody mb-1">
+                                        <span class="col-md-12"> Rank Group 1 : @Model.Demonstrate1_RG1</span>
+                                        <span class="col-md-12"> Rank Group 2 : @Model.Demonstrate1_RG2  </span>
+                                        <span class="col-md-12">
+                                            @Model.Demonstrate1_Procedure
+                                        </span>
+
+                                    </span>
+                                </div>
+                                <div>
+                                    <span class="taskHeader row">
+                                        Demonstrate 2
+                                    </span>
+                                    <span class="row taskBody mb-1">
+                                        <span class="col-md-12"> Rank Group 1 : @Model.Demonstrate2_RG1</span>
+                                        <span class="col-md-12"> Rank Group 2 : @Model.Demonstrate2_RG2  </span>
+                                        <span class="col-md-12">
+                                            @Model.Demonstrate2_Procedure
+                                        </span>
+
+                                    </span>
+                                </div>
                             </div>
-
-                            <div class="form-group purple-border">
-                                <label for="Demonstration">Demonstration</label>
-                                <textarea class="form-control" id="Demonstration" rows="3"></textarea>
+                            <div class="col-md-1">
                             </div>
+                            <div class="col-md-5">
+                                <span class="header">
+                                    Process Tasks
+                                </span>
+                                <hr>
+                                <div>
+                                    <span class="taskHeader row">
+                                        Manuals/Plans
+                                    </span>
+                                    <span class="row taskBody mb-1">
+                                        <span class="col-md-12">
+                                            @Model.Manuals_Plans_Procedures
+                                        </span>
 
-                            <div class="form-group purple-border">
-                                <label for="Interview">Interview</label>
-                                <textarea class="form-control" id="Interview" rows="3"></textarea>
+                                    </span>
+                                </div>
+                                <div>
+                                    <span class="taskHeader row">
+                                        Certificate/Checklists/ Records
+                                    </span>
+                                    <span class="row taskBody mb-1">
+                                        <span class="col-md-12">
+                                            @Model.Certificates_Checklists_Records
+                                        </span>
+
+                                    </span>
+                                </div>
+                                <div>
+                                    <span class="taskHeader row">
+                                        Log Book /Entires
+                                    </span>
+                                    <span class="row taskBody mb-1">
+                                        <span class="col-md-12">
+                                            @Model.LogBooks_Entries
+                                        </span>
+                                    </span>
+                                </div>
                             </div>
-                            <button class="@trainingAttended" type="@buttonType">
-                                <i class="fa fa-check-square fa-4x" style="font-size:48px; cursor:pointer"></i>
-                                @* <button type="button" class="btn btn-success btn-lg btn3d"><span class="glyphicon glyphicon-ok"></span></button>
-                            *@
-                            </button>
-
                         </div>
                     }
                 </div>
-                @* </div>
-                *@
             </div>
-        </div>
+            @if (Model?.IsResponse == true)
+            {
+                <span style="color: red; font-size:16px">You have already attend this quetions...</span>
 
-    </div>
+            }
+            else
+            {
+                <button type="submit" class="btn btn-success"><span class="fa fa-check"></span></button>
+            }
+
+        </div>
+    }
 </div>

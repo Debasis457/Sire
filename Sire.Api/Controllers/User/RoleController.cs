@@ -38,7 +38,7 @@ namespace Sire.Api.Controllers.User
         [HttpGet("{isDeleted:bool?}")]
         public IActionResult Get(bool isDeleted)
         {
-            var tests = _roleRepository.FindByInclude(x => x.IsDeleted == isDeleted)
+            var tests = _roleRepository.FindByInclude(x => x.IsDeleted == isDeleted , x => x.User)
                 .OrderByDescending(x => x.Id).ToList();
             var testsDto = _mapper.Map<IEnumerable<RoleDto>>(tests);
 

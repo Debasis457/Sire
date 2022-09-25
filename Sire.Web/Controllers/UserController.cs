@@ -93,7 +93,7 @@ namespace Sire.Web.Controllers
                                 if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                                 {
                                     var OperatorData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
-                                    ViewBag.Operator_Id = OperatorData;
+                                    ViewBag.Operator = OperatorData;
                                 }
                                 else
                                 {
@@ -106,7 +106,7 @@ namespace Sire.Web.Controllers
                                 if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                                 {
                                     var RankData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
-                                    ViewBag.Rank_Id = RankData;
+                                    ViewBag.Rank= RankData;
                                 }
                                 else
                                 {
@@ -119,7 +119,7 @@ namespace Sire.Web.Controllers
                                 if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                                 {
                                     var RankGroupData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
-                                    ViewBag.Rank_Group = RankGroupData;
+                                    ViewBag.RankGroup = RankGroupData;
                                 }
                                 else
                                 {
@@ -160,7 +160,7 @@ namespace Sire.Web.Controllers
                                 if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                                 {
                                     var OperatorData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IOperatorResponse.Content.ReadAsStringAsync().Result);
-                                    ViewBag.Operator_Id = OperatorData;
+                                    ViewBag.Operator = OperatorData;
                                 }
                                 else
                                 {
@@ -173,7 +173,7 @@ namespace Sire.Web.Controllers
                                 if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                                 {
                                     var RankData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
-                                    ViewBag.Rank_Id = RankData;
+                                    ViewBag.Rank = RankData;
                                 }
                                 else
                                 {
@@ -186,7 +186,7 @@ namespace Sire.Web.Controllers
                                 if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                                 {
                                     var RankGroupData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
-                                    ViewBag.Rank_Group = RankGroupData;
+                                    ViewBag.RankGroup = RankGroupData;
                                 }
                                 else
                                 {
@@ -228,11 +228,12 @@ namespace Sire.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddEdit(UserDto UserDto)
         {
 
-            /*if (ModelState.IsValid)
-            {*/
+            if (ModelState.IsValid)
+            {
                 try
                 {
                     using (HttpClient client = new HttpClient())
@@ -266,8 +267,60 @@ namespace Sire.Web.Controllers
                             }
                             else
                             {
-                                ModelState.Clear();
-                                ModelState.AddModelError(string.Empty, "Invalid Data");
+                            ViewBag.IsEdit = true;
+
+                         
+
+                                var enduser = apiBaseOperatorUrl + "/GetOperatorDropDown";
+                                var endUserRank = apiBaseUserRankUrl + "/GetUser_RankDropDown";
+                                var endRankGroup = apiBaseRankGroupUrl + "/GetRankGroupDropDown";
+
+                                using (var IUserResponse = await client.GetAsync(enduser))
+                                {
+                                    if (IUserResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                                    {
+                                        var OperatorData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+                                        ViewBag.Operator = OperatorData;
+                                    }
+                                    else
+                                    {
+                                        ModelState.Clear();
+                                    }
+                                }
+
+                                using (var IUserResponse = await client.GetAsync(endUserRank))
+                                {
+                                    if (IUserResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                                    {
+                                        var RankData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+                                        ViewBag.Rank = RankData;
+                                    }
+                                    else
+                                    {
+                                        ModelState.Clear();
+                                    }
+                                }
+
+                                using (var IUserResponse = await client.GetAsync(endRankGroup))
+                                {
+                                    if (IUserResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                                    {
+                                        var RankGroupData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+                                        ViewBag.RankGroup = RankGroupData;
+                                    }
+                                    else
+                                    {
+                                        ModelState.Clear();
+                                    }
+                                }
+                                //   return View;
+                       
+
+                            ModelState.Clear();
+                            ViewBag.Alert = CommonServices.ShowAlert(Alerts.Warning, "Email Already Exists");
+
+                           
+                            ModelState.AddModelError(string.Empty, "Invalid Data");
                                 return View();
                             }
                         }
@@ -277,8 +330,55 @@ namespace Sire.Web.Controllers
                 {
                     throw;
                 }
-            //}
-            
+           }
+            using (HttpClient client = new HttpClient())
+            {
+                StringContent content = new StringContent(JsonConvert.SerializeObject(UserDto), Encoding.UTF8, "application/json");
+                var enduser = apiBaseOperatorUrl + "/GetOperatorDropDown";
+                var endUserRank = apiBaseUserRankUrl + "/GetUser_RankDropDown";
+                var endRankGroup = apiBaseRankGroupUrl + "/GetRankGroupDropDown";
+
+                using (var IUserResponse = await client.GetAsync(enduser))
+                {
+                    if (IUserResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var OperatorData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+                        ViewBag.Operator = OperatorData;
+                    }
+                    else
+                    {
+                        ModelState.Clear();
+                    }
+                }
+
+                using (var IUserResponse = await client.GetAsync(endUserRank))
+                {
+                    if (IUserResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var RankData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+                        ViewBag.Rank = RankData;
+                    }
+                    else
+                    {
+                        ModelState.Clear();
+                    }
+                }
+
+                using (var IUserResponse = await client.GetAsync(endRankGroup))
+                {
+                    if (IUserResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var RankGroupData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+                        ViewBag.RankGroup = RankGroupData;
+                    }
+                    else
+                    {
+                        ModelState.Clear();
+                    }
+                }
+            }
+            ViewBag.IsEdit = false;
+            ViewBag.Alert = "";
             return View();
         }
 

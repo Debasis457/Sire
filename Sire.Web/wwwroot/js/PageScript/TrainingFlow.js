@@ -18,11 +18,11 @@ function GetQuestionDetails(Id) {
       
     });
 }
-function GetTask() {
+function GetTask(id) {
     debugger;
     $("#Tasks").empty();
 
-    $("#Tasks").load("/TrainingFlow/GetTasks/", function () {
+    $("#Tasks").load("/TrainingFlow/GetTasks/" + id, function () {
 
     });
 } 

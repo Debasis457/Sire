@@ -22,13 +22,15 @@ namespace Sire.Api.Controllers.Master
         private readonly IJwtTokenAccesser _jwtTokenAccesser;
         private readonly IMapper _mapper;
         private readonly IUser_VesselRepository _user_VesselRepository;
+        private readonly IVesselRepository _vesselRepository;
         private readonly IUnitOfWork<SireContext> _uow;
 
-        public User_VesselController(IUser_VesselRepository uservesselRepository,
+        public User_VesselController(IUser_VesselRepository uservesselRepository, IVesselRepository vesselRepository,
             IUnitOfWork<SireContext> uow, IMapper mapper,
             IJwtTokenAccesser jwtTokenAccesser)
         {
             _user_VesselRepository = uservesselRepository;
+            _vesselRepository = vesselRepository;
             _uow = uow;
             _mapper = mapper;
             _jwtTokenAccesser = jwtTokenAccesser;
@@ -125,6 +127,20 @@ namespace Sire.Api.Controllers.Master
         public IActionResult GetUser_VesselDropDownForUser()
         {
             return Ok(_user_VesselRepository.GetUser_VesselDropDown());
+        }
+        [AllowAnonymous]
+        [HttpGet("GetVessel/{id}")]
+        public IActionResult GetVessel(int id)
+        {
+            if (id <= 0) return BadRequest();
+            //var test = _user_VesselRepository.FindByInclude(x => x.User_Id == id,x => x.Vessel , x => x.Fleet).ToList();
+            var test = _user_VesselRepository.FindByInclude(x => x.User_Id == id, x => x.Vessel).ToList();
+            var testsDto = _mapper.Map<IEnumerable<User_VesselDto>>(test);
+            foreach (var item in testsDto)
+            {
+                item.Vessel = _uow.Context.Vessel.Where(x => x.Id == item.Vessel_Id).FirstOrDefault();
+            }
+            return Ok(testsDto);
         }
     }
 }

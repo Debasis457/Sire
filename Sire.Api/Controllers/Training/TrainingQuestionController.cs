@@ -83,8 +83,8 @@ namespace Sire.Api.Controllers.Training
        
 
         [AllowAnonymous]
-        [HttpGet]
-        public IActionResult GetSectionList(bool isDeleted)
+        [HttpGet("{traningid}/{userid}")]
+        public IActionResult GetSectionList(int? traningid, int? userid)
         {
             var tests = _quetionSectionRepository.FindByInclude(x => x.Id > 0, x => x.QuetionSubSection)
                 .ToList();
@@ -99,6 +99,17 @@ namespace Sire.Api.Controllers.Training
                                  que.Id
 
                              }).ToList().Count;
+                var responseCount = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == item.Id)
+                                     join sub in _uow.Context.QuetionSubSection on sec.Id equals sub.QuetionSectionId
+                                     join que in _uow.Context.Question on sub.Id equals que.Section
+                                     join res in _uow.Context.TraningResponse.Where(x=>x.Training_Id == traningid && x.Trainee_Id == userid) on que.Id equals res.Question_Id
+                                     into aa
+                                     from res in aa.DefaultIfEmpty()
+                                     select new
+                                     {
+                                         que.Id
+
+                                     }).ToList().Count;
 
                 foreach (var subb in item.QuetionSubSection)
                 {
@@ -110,8 +121,21 @@ namespace Sire.Api.Controllers.Training
                                       que.Id
 
                                   }).ToList().Count;
+
+                    subb.ResTotal = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == item.Id)
+                                  join sub in _uow.Context.QuetionSubSection.Where(x => x.Id == subb.Id) on sec.Id equals sub.QuetionSectionId
+                                  join que in _uow.Context.Question on sub.Id equals que.Section
+                                  join res in _uow.Context.TraningResponse.Where(x=>x.Training_Id == traningid && x.Trainee_Id == userid) on que.Id equals res.Question_Id into aa
+                                  from res in aa.DefaultIfEmpty()
+
+                                  select new
+                                  {
+                                      que.Id
+
+                                  }).ToList().Count;
                 }
                 item.Total = count;
+                item.ResTotal = responseCount;
             }
             return Ok(testsDto);
         }

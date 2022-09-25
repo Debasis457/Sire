@@ -203,6 +203,64 @@ function setMd5Password(event, event2 = null) {
     return true;
 }
 
+
+function popup() {
+     $('[id*="myModal1"]').modal('show');
+   
+}
+
+
+function openForm() {
+    debugger;
+    $("#VesselList").empty();
+
+    $("#Reversetab").load("/VesselPopUp/Index/", function () {
+ 
+   a
+        //$.ajax({
+        //    type: "POST",
+        //    url: '/VesselPopUp/GetVesselList/',
+        //    data: {},
+        //    contentType: "application/json; charset=utf-8",
+        //    dataType: "json",
+        //    success: function (result) {
+        //        debugger;
+        //        if (result != null) {
+        //            if (result.length > 0) {
+
+        //               console.log(result)
+        //                $("#" + ddl).empty();
+        //                $("#" + ddl).append('<option value="0">Select</option>');
+        //                var str = $("#" + ddl).append('<option value="' + result.id + '">' + result.value + '</option>');
+
+
+        //                $("#VesselList > tbody").append(str);
+
+        //            }
+        //        }
+
+        //    },
+
+        //    failure: function (response) {
+        //        alert(response.d);
+        //    }
+
+        //});
+    
+      
+
+        
+    });
+}
+
+
+ 
+   
+function ShowModelPopUp()
+{
+        window.open('/VesselPopUp/Index', "WindowPopup", 'width=400px,height=400px,align=centre');  
+}
+
 //function isNumberKey(txt, evt) {
 //    var charCode = (evt.which) ? evt.which : evt.keyCode;
 //    if (charCode == 46) {

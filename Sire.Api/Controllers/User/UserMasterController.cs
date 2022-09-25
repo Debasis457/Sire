@@ -58,12 +58,12 @@ namespace Sire.Api.Controllers.User
             if (!ModelState.IsValid) return new UnprocessableEntityObjectResult(ModelState);
             //userDto.Id = 0;
             var test = _mapper.Map<Sire.Data.Entities.UserMgt.User>(userDto);
-           /* var validate = _userRepository.Duplicate(test);
+            var validate = _userRepository.Duplicate(test);
             if (!string.IsNullOrEmpty(validate))
             {
                 ModelState.AddModelError("Message", validate);
                 return BadRequest(ModelState);
-            }*/
+            }
             if (userDto.Id == 0)
                 _userRepository.Add(test);
             else

@@ -167,18 +167,18 @@ namespace Sire.Api.Controllers
 
                                   }).ToList().Count;
 
-                    subb.AssesmentCompletionTotal = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == item.Id)
-                                  join sub in _uow.Context.QuetionSubSection.Where(x => x.Id == subb.Id) on sec.Id equals sub.QuetionSectionId
-                                  join que in _uow.Context.Question on sub.Id equals que.Section
-                                  join ins in _uow.Context.Inspection_Question.Where(x => x.inspection_id == id && x.assesment_completed) on que.Id equals ins.question_id
-                                  select new
-                                  {
-                                      que.Id
+                    subb.ResTotal = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == item.Id)
+                                                     join sub in _uow.Context.QuetionSubSection.Where(x => x.Id == subb.Id) on sec.Id equals sub.QuetionSectionId
+                                                     join que in _uow.Context.Question on sub.Id equals que.Section
+                                                     join ins in _uow.Context.Inspection_Question.Where(x => x.inspection_id == id && x.assesment_completed) on que.Id equals ins.question_id
+                                                     select new
+                                                     {
+                                                         que.Id
 
-                                  }).ToList().Count;
+                                                     }).ToList().Count;
                 }
                 item.Total = count;
-                item.AssesmentCompletionTotal = assesmentCompletionCount;
+                item.ResTotal = assesmentCompletionCount;
             }
             return Ok(testsDto);
         }

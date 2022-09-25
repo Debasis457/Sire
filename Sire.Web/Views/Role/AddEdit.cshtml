@@ -5,22 +5,24 @@
     ViewBag.Title = "Fleet";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
 }
- 
 
+
+
+@Html.HiddenFor(Model => Model.Id)
 <div class="tab-pane fade show active" id="User" role="tabpanel" aria-labelledby="pills-home-tab">
-    
+
     <!-- End Navigation Fixed Bar-->
     <div class="col-sm-12">
         <div class="card">
             <div class="card-body">
                 <h5 class="head-tit-fnt">Add Role</h5>
                 <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        @Html.Raw(@ViewBag.Alert)
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @Html.Raw(@ViewBag.Alert)
+                        </div>
                     </div>
                 </div>
-            </div>
                 <form asp-action="AddEdit">
                     <hr>
                     @if (@ViewBag.IsEdit)
@@ -31,28 +33,35 @@
                         <label class="fnt-lable" for="Description">Description</label>
                     </div>
                     <div class="col-sm-2 pr-4 h-40">
-                        <input type="text" asp-for="Description"  class="form-control inp" />
-                  <span asp-validation-for="Description" class="text-danger"></span>
+                        <input type="text" asp-for="Description" class="form-control inp" />
+                        <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
-                    
+                    <div class="col-sm-2 pr-0 h-40">
+                        <label class="fnt-lable" for="User_Id">User Name</label>
+                    </div>
+                    <div class="col-sm-2 pr-4 h-40">
+                        @Html.DropDownList("User_Id",new SelectList(ViewBag.UserId, "Id", "Value"),"Select", new { @class = "form-control select2"})
+
+                    </div>
+
                     <div class="col-sm-2 pr-0 h-40">
                         <label class="fnt-lable" for="RoleType">RoleType</label>
                     </div>
-                    <div class="col-sm-3 pr-4 h-40">
-                       @* <input type="text" asp-for="RoleType" class="form-control inp" />
+                    <div class="col-sm-2 pr-4 h-40">
+                        @* <input type="text" asp-for="RoleType" class="form-control inp" />
                         <span asp-validation-for="RoleType" class="text-danger"></span>*@
-                            <select asp-for="RoleType" asp-items="Html.GetEnumSelectList<Role_Types>()" class= "form-control select2">
-    <option selected="selected" value="">Select</option>
-</select>
-                       
+                        <select asp-for="RoleType" asp-items="Html.GetEnumSelectList<Role_Types>()" class="form-control select2">
+                            <option selected="selected" value="">Select</option>
+                        </select>
+
                     </div>
                     <div class="col-sm-7 pt-2">
                         <button type="submit" class="n-btn btn-primary " id="btnSubmitOpt">Submit</button>
-                      <a class="n-btn btn-danger" asp-action="Index">Back</a>
-                       
-                      <input type="reset" name="Clear" value="Clear" class="n-btn btn-warning" />
+                        <a class="n-btn btn-danger" asp-action="Index">Back</a>
+
+                        <input type="reset" name="Clear" value="Clear" class="n-btn btn-warning" />
                     </div>
-                  
+
                 </form>
             </div>
 
@@ -61,6 +70,8 @@
 
 </div>
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }
 

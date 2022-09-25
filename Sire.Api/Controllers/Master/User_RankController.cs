@@ -58,7 +58,12 @@ namespace Sire.Api.Controllers.Master
         {
             if (!ModelState.IsValid) return new UnprocessableEntityObjectResult(ModelState);
             var test = _mapper.Map<User_Rank>(user_RankDto);
-
+            var validate = _user_RankRepository.Duplicate(test);
+            if (!string.IsNullOrEmpty(validate))
+            {
+                ModelState.AddModelError("Message", validate);
+                return BadRequest(ModelState);
+            }
             if (user_RankDto.Id == 0)
                 _user_RankRepository.Add(test);
             else

@@ -49,15 +49,6 @@ namespace Sire.Api.Controllers.Inspection
             return Ok(QuestionDto);
         }
 
-        [AllowAnonymous]
-        [HttpGet("GetByInspectionQuestionId/{id}")]
-        public IActionResult GetByInspectionQuestionId(int id)
-        {
-            if (id <= 0) return BadRequest();
-            var inspectionQuestionResData = _inspection_QuestionRepository.FindBy(d=>d.Inspection_Question_id == id && d.IsDeleted == false);
-            //var InspectionResponseDto = _mapper.Map<InspectionResponseDto>(inspectionQuestionResData);
-            return Ok(inspectionQuestionResData);
-        }
 
         [AllowAnonymous]
         [HttpPost]
@@ -77,9 +68,15 @@ namespace Sire.Api.Controllers.Inspection
             if (_uow.Save() <= 0) throw new Exception("Saving Assesor Reviewer failed on save.");
             return Ok(0);
         }
-      
 
-
-
+        [AllowAnonymous]
+        [HttpGet("GetByInspectionQuestionId/{id}")]
+        public IActionResult GetByInspectionQuestionId(int id)
+        {
+            if (id <= 0) return BadRequest();
+            var inspectionQuestionResData = _inspection_QuestionRepository.FindBy(d => d.Inspection_Question_id == id && d.IsDeleted == false);
+            //var InspectionResponseDto = _mapper.Map<InspectionResponseDto>(inspectionQuestionResData);
+            return Ok(inspectionQuestionResData);
+        }
     }
 }

@@ -116,6 +116,7 @@ namespace Sire.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddEdit(User_RankDto user_RankDto)
         {
            
@@ -152,8 +153,10 @@ namespace Sire.Web.Controllers
                             }
                             else
                             {
+                                ViewBag.IsEdit = true;
                                 ModelState.Clear();
-                                ModelState.AddModelError(string.Empty, "Invalid Data");
+                                ViewBag.Alert = CommonServices.ShowAlert(Alerts.Warning, "User Rank Already Exists");
+                                // ModelState.AddModelError(string.Empty, "Invalid Data");
                                 return View();
                             }
                         }
@@ -164,6 +167,9 @@ namespace Sire.Web.Controllers
                     throw;
                 }
             }
+            ViewBag.IsEdit = false;
+            ViewBag.Alert = "";
+
             return View();
         }
 

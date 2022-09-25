@@ -41,8 +41,8 @@ namespace Sire.Respository.UserMgt
 
         public string Duplicate(User objSave)
         {
-            if (All.Any(x => x.Id != objSave.Id && x.Full_Name == objSave.Full_Name && x.DeletedDate == null))
-                return "Duplicate Full_Name name : " + objSave.Full_Name;
+            if (All.Any(x => x.Id != objSave.Id && x.EmailId == objSave.EmailId && x.DeletedDate == null))
+                return "Duplicate Email Id name : " + objSave.EmailId;
             return "";
         }
 

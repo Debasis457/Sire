@@ -54,6 +54,9 @@
                                      <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
                                         Fleet
                                     </th>
+                                     <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                        Flag
+                                    </th>
                                     <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending" style="width: 155px;">
                                         Action
                                     </th>
@@ -76,9 +79,12 @@
                                          <td>
                                             @item.Fleet.Name
                                         </td>
+                                         <td>
+                                            @item.Flag
+                                        </td>
                                         <td>
                                             <a class="btn btn-success" asp-action="AddEdit" asp-route-Id="@item.Id" style="padding:4px;font-size:9px;" title="Edit"><i class="fa fa-fw fa-edit"></i></a>
-                                               <a class="btn btn-danger" asp-action="Delete" asp-route-Id="@item.Id" style="padding:4px;font-size:9px;" title="delete" onclick="return confirm('Are you sure you want to delete this item?');"><i class="fas fa-trash-alt"></i></a>
+                                               <a class="btn btn-danger" asp-action="Delete" asp-route-Id="@item.Id" style="padding:4px;font-size:9px;" title="delete" onclick="return confirm('Are you sure you want to delete this item?');"><i class="fa-solid fa-trash"></i></a>
                                               
                                         </td>
                                     </tr>

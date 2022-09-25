@@ -42,9 +42,9 @@
                         <label class="fnt-lable" for="Fleet_Head_Id">Vessel</label>
                     </div>
                     <div class="col-sm-2 pr-4 h-40">
-                      @*    <input type="text" asp-for="Vessel_Id"  class="form-control inp" />*@
-                        @Html.DropDownList("Vessel_Id",new SelectList(ViewBag.Vessel, "Id", "Value"),"Please select" , new { @class = "form-control select2"})
-                    </div>
+                       @Html.DropDownList("Vessel_Id",new SelectList(ViewBag.Vessel, "Id", "Value"),"Please select" , new { @class = "form-control select2"})
+                    <span asp-validation-for="Vessel_Id" class="text-danger"></span>
+                   </div>
                     <div class="col-sm-2 pr-0 h-40">
                         <label class="fnt-lable" for="Name">Description</label>
                     </div>

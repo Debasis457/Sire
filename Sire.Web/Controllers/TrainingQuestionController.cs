@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -7,6 +8,7 @@ using Newtonsoft.Json;
 using Sire.Data.Dto.Master;
 using Sire.Data.Dto.Operator;
 using Sire.Data.Dto.Question;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
@@ -34,31 +36,38 @@ namespace Sire.Web.Controllers
 
         }
         //Dharini
-        public async Task<IActionResult> Index(int? id = 1)
+        public async Task<IActionResult> Index(int? id)
         {
             TempData["TrainingId"] = id;
-            try
-            {
-                using (HttpClient client = new HttpClient())
-                {
-                    using (var Response = await client.GetAsync(apiBaseUrl))
+
+            id = id == null ? 0 : id;
+            try {
+
+             
+                    using (HttpClient client = new HttpClient())
                     {
-                        if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                        {
+                        var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+                        var endpoint = apiBaseUrl + "/" + id + "/" + userid;
 
-                            var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
-                            return View(data);
-                        }
-                        else
+                        using (var Response = await client.GetAsync(endpoint))
                         {
-                            ModelState.Clear();
-                            ModelState.AddModelError(string.Empty, "Invalid Data");
-                            return View();
+                            if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                            {
+
+                                var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
+                                return View(data);
+                            }
+                            else
+                            {
+                                ModelState.Clear();
+                                ModelState.AddModelError(string.Empty, "Invalid Data");
+                                return View();
+                            }
                         }
+
+
                     }
-
-
-                }
+                
             }
             catch (DbUpdateConcurrencyException)
             {

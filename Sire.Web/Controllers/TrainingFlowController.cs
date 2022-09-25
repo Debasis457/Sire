@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Sire.Data.Dto.Master;
 using Sire.Data.Dto.Question;
 using Sire.Data.Dto.Training;
+using Sire.Data.Entities.Training;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -42,7 +43,7 @@ namespace Sire.Web.Controllers
             apiBaseTrainingResponseUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/TraningResponse";
         }
 
-
+        
         public async Task<PartialViewResult> GetQueCheckList(int? id)
         {
 
@@ -103,7 +104,7 @@ namespace Sire.Web.Controllers
         }
 
 
-        public async Task<PartialViewResult> GetTasks()
+        public async Task<PartialViewResult> GetTasks(int? id)
         {
             var trainingNumber = Convert.ToInt32(TempData["TrainingNumber"]);
             var trainingId = Convert.ToInt32(TempData["TrainingId"]);
@@ -111,22 +112,26 @@ namespace Sire.Web.Controllers
             TraningResponseDto _traningResponseDto = new TraningResponseDto();
             _traningResponseDto.Question_Id = questionId;
             _traningResponseDto.Trainee_Id = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
-            _traningResponseDto.Training_Id = trainingNumber;
+            _traningResponseDto.Training_Id = trainingId;
             TempData.Keep();
 
-            var taskSubmittedDataUrl = apiBaseTrainingResponseUrl + "/GetTriningResponseByTraningByUser/" + trainingNumber + "/" + questionId + "/" + _traningResponseDto.Trainee_Id;
+            //var taskSubmittedDataUrl = apiBaseTrainingResponseUrl + "/GetTriningResponseByTraningByUser/" + trainingNumber + "/" + questionId + "/" + _traningResponseDto.Trainee_Id;
+
+
+            var traningTaskUrl = apiBaseTrainingResponseUrl + "/GetTraningTaskByQuetion/";
 
             using (HttpClient client = new())
             {
-                using var Response = await client.GetAsync(taskSubmittedDataUrl);
+                StringContent content = new(JsonConvert.SerializeObject(_traningResponseDto), Encoding.UTF8, "application/json");
+                using var Response = await client.PostAsync(traningTaskUrl, content);
                 if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     var result = Response.Content.ReadAsStringAsync().Result;
-                    if (result.Length > 2)
-                    {
-                        var data = JsonConvert.DeserializeObject<IList<TraningResponseDto>>(result);
-                        return PartialView("Tasks", data);
-                    }
+                    //if (result.Length > 2)
+                    //{
+                    var data = JsonConvert.DeserializeObject<Training_TaskDto>(result);
+                    return PartialView("Tasks", data);
+                    //}
                 }
                 else
                 {
@@ -190,7 +195,7 @@ namespace Sire.Web.Controllers
             {
                 Question_Id = Convert.ToInt32(TempData["QuestionId"]),
                 Trainee_Id = Convert.ToInt32(HttpContext.Session.GetString("UserId")),
-                Training_Id = trainingNumber
+                Training_Id = trainingId
             };
             TempData.Keep();
 

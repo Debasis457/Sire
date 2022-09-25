@@ -23,7 +23,7 @@
     <div class="col-sm-12">
         <div class="card">
             <div class="card-body">
-                 
+                 <br />
                  <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
@@ -40,44 +40,53 @@
                     <div class="col-sm-1 pr-0 h-40">
                         <label class="fnt-lable" for="Name">Name</label>
                     </div>
-                    <div class="col-sm-2 pr-4 h-40">
+                    <div class="col-sm-3 pr-4 h-40">
                         <input type="text" asp-for="Name" class="form-control inp" />
+                          <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
                     <div class="col-sm-1 pr-0 h-40">
                         <label class="fnt-lable" for="Vessel_Type">IMO</label>
                     </div>
-                    <div class="col-sm-2 pr-4 h-40">
+                    <div class="col-sm-3 pr-4 h-40">
                         <input type="text" asp-for="IMO" class="form-control inp" />
+                          <span asp-validation-for="IMO" class="text-danger"></span>
+                    </div>
+                    <div class="col-sm-1 pr-0 h-40">
+                        <label class="fnt-lable" for="Flag">Flag</label>
+                    </div>
+                    <div class="col-sm-3 pr-4 h-40">
+                        <input type="text" asp-for="Flag" class="form-control inp" />
+                          <span asp-validation-for="Flag" class="text-danger"></span>
                     </div>
                     <div class="col-sm-1 pr-0 h-40">
                         <label class="fnt-lable" for="Vessel_Type">Vessel Type</label>
                     </div>
-                    <div class="col-sm-2 pr-4 h-40">
+                    <div class="col-sm-3 pr-4 h-40">
                       @*  <input type="text" asp-for="Vessel_Type" class="form-control inp" />*@
                  
-                <select asp-for="Vessel_Type" asp-items="Html.GetEnumSelectList<VesselTypes>()" class= "form-control select2">
-    <option selected="selected" value="">Select</option>
-</select>
-             </div>
+                          <select asp-for="Vessel_Type" asp-items="Html.GetEnumSelectList<VesselTypes>()" class= "form-control select2">
+                            <option selected="selected" value="">Select</option>
+                          </select>
+                   </div>
 
 
                     <div class="col-sm-1 pr-0 h-40">
                         <label class="fnt-lable" for="Vessel_Type">Operator</label>
                     </div>
-                    <div class="col-sm-2 pr-4 h-40">
+                    <div class="col-sm-3 pr-4 h-40">
                            @Html.DropDownList("Operator_id",new SelectList(ViewBag.Operator, "Id", "Value"),"Select", new { @class = "form-control select2"})
-                        
+                        <span asp-validation-for="Operator_id" class="text-danger"></span>
+                       
                        </div>
 
                       <div class="col-sm-1 pr-0 h-40">
                         <label class="fnt-lable" for="Vessel_Type">Fleet</label>
                     </div>
-                    <div class="col-sm-2 pr-4 h-40">
-                        @*<input type="text" asp-for="Fleet_id" class="form-control inp" />*@
-                           @Html.DropDownList("Fleet_id",new SelectList(ViewBag.Fleet, "Id", "Value"),"Select", new { @class = "form-control select2"})
+                    <div class="col-sm-3 pr-4 h-40">
+                        @Html.DropDownList("Fleet_id",new SelectList(ViewBag.Fleet, "Id", "Value"),"Select", new { @class = "form-control select2"})
+                  <span asp-validation-for="Fleet_id" class="text-danger"></span>
                     </div>
-                    <div class="col-sm-7 pt-2">
-                       
+                    <div class="col-sm-7 pt-2">                      
 
                            <button type="submit" class="n-btn  btn-success" id="btnSubmitOpt">Submit</button>
                         <a class="n-btn btn-danger" asp-action="Index">Back</a>

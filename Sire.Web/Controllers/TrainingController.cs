@@ -191,6 +191,12 @@ namespace Sire.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(TrainingDto trainingDto)
         {
+            /* trainingDto.Operator_id = trainingDto.Id;
+             trainingDto.Id = 0;*/
+            var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+            trainingDto.Operator_id  = userid;
+            var vesselid = Convert.ToInt32(HttpContext.Session.GetString("VesselId"));
+            trainingDto.Vessel_Id = vesselid;
             try
             {
                 using (HttpClient client = new HttpClient())

@@ -480,8 +480,8 @@ ul#pills-tab > .nav-item {
 /*Common Section END 19-05-2020*/
 
 .table.dataTable[class*="table-"] thead th {
-    background: #db3d23 !important;
-    color: #fff !important;
+    background: #F6F6F6 !important;
+    color: #223354 !important;
 }
 
 .dataTables_scrollHead, .dataTables_scrollHead >.dataTables_scrollHeadInner {
@@ -601,3 +601,40 @@ ul#pills-tab > .nav-item {
     -o-transition: All 0.3s ease;
 }
 /*Yes No Toggle Button END */
+
+
+.dot1 {
+    height: 150px;
+    width: 150px;
+    background-color: #E8F1FF;
+    border-radius: 50%;
+    display: inline-block;
+    text-align: center;
+}
+
+.dot2 {
+    height: 150px;
+    width: 150px;
+    background-color: #FFEDE2;
+    border-radius: 50%;
+    display: inline-block;
+    text-align: center;
+}
+
+.dot3 {
+    height: 150px;
+    width: 150px;
+    background-color: #DEFAF8;
+    border-radius: 50%;
+    display: inline-block;
+    text-align: center;
+}
+
+.dot4 {
+    height: 150px;
+    width: 150px;
+    background-color: #E1FFE4;
+    border-radius: 50%;
+    display: inline-block;
+    text-align: center;
+}

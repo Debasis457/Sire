@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -36,35 +37,18 @@ namespace Sire.Web.Controllers
 
         public async Task<IActionResult> Index(int? Id)
         {
-            var enduser = apiBaseOperatorUrl + "/GetOperatorDropDown";
-
             if (Id == null)
             {
-                ViewBag.IsEdit = false;
-
                 using (HttpClient client = new HttpClient())
                 {
-                    string endpoint = apiBaseUrl + "/" + Id;
+                    string endpoint = apiBaseVesselUrl + "/" + this.HttpContext.Session.GetString("VesselId"); ;
                     using (var Response = await client.GetAsync(endpoint))
                     {
                         if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                         {
                             ViewBag.IsEdit = true;
-
-
-                            using (var IUserResponse = await client.GetAsync(enduser))
-                            {
-                                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                                {
-                                    var OperatorData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
-                                    ViewBag.Operator_Id = OperatorData;
-                                }
-                                else
-                                {
-                                    ModelState.Clear();
-                                }
-                            }
-
+                            var data = JsonConvert.DeserializeObject<VesselDto>(Response.Content.ReadAsStringAsync().Result);
+                            return View(data);
                         }
                         else
                         {
@@ -74,9 +58,6 @@ namespace Sire.Web.Controllers
                         }
                     }
                 }
-
-
-                return View();
             }
             else
             {
@@ -84,27 +65,14 @@ namespace Sire.Web.Controllers
                 using (HttpClient client = new HttpClient())
                 {
 
-                    string endpoint = apiBaseUrl + "/" + Id;
+                    string endpoint = apiBaseVesselUrl + "/" + this.HttpContext.Session.GetString("VesselId");  ;
                     using (var Response = await client.GetAsync(endpoint))
                     {
                         if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                         {
                             ViewBag.IsEdit = true;
-
-                            var data = JsonConvert.DeserializeObject<TrainingDto>(Response.Content.ReadAsStringAsync().Result);
-
-                            using (var IOperatorResponse = await client.GetAsync(enduser))
-                            {
-                                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                                {
-                                    var OperatorData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IOperatorResponse.Content.ReadAsStringAsync().Result);
-                                    ViewBag.Operator_Id = OperatorData;
-                                }
-                                else
-                                {
-                                    ModelState.Clear();
-                                }
-                            }
+                            var data = JsonConvert.DeserializeObject<VesselDto>(Response.Content.ReadAsStringAsync().Result);
+                            return View(data);
                         }
                         else
                         {
@@ -113,10 +81,10 @@ namespace Sire.Web.Controllers
                             return View();
                         }
                     }
-                    return View();
                 }
-
             }
+
+
         }
 
 

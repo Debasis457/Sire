@@ -14,7 +14,7 @@ namespace Sire.Data.Entities.Question
         public int Section { get; set; }
         public int Question_Number { get; set; }
         public string Questions { get; set; }
-        public string Short_Text { get; set; }
+        public string Short_Question { get; set; }
         public string Question_Type { get; set; }
         public bool? Chemical { get; set; }
         public bool? LNG { get; set; }
@@ -32,6 +32,8 @@ namespace Sire.Data.Entities.Question
         public string Checklist { get; set; }
         public string Expected_Evidence { get; set; }
 
+        public string Section_Name { get; set; }
+     
         public int Rank { get; set; }
         public int Rank_Group_Id { get; set; }
 

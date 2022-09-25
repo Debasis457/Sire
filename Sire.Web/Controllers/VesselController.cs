@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Sire.Common;
+using Sire.Data.Dto.Inspection;
 using Sire.Data.Dto.Master;
 using Sire.Data.Dto.UserMgt;
 using System.Collections.Generic;
@@ -24,6 +25,7 @@ namespace Sire.Web.Controllers
         string apiBaseOperatorUrl = string.Empty;
         string apiBaseFleetUrl = string.Empty;
         string apiBaseVesselUrl = string.Empty;
+        string apiBaseInspectionUrl = string.Empty;
         public VesselController(ILogger<VesselController> logger,
             Microsoft.Extensions.Configuration.IConfiguration iConfig
             )
@@ -34,7 +36,7 @@ namespace Sire.Web.Controllers
 
             apiBaseOperatorUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/operator";
             apiBaseFleetUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Fleet";
-
+            apiBaseInspectionUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Inspection";
             apiBaseVesselUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Vessel";
         }
 
@@ -207,11 +209,12 @@ namespace Sire.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddEdit(VesselDto vesselDto)
         {
-/*
+
             if (ModelState.IsValid)
-            {*/
+            {
                 try
                 {
                     using (HttpClient client = new HttpClient())
@@ -244,9 +247,42 @@ namespace Sire.Web.Controllers
                             }
                             else
                             {
-                                ModelState.Clear();
-                                ModelState.AddModelError(string.Empty, "Invalid Data");
-                                return View();
+                            ViewBag.IsEdit = true;
+
+                            var enduser = apiBaseOperatorUrl + "/GetOperatorDropDown";
+                            var endvesseltype = apiBaseFleetUrl + "/GetVesselTypeDropDown";
+                            var endfleet = apiBaseFleetUrl + "/GetFleetDropDown";
+                            using (var IUserResponse = await client.GetAsync(enduser))
+                            {
+                                if (IUserResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                                {
+                                    var UserData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+                                    ViewBag.Operator = UserData;
+
+                                }
+                                else
+                                {
+                                    ModelState.Clear();
+                                }
+                            }
+                            using (var FleetResponse = await client.GetAsync(endfleet))
+                            {
+                                if (FleetResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                                {
+                                    var UserData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(FleetResponse.Content.ReadAsStringAsync().Result);
+                                    ViewBag.Fleet = UserData;
+
+                                }
+                                else
+                                {
+                                    ModelState.Clear();
+                                }
+                            }
+                            ModelState.Clear();
+                            ViewBag.Alert = CommonServices.ShowAlert(Alerts.Warning, "Vessel Name Already Exists");
+                                                   
+                            // ModelState.AddModelError(string.Empty, "Invalid Data");
+                            return View();
                             }
                         }
                     }
@@ -255,10 +291,93 @@ namespace Sire.Web.Controllers
                 {
                     throw;
                 }
-           // }
+            }
+            using (HttpClient client = new HttpClient())
+            {
+                StringContent content = new StringContent(JsonConvert.SerializeObject(vesselDto), Encoding.UTF8, "application/json");
+                var enduser = apiBaseOperatorUrl + "/GetOperatorDropDown";
+                var endvesseltype = apiBaseFleetUrl + "/GetVesselTypeDropDown";
+                var endfleet = apiBaseFleetUrl + "/GetFleetDropDown";
+                using (var Response = await client.PostAsync(apiBaseUrl, content))
+                {
+
+                    using (var IUserResponse = await client.GetAsync(enduser))
+                    {
+                        if (IUserResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                        {
+                            var UserData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+                            ViewBag.Operator = UserData;
+
+                        }
+                        else
+                        {
+                            ModelState.Clear();
+                        }
+                    }
+                    using (var FleetResponse = await client.GetAsync(endfleet))
+                    {
+                        if (FleetResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                        {
+                            var UserData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(FleetResponse.Content.ReadAsStringAsync().Result);
+                            ViewBag.Fleet = UserData;
+
+                        }
+                        else
+                        {
+                            ModelState.Clear();
+                        }
+                    }
+                }
+            }
+
+
+           // InitializeVesselDropdowns();
+            ViewBag.IsEdit = false;
+            ViewBag.Alert = "";
             return View();
         }
 
+
+        private async Task InitializeVesselDropdowns()
+        {
+
+            using (HttpClient client = new HttpClient())
+            {
+              
+                var enduser = apiBaseOperatorUrl + "/GetOperatorDropDown";
+                var endvesseltype = apiBaseFleetUrl + "/GetVesselTypeDropDown";
+                var endfleet = apiBaseFleetUrl + "/GetFleetDropDown";
+               
+
+                    using (var IUserResponse = await client.GetAsync(enduser))
+                    {
+                        if (IUserResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                        {
+                            var UserData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+                            ViewBag.Operator = UserData;
+
+                        }
+                        else
+                        {
+                            ModelState.Clear();
+                        }
+                    }
+                    using (var FleetResponse = await client.GetAsync(endfleet))
+                    {
+                        if (FleetResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                        {
+                            var UserData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(FleetResponse.Content.ReadAsStringAsync().Result);
+                            ViewBag.Fleet = UserData;
+
+                        }
+                        else
+                        {
+                            ModelState.Clear();
+                        }
+                    }
+               
+            }
+        }
 
         public async Task<IActionResult> Delete(int Id)
         {
@@ -289,6 +408,56 @@ namespace Sire.Web.Controllers
                 }
             }
             return RedirectToAction(nameof(Index));
+        }
+
+
+        
+       
+
+        [HttpPost]
+        public async Task<IActionResult> AddInspection(InspectionDto inspectionDto)
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+
+                    inspectionDto.Vessel_Id = inspectionDto.Id;
+                    inspectionDto.Id = 0;
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(inspectionDto), Encoding.UTF8, "application/json");
+
+                    using (var Response = await client.PostAsync(apiBaseInspectionUrl, content))
+                    {
+                        var adddata = JsonConvert.DeserializeObject<int>(Response.Content.ReadAsStringAsync().Result);
+                        if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                        {
+                            ViewBag.IsEdit = false;
+                            inspectionDto = new InspectionDto();
+                            using (var InspectionDtoData = await client.GetAsync(apiBaseUrl))
+                            {
+                                var data = JsonConvert.DeserializeObject<List<InspectionDto>>(InspectionDtoData.Content.ReadAsStringAsync().Result);
+
+                                return RedirectToAction("Index", "InspectionQuestion", new { @id = adddata });
+
+
+                            }
+
+                        }
+                        else
+                        {
+                            ModelState.Clear();
+                            ModelState.AddModelError(string.Empty, "Invalid Data");
+                            return View();
+                        }
+                    }
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return View();
         }
     }
 }

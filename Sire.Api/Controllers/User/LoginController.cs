@@ -28,6 +28,7 @@ namespace Sire.Api.Controllers.User
         private readonly IJwtTokenAccesser _jwtTokenAccesser;
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
+        private readonly IRoleRepository _roleRepository;
 
         private readonly IUnitOfWork<SireContext> _uow;
 
@@ -49,21 +50,25 @@ namespace Sire.Api.Controllers.User
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var user = _uow.Context.User.Where(x=>x.EmailId == dto.UserName && x.Password == dto.Password).FirstOrDefault();
+            var user = _uow.Context.User.Where(x => x.EmailId == dto.UserName && x.Password == dto.Password).FirstOrDefault();
             if (user == null)
             {
                 ModelState.AddModelError("UserName", "Invalid username or password");
                 return BadRequest(ModelState);
             }
 
-            var roleId = 1;
-            return Ok(BuildUserAuthObject(user, roleId));
+
+            var roleId = _uow.Context.Role.Where(x => x.User_Id == user.Id).FirstOrDefault();
+
+
+            return Ok(BuildUserAuthObject(user, (int)roleId.RoleType));
         }
 
         private LoginResponseDto BuildUserAuthObject(Sire.Data.Entities.UserMgt.User authUser, int roleId)
         {
             var roleTokenId = new Guid().ToString();
             var vessel = _uow.Context.User_Vessel.Where(x => x.User_Id == authUser.Id).FirstOrDefault();
+
             var login = new LoginResponseDto
             {
                 Token = roleId == 0 ? null : BuildJwtToken(authUser, roleId),
@@ -79,19 +84,19 @@ namespace Sire.Api.Controllers.User
             };
 
 
-            //var imageUrl = _uploadSettingRepository.All
-            //   .FirstOrDefault()?.ImageUrl;
+            /*var imageUrl = _uploadSettingRepository.All
+               .FirstOrDefault()?.ImageUrl;*/
+            /*
+                        login.RoleName = _uow.Context.SecurityRole.Find(roleId)?.RoleName;
 
-            //login.RoleName = _uow.Context.SecurityRole.Find(roleId)?.RoleName;
+                        authUser.RoleTokenId = roleTokenId;
+                        if (roleId > 0)
+                        {
+                            authUser.IsLogin = true;
+                            authUser.RoleTokenId = null;
+                            authUser.LastLoginDate = DateTime.Now;
 
-            //authUser.RoleTokenId = roleTokenId;
-            //if (roleId > 0)
-            //{
-            //    authUser.IsLogin = true;
-            //    authUser.RoleTokenId = null;
-            //    authUser.LastLoginDate = DateTime.Now;
-
-            //}
+                        }*/
 
             //if (!string.IsNullOrEmpty(login.Token))
             //{

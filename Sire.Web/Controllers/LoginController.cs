@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Sire.Data.Dto.Master;
 using Sire.Data.Dto.UserMgt;
 using Sire.Data.Entities.Master;
+using Sire.Data.Entities.Training;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -48,19 +49,38 @@ namespace Sire.Web.Controllers
                 {
                     if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
-                       
+
 
                         // Get Response Here
                         var data = JsonConvert.DeserializeObject<LoginResponseDto>(Response.Content.ReadAsStringAsync().Result);
-                       
+                        if (data.RoleId == 2)
+                        {
 
-                        TempData["Dashboard"] = JsonConvert.SerializeObject(user);
-                        HttpContext.Session.SetString("UserName", Convert.ToString(data.Full_Name));
-                        HttpContext.Session.SetString("Email", Convert.ToString(data.EmailId));
-                        HttpContext.Session.SetString("Token", Convert.ToString(data.Token));
-                        HttpContext.Session.SetString("UserId", Convert.ToString(data.UserId));
-                        HttpContext.Session.SetString("VesselId", Convert.ToString(data.VesselId));
-                        return RedirectToAction("Index", "Dashboard");
+                            var VesselId = Convert.ToInt32(TempData["VesselId"]);
+                            var UserId = Convert.ToInt32(TempData["UserId"]);
+
+                            // TempData["Dashboard"] = JsonConvert.SerializeObject(user);
+                            HttpContext.Session.SetString("UserName", Convert.ToString(data.Full_Name));
+                            HttpContext.Session.SetString("Email", Convert.ToString(data.EmailId));
+                            HttpContext.Session.SetString("Token", Convert.ToString(data.Token));
+                            HttpContext.Session.SetString("UserId", Convert.ToString(data.UserId));
+                            HttpContext.Session.SetString("VesselId", Convert.ToString(data.VesselId));
+                            HttpContext.Session.SetString("RoleId", Convert.ToString(data.RoleId));
+                            UserId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+                            return RedirectToAction("Index", "OperatorDashboard", new { @id = UserId });
+                            
+                        }
+                        else
+                        {
+                            TempData["Dashboard"] = JsonConvert.SerializeObject(user);
+                            HttpContext.Session.SetString("UserName", Convert.ToString(data.Full_Name));
+                            HttpContext.Session.SetString("Email", Convert.ToString(data.EmailId));
+                            HttpContext.Session.SetString("Token", Convert.ToString(data.Token));
+                            HttpContext.Session.SetString("UserId", Convert.ToString(data.UserId));
+                            HttpContext.Session.SetString("VesselId", Convert.ToString(data.VesselId));
+                            HttpContext.Session.SetString("RoleId", Convert.ToString(data.RoleId));
+                            return RedirectToAction("Index", "Dashboard");
+                        }
                     }
                     else
                     {
