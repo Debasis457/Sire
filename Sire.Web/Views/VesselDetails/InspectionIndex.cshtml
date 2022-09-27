@@ -1,0 +1,47 @@
+﻿@{
+    ViewData["Title"] = "Vessel Inspection";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+}
+<!-- Navigation Fixed Bar-->
+<div class="row fix-head">
+    <div class="col-md-12">
+        <div class="card m-b-0">
+            <div class="card-body head-tit">
+                <div class="col-sm-5">
+                    <h5 class="head-tit-fnt">Operator Vessel Inspection</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<br />
+<br />
+<form asp-action="Index" asp-controller="Inspection">
+    <div class="row" style="top:100px;">
+        <div class="col-sm-12">
+            <div class="col-lg-2">
+                <button class="btn btn-success" type="button" data-toggle="modal" data-target="#myVesselInspectionModal" data-backdrop="false">New Inspection</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="myVesselInspectionModal" tabindex="-1" role="dialog" aria-labelledby="myVesselInspectionModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg" style="margin-top:15em;">
+            <div class="modal-content">
+                <div class="modal-header p-3">
+                    <h5 class="modal-title h4 mod-tit" id="myLargeModalLabel">Inspection Type </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+                </div>
+                <div class="modal-body" id="InspectionModalBody">
+                </div>
+
+                <div class="modal-footer p-3">
+                    <button type="button" class="btn  btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn  btn-primary">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>

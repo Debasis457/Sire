@@ -45,8 +45,15 @@ namespace Sire.Web.Controllers
 
         }
 
+        public async Task<IActionResult> InspectionIndex()
+        {
 
-     
+            return View();
+
+
+        }
+
+
 
 
 

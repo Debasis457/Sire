@@ -28,6 +28,10 @@ $(document).ready(function () {
         console.log('Execution End ---------------------');
     }
     $(".inp").attr('autocomplete', 'off');
+
+    $('#myInspectionModal').on('show.bs.modal', function () {
+        $("#InspectionModalBody").load("/VesselPopUp/Index/");
+    });
 });
 
 function isNumber(evt) {
@@ -215,8 +219,7 @@ function openForm() {
     $("#VesselList").empty();
 
     $("#Reversetab").load("/VesselPopUp/Index/", function () {
- 
-   a
+
         //$.ajax({
         //    type: "POST",
         //    url: '/VesselPopUp/GetVesselList/',
@@ -253,7 +256,12 @@ function openForm() {
     });
 }
 
-
+function openInspectionModal() {
+    debugger;
+    //$("#VesselList").empty();
+    //$('#myInspectionModal').modal('show');
+    $("#InspectionModalBody").load("/VesselPopUp/Index/");
+}
  
    
 function ShowModelPopUp()

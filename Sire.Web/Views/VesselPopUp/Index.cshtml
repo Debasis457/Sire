@@ -58,7 +58,8 @@
 </div>
                 <div class="col-sm-7 pt-2">
                     <button type="submit" class="n-btn  btn-success" asp-action="GetVesselDetails">Submit</button>
-                     <a class="n-btn btn-danger" onclick="@("window.location.href='" + @Url.Action("Index", "Dashboard") + "'");">Close</a>
+                    <button type="button" class="btn  btn-danger" data-dismiss="modal">Close</button>
+                     @*<a class="n-btn btn-danger" onclick="@("window.location.href='" + @Url.Action("Index", "Dashboard") + "'");">Close</a>*@
                  </div>    
                   
             </form>
