@@ -1,8 +1,7 @@
-﻿
+﻿@model Sire.Data.Dto.Inspection.InspectionDto
 @{
     ViewBag.Title = "Operator";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
-    int i = 0;
 }
 
 <!-- Navigation Fixed Bar-->
@@ -49,30 +48,30 @@
 
 </div>
 <form asp-controller="Vessel" asp-action="AddInspection">
-                   
 
 
-  <!--Secondary-Buttons-->
-<div class="container" style="margin-left:200px">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                <div class="btn-group mr-2" role="group" aria-label="First group">
-                    <button type="button" class="btn btn-success">Update PIQ & HVPQ</button>
-                    <button type="button" class="btn btn-success">Change Accesor &  Reviewer</button>
-                    <button type="button" class="btn btn-success">Photo Repository</button>
-                    <button type="button" class="btn btn-success">Certificates Repository</button>
-                    <button type="button" class="btn btn-success">Question</button>
-                    <button type="submit" class="btn btn-success">New Inspection</button>
-                 
+
+    <!--Secondary-Buttons-->
+    <div class="container" style="margin-left:200px">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                    <div class="btn-group mr-2" role="group" aria-label="First group">
+                        <button type="button" class="btn btn-success">Update PIQ & HVPQ</button>
+                        <button type="button" class="btn btn-success">Change Accesor &  Reviewer</button>
+                        <button type="button" class="btn btn-success">Photo Repository</button>
+                        <button type="button" class="btn btn-success">Certificates Repository</button>
+                        <button type="button" class="btn btn-success">Question</button>
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myInspectionModal" data-backdrop="false">New Inspection</button>
+
+                    </div>
                 </div>
             </div>
+
+
         </div>
-        
 
-    </div>   
-
-</div>
+    </div>
 </form>
 
 <div class="container">
@@ -88,50 +87,107 @@
             </div>
             <div class="row">
                 <div class="col-lg-12">
-                    <a href="#" class="link-primary">Ongoing Inspection</a>
+                    @if (Model != null)
+                    {
+                        @Html.ActionLink("Ongoing Inspection", "Index",
+                    "InspectionQuestion", new {id = Model.Id}, new {@class="link-primary"})
+                    }
+                    else
+                    {
+                        <a href="#" class="link-primary">Ongoing Inspection</a>
+                    }
+                    @*<a href="#" class="link-primary">Ongoing Inspection</a>*@
                     <a href="#" class="link-primary">View Progress</a>
                 </div>
 
 
             </div>
         </div>
-        
+
 
     </div>
 
 </div>
 
-    <div class="col-sm-12">
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col">
-                        <div class="table-responsive">
-                            <table class="table table-borderless table-striped table-hover js-basic-example dataTable" id="example1">
-                                <thead>
-                                    <tr role="row">
-                                        <th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending" style="width: 158px;">
-                                            Date
-                                        </th>
-                                        <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
-                                            Type of Pre-Vet
-                                        </th>
+<div class="col-sm-12">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <div class="table-responsive">
+                        <table class="table table-borderless table-striped table-hover js-basic-example dataTable" id="example1">
+                            <thead>
+                                <tr role="row">
+                                    <th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending" style="width: 158px;">
+                                        Date
+                                    </th>
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                        Type of Pre-Vet
+                                    </th>
 
-                                        <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending" style="width: 155px;">
-                                            Observation
-                                        </th>
-                                        <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
-                                            Status
-                                        </th>
-                                    </tr>
-                                </thead>
-                            </table>
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending" style="width: 155px;">
+                                        Observation
+                                    </th>
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                        Status
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="myInspectionModal" tabindex="-1" role="dialog" aria-labelledby="myInspectionModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="margin-top:15em;">
+        <div class="row">
+            <div class="col-md-12">
+                @using (Html.BeginForm("GoToInspections", "OngoingInspection", FormMethod.Post, htmlAttributes: new
+                {
+                    @id = "InspectionsForm"
+                }))
+                {
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h5 class="modal-title h4 mod-tit" id="myOperatorWiseVesselModalLabel">Select Inspection Type </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 
                         </div>
+
+                        <div class="modal-body">
+                            <div class="col-sm-3">
+                                <label class="control-label" for="Id">Inspection Type</label>
+                            </div>
+                            <div class="col-sm-3">
+                                @Html.DropDownList("Id",new SelectList(ViewBag.EnumList, "Id", "Name"),"Select", new { @class = "form-control", required="required"})
+                            </div>
+                            <div class="col-sm-6">
+                                @Html.Hidden("IsAllowdForNew")
+                                @if (Model != null)
+                                {
+                                    @Html.Hidden("InspectionId",Model.Id)
+                                }
+                                else
+                                {
+                                    @Html.Hidden("InspectionId")
+                                }
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" id="OperatorWiseVesselSubmit">Submit</button>
+                        </div>
                     </div>
-
-                </div>
+                }
             </div>
-
         </div>
     </div>
+</div>

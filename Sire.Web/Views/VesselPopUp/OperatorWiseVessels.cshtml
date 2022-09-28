@@ -1,0 +1,39 @@
+﻿@model Sire.Data.Dto.Master.VesselDto
+@{
+    Layout = null;
+}
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("GetVesselWiseInspections", "VesselPopUp", FormMethod.Post, htmlAttributes: new
+        {
+            @id = "VesselWiseInspectionsForm"
+        }))
+        {
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title h4 mod-tit" id="myOperatorWiseVesselModalLabel">Select Vessel </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+                </div>
+
+                <div class="modal-body">
+                    <div class="col-sm-2">
+                        <label class="control-label" for="Id">Vessel Name</label>
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.DropDownList("Id",new SelectList(ViewBag.Vessel, "Id", "Name"),"Select", new { @class = "form-control", required="required"})
+                        @Html.ValidationMessageFor(model => model.Id, "Please select a vessel", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-sm-7">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="OperatorWiseVesselSubmit">Submit</button>
+                </div>
+            </div>
+        }
+    </div>
+</div>

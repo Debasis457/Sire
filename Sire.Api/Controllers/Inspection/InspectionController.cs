@@ -51,7 +51,16 @@ namespace Sire.Api.Controllers.Inspection
             var InspectionDto = _mapper.Map<InspectionDto>(test);
             return Ok(InspectionDto);
         }
+        [AllowAnonymous]
+        [HttpGet("{operatorId}/{vesselId}")]
+        public IActionResult Get(int operatorId, int vesselId)
+        {
+            var tests = _InspectionRepository.FindByInclude(x => x.Operator_id == operatorId && x.Vessel_Id == vesselId)
+                .OrderByDescending(x => x.Id).ToList();
+            var testsDto = _mapper.Map<IEnumerable<InspectionDto>>(tests);
 
+            return Ok(testsDto);
+        }
         [AllowAnonymous]
         [HttpPost]
         public IActionResult Post([FromBody] InspectionDto InspectionDto)

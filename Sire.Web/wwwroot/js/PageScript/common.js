@@ -211,7 +211,7 @@ function setMd5Password(event, event2 = null) {
 //    $("#VesselList").empty();
 
 //    $("#Reversetab").load("/VesselPopUp/Index/", function () {
- 
+
 //   a
 //        //$.ajax({
 //        //    type: "POST",
@@ -242,16 +242,16 @@ function setMd5Password(event, event2 = null) {
 //        //    }
 
 //        //});
-    
-      
 
-        
+
+
+
 //    });
 //}
 
 
- 
-   
+
+
 
 
 //function isNumberKey(txt, evt) {
@@ -270,3 +270,16 @@ function setMd5Password(event, event2 = null) {
 //    }
 //    return true;
 //}
+
+$(document).ready(function () {
+    $('#myOperatorWiseVesselModal').on('show.bs.modal', function () {
+        $("#OperatorWiseVesselModalContent").load("/VesselPopUp/OperatorWiseVessels/");
+    });
+
+    $("#InspectionsForm").on("submit", function (event) {
+        if ($("#InspectionsForm #InspectionId").val() != "")
+            $("#InspectionsForm #IsAllowdForNew").val(window.confirm("Do you want to proceed with a new Inspection?"));
+        else
+            $("#InspectionsForm #IsAllowdForNew").val("true");
+    });
+});

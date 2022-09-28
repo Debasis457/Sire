@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Amqp.Framing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -27,7 +28,7 @@ namespace Sire.Web.Controllers
         {
             _logger = logger;
             _iConfig = iConfig;
-         
+
             apiBaseVesselUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Vessel";
 
         }
@@ -66,9 +67,9 @@ namespace Sire.Web.Controllers
 
             using (HttpClient client = new HttpClient())
             {
-               
+
                 var endvessel = apiBaseVesselUrl + "/GetVesselDropDown";
-               
+
                 using (var IUserResponse = await client.GetAsync(endvessel))
                 {
                     if (IUserResponse.StatusCode == System.Net.HttpStatusCode.OK)
@@ -84,14 +85,14 @@ namespace Sire.Web.Controllers
                 }
             }
             ViewBag.IsEdit = true;
-          
+
             return View();
-               
-         
+
+
 
         }
         public async Task<JsonResult> GetVesselList()
-             
+
         {
             using (HttpClient client = new HttpClient())
             {
@@ -112,31 +113,66 @@ namespace Sire.Web.Controllers
                     }
                 }
             }
-           
+
         }
+        
         [ValidateAntiForgeryToken]
-            public async Task<ActionResult> GetVesselDetails(int? Id)
+        public async Task<ActionResult> GetVesselDetails(int? Id)
         {
             var endvessel = apiBaseVesselUrl + "/GetVesselData/" + Id;
 
             using (HttpClient client = new HttpClient())
             {
-                
+
                 using (var Response = await client.GetAsync(endvessel))
                 {
-                  
+
                     var data = JsonConvert.DeserializeObject<VesselDto>(Response.Content.ReadAsStringAsync().Result);
 
-                   
-            //  return RedirectToAction("Index", "VesselDetails", new { @id = data });
 
-                  return View("~/Views/VesselDetails/Index.cshtml", data);
+                    //  return RedirectToAction("Index", "VesselDetails", new { @id = data });
+
+                    return View("~/Views/VesselDetails/Index.cshtml", data);
                 }
             }
 
         }
 
+        public async Task<IActionResult> OperatorWiseVessels()
+        {
 
-       
+            using (HttpClient client = new HttpClient())
+            {
+                var operatorid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+                var endvessel = apiBaseVesselUrl + "/GetVesselbyOperator/" + operatorid;
+
+                using (var IUserResponse = await client.GetAsync(endvessel))
+                {
+                    if (IUserResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var VesselData = JsonConvert.DeserializeObject<IEnumerable<VesselDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+                        ViewBag.Vessel = VesselData;
+
+                    }
+                    else
+                    {
+                        ModelState.Clear();
+                    }
+                }
+            }
+            ViewBag.IsEdit = true;
+
+            return View();
+
+
+
+        }
+
+        [ValidateAntiForgeryToken]
+        public ActionResult GetVesselWiseInspections(int? Id)
+        {
+            TempData["vessselId"] = Id;
+            return RedirectToAction("Index", "OngoingInspection");
+        }
     }
 }
