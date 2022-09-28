@@ -28,10 +28,6 @@ $(document).ready(function () {
         console.log('Execution End ---------------------');
     }
     $(".inp").attr('autocomplete', 'off');
-
-    $('#myInspectionModal').on('show.bs.modal', function () {
-        $("#InspectionModalBody").load("/VesselPopUp/Index/");
-    });
 });
 
 function isNumber(evt) {
@@ -208,66 +204,55 @@ function setMd5Password(event, event2 = null) {
 }
 
 
-function popup() {
-     $('[id*="myModal1"]').modal('show');
-   
-}
 
 
-function openForm() {
-    debugger;
-    $("#VesselList").empty();
+//function openForm() {
+//    debugger;
+//    $("#VesselList").empty();
 
-    $("#Reversetab").load("/VesselPopUp/Index/", function () {
+//    $("#Reversetab").load("/VesselPopUp/Index/", function () {
+ 
+//   a
+//        //$.ajax({
+//        //    type: "POST",
+//        //    url: '/VesselPopUp/GetVesselList/',
+//        //    data: {},
+//        //    contentType: "application/json; charset=utf-8",
+//        //    dataType: "json",
+//        //    success: function (result) {
+//        //        debugger;
+//        //        if (result != null) {
+//        //            if (result.length > 0) {
 
-        //$.ajax({
-        //    type: "POST",
-        //    url: '/VesselPopUp/GetVesselList/',
-        //    data: {},
-        //    contentType: "application/json; charset=utf-8",
-        //    dataType: "json",
-        //    success: function (result) {
-        //        debugger;
-        //        if (result != null) {
-        //            if (result.length > 0) {
-
-        //               console.log(result)
-        //                $("#" + ddl).empty();
-        //                $("#" + ddl).append('<option value="0">Select</option>');
-        //                var str = $("#" + ddl).append('<option value="' + result.id + '">' + result.value + '</option>');
+//        //               console.log(result)
+//        //                $("#" + ddl).empty();
+//        //                $("#" + ddl).append('<option value="0">Select</option>');
+//        //                var str = $("#" + ddl).append('<option value="' + result.id + '">' + result.value + '</option>');
 
 
-        //                $("#VesselList > tbody").append(str);
+//        //                $("#VesselList > tbody").append(str);
 
-        //            }
-        //        }
+//        //            }
+//        //        }
 
-        //    },
+//        //    },
 
-        //    failure: function (response) {
-        //        alert(response.d);
-        //    }
+//        //    failure: function (response) {
+//        //        alert(response.d);
+//        //    }
 
-        //});
+//        //});
     
       
 
         
-    });
-}
+//    });
+//}
 
-function openInspectionModal() {
-    debugger;
-    //$("#VesselList").empty();
-    //$('#myInspectionModal').modal('show');
-    $("#InspectionModalBody").load("/VesselPopUp/Index/");
-}
+
  
    
-function ShowModelPopUp()
-{
-        window.open('/VesselPopUp/Index', "WindowPopup", 'width=400px,height=400px,align=centre');  
-}
+
 
 //function isNumberKey(txt, evt) {
 //    var charCode = (evt.which) ? evt.which : evt.keyCode;

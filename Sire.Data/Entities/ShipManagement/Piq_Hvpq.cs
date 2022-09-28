@@ -1,4 +1,5 @@
 ﻿using Sire.Data.Entities.Common;
+using System;
 using System.Collections.Generic;
 
 namespace Sire.Data.Entities.ShipManagement
@@ -6,7 +7,7 @@ namespace Sire.Data.Entities.ShipManagement
     public class Piq_Hvpq : BaseEntity
     {
 
-        public int question_id { get; set; }
+        //public Nullable<int>  question_id { get; set; }
         public string piq_hvpq_question { get; set; }
         public string Operand { get; set; }
         public string Type { get; set; }

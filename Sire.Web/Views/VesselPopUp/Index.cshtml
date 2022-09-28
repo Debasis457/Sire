@@ -2,11 +2,11 @@
 @model Sire.Data.Dto.Master.VesselDto
 @{
     ViewBag.Title = "Vessel";
-    Layout = null;
+      Layout = "~/Views/Shared/_LayoutWeb.cshtml";
 }
 
 
-  
+      <script src="~/js/PageScript/common.js"></script>
 
 @*<div class="tab-pane fade show active" id="User" role="tabpanel" aria-labelledby="pills-home-tab">
     <!-- End Navigation Fixed Bar-->
@@ -46,10 +46,16 @@
 
 </div>*@
 
-<div class="row pl-4 pr-4">
-    <div class="col-sm-12">
-        <div class="table-responsive">
-            <form asp-action="GetVesselDetails">
+<div class="row fix-head">
+        <div class="col-md-12">
+            <div class="card m-b-0">
+                <div class="card-body head-tit">
+                    <div class="col-sm-3">
+                        </div>
+                    <div class="col-sm-5">
+                        <div class="table-responsive">
+
+                 <form asp-action="GetVesselDetails">
                 <div class="col-sm-2 pr-0 h-40">
                     <label class="fnt-lable" for="Id">Select Vessel</label>
                 </div>
@@ -58,13 +64,19 @@
 </div>
                 <div class="col-sm-7 pt-2">
                     <button type="submit" class="n-btn  btn-success" asp-action="GetVesselDetails">Submit</button>
-                    <button type="button" class="btn  btn-danger" data-dismiss="modal">Close</button>
-                     @*<a class="n-btn btn-danger" onclick="@("window.location.href='" + @Url.Action("Index", "Dashboard") + "'");">Close</a>*@
+                     <a class="n-btn btn-danger" onclick="@("window.location.href='" + @Url.Action("Index", "Dashboard") + "'");">Close</a>
                  </div>    
                   
             </form>
-            
+               
+            </div>
+                    </div>
+                    <div class="col-sm-7 pt-2">
+                       </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
- 
+
+
+

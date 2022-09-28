@@ -36,7 +36,7 @@ namespace Sire.Respository.UserMgt
         {
             return All.Where(x =>
                     (x.DeletedDate == null))
-                .Select(c => new DropDownDto { Id = c.Id, Value = c.Full_Name }).OrderBy(o => o.Value).ToList();
+                .Select(c => new DropDownDto { Id = c.Id, Value = c.UserName }).OrderBy(o => o.Value).ToList();
         }
 
         public string Duplicate(User objSave)

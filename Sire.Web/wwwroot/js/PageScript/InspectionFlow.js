@@ -115,7 +115,7 @@ function GetQuestionResponse(Id) {
                     $('.QuestionContainer').append($('.' + type).html());
                     generateIds();
                 });
-            } 
+            }
             $('.btn-copy').click(function () {
                 var type = $('#selResponseType').val();
                 if (type != "") {

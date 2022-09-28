@@ -316,6 +316,11 @@ p {
     margin-bottom: 1rem;
 }
 
+h4 {
+    color: #343A40;
+    font-weight:bolder;
+}
+
 abbr[title],
 abbr[data-original-title] {
     text-decoration: underline;
@@ -1560,7 +1565,7 @@ pre code {
 
     .col-lg-12 {
         -webkit-box-flex: 0;
-        flex: 0 0 100%;
+        flex: auto;
         max-width: 100%;
     }
 
@@ -2858,16 +2863,18 @@ fieldset:disabled a.btn {
 }
 
 .btn-secondary {
-    color: #fff;
-    background-color: #6c757d;
-    border-color: #6c757d;
+    color: #1A75FF;
+    background-color: #fff;
+    border-color: #1A75FF;
+    margin-bottom: 20px !important;
+    margin-left:15px !important;
 }
 
-.btn-secondary:hover {
-    color: #fff;
-    background-color: #5a6268;
-    border-color: #545b62;
-}
+    .btn-secondary:hover {
+        color: #fff;
+        background-color: #0E3C82;
+        border-color: #fff;
+    }
 
 .btn-secondary:focus, .btn-secondary.focus {
     box-shadow: 0 0 0 0.2rem rgba(130, 138, 145, 0.5);
@@ -2893,8 +2900,8 @@ fieldset:disabled a.btn {
 
 .btn-success {
     color: #fff !important;
-    background-color: black !important;
-    border-color: black !important;
+    background-color: #007BFF !important;
+    border-color: #007BFF !important;
     margin-left: 15px !important;
 }
 
@@ -2967,10 +2974,10 @@ fieldset:disabled a.btn {
 }
 
 .btn-warning {
-    color: #fff;
-    background-color: black !important;
-    border-color: black !important;
-    margin-left : 15px !important;
+    color: #007BFF !important;
+    background-color: white !important;
+    border-color: white !important;
+    margin-left: 15px !important;
 }
 
 .btn-warning:hover {
@@ -3176,6 +3183,7 @@ fieldset:disabled a.btn {
     margin-left: 25px !important;
     padding-left:60px;
     padding-right:60px;
+    font-size:larger !important;
 }
 
 /*button.btn.btn-outline-success {
@@ -18745,6 +18753,14 @@ strong {
 
  Grid examples
 */
+
+.col-center{
+    margin:auto !important;
+    display:flex !important;
+    flex-direction:column !important;
+}
+
+
 .bd-example-row {
     background: #f6f7fb;
     padding: 15px;

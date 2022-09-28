@@ -1,5 +1,6 @@
 ﻿using Sire.Data.Entities.Common;
 using Sire.Data.Entities.Question;
+using Sire.Data.Entities.UserMgt;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -33,7 +34,9 @@ namespace Sire.Data.Dto.Question
     
         public int Rank { get; set; }
         public int Rank_Group_Id { get; set; }
+        public int DAssessore { get; set; }
+        public User User { get; set; }
+        public int DReviewer { get; set; }
 
-      
     }
 }

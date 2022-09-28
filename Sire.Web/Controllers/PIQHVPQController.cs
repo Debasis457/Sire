@@ -1,16 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Sire.Common;
 using Sire.Data.Dto.Master;
 using Sire.Data.Dto.ShipManagement;
 using Sire.Data.Entities.ShipManagement;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using static Sire.Common.CommonServices;
 
 namespace Sire.Web.Controllers
 {
@@ -203,7 +207,12 @@ namespace Sire.Web.Controllers
         public async Task<IActionResult> SavePIQ([FromBody] Vessel_Response_Piq_HvpqDto1[] data)
         {
             //return Json(null);
-
+            var vesselid = Convert.ToInt32(HttpContext.Session.GetString("VesselId"));
+           for(int i = 0; i < data.Length; i++)
+            {
+            data[i].vessel_Id = vesselid;
+            }
+            
             if (ModelState.IsValid)
             {
                 try
@@ -221,6 +230,10 @@ namespace Sire.Web.Controllers
                                 using (var FleetData = await client.GetAsync(apiBaseResponseUrl))
                                 {
                                     var data1 = JsonConvert.DeserializeObject<IEnumerable<List<Vessel_Response_Piq_HvpqDto>>>(FleetData.Content.ReadAsStringAsync().Result);
+                                   
+                                        ViewBag.Alert = CommonServices.ShowAlert(Alerts.Success, "Record added Successfully");
+                                  
+
                                     return View("Index", data1);
                                 }
 
@@ -248,7 +261,11 @@ namespace Sire.Web.Controllers
         public async Task<IActionResult> SaveHVPQ([FromBody] Vessel_Response_Piq_HvpqDto1[] data)
         {
             //return Json(null);
-
+            var vesselid = Convert.ToInt32(HttpContext.Session.GetString("VesselId"));
+            for (int i = 0; i < data.Length; i++)
+            {
+                data[i].vessel_Id = vesselid;
+            }
             if (ModelState.IsValid)
             {
                 try

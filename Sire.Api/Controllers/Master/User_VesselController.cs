@@ -133,8 +133,7 @@ namespace Sire.Api.Controllers.Master
         public IActionResult GetVessel(int id)
         {
             if (id <= 0) return BadRequest();
-            //var test = _user_VesselRepository.FindByInclude(x => x.User_Id == id,x => x.Vessel , x => x.Fleet).ToList();
-            var test = _user_VesselRepository.FindByInclude(x => x.User_Id == id, x => x.Vessel).ToList();
+            var test = _user_VesselRepository.FindByInclude(x => x.User_Id == id,x => x.Vessel).ToList();
             var testsDto = _mapper.Map<IEnumerable<User_VesselDto>>(test);
             foreach (var item in testsDto)
             {

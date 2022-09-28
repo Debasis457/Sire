@@ -24,20 +24,20 @@ function GetPIQLoad() {
     $("#PIQ").empty();
     $("#PIQ").load("/PIQHVPQ/GetPIQLoad/", function () {
         $('#PIQDetails').DataTable({
-            'lengthChange': true,
+            'lengthChange': false,
             'searching': true,
             'ordering': false,
             'info': true,
             'autoWidth': false,
-            "scrollY": "520px",
+           /* "scrollY": "520px",*/
             "scrollX": false,
             "scrollCollapse": true,
             "paging": false,
             "responsive": true,
-            "columnDefs": [
-                { "width": "70%", "targets": 0 },
-                { "width": "30%", "targets": 1 }
-            ]
+            //"columnDefs": [
+            //    { "width": "40%", "targets": 0 },
+            //    { "width": "60%", "targets": 1 }
+            //]
 
         });
         $('.select2').select2();
@@ -77,11 +77,15 @@ function GetHVPQLoad() {
             'ordering': false,
             'info': true,
             'autoWidth': false,
-            "scrollY": "520px",
+            /* "scrollY": "520px",*/
             "scrollX": false,
             "scrollCollapse": true,
             "paging": false,
             "responsive": true,
+            "columnDefs": [
+                { "width": "50%", "targets": 0 },
+                { "width": "50%", "targets": 1 }
+            ]
         });
         $('.select2').select2();
         $('.select2').width("100%");

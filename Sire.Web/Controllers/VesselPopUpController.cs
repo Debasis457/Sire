@@ -31,6 +31,36 @@ namespace Sire.Web.Controllers
             apiBaseVesselUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Vessel";
 
         }
+
+        public async Task<IActionResult> SelectVessel()
+        {
+
+            using (HttpClient client = new HttpClient())
+            {
+
+                var endvessel = apiBaseVesselUrl + "/GetVesselDropDown";
+
+                using (var IUserResponse = await client.GetAsync(endvessel))
+                {
+                    if (IUserResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var VesselData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+                        ViewBag.Vessel = VesselData;
+
+                    }
+                    else
+                    {
+                        ModelState.Clear();
+                    }
+                }
+            }
+            ViewBag.IsEdit = true;
+
+            return View();
+
+
+
+        }
         public async Task<IActionResult> Index()
         {
 

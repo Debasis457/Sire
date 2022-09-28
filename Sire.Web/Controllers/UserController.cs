@@ -21,7 +21,7 @@ namespace Sire.Web.Controllers
         private readonly ILogger<UserController> _logger;
         private readonly Microsoft.Extensions.Configuration.IConfiguration _iConfig;
         string apiBaseUrl = string.Empty;
-        string apiBaseOperatorUrl = string.Empty;
+        string apiBaseVesselUrl = string.Empty;
         string apiBaseUserRankUrl = string.Empty;
         string apiBaseRankGroupUrl = string.Empty;
         public UserController(ILogger<UserController> logger,
@@ -31,7 +31,7 @@ namespace Sire.Web.Controllers
             _logger = logger;
             _iConfig = iConfig;
             apiBaseUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/UserMaster";
-            apiBaseOperatorUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/operator";
+            apiBaseVesselUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/vessel";
             apiBaseUserRankUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/User_Rank";
             apiBaseRankGroupUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/RankGroup";
 
@@ -72,7 +72,7 @@ namespace Sire.Web.Controllers
 
         public async Task<IActionResult> AddEdit(int? Id)
         {
-            var enduser = apiBaseOperatorUrl + "/GetOperatorDropDown";
+            var enduser = apiBaseVesselUrl + "/GetVesselDropDown";
             var endUserRank = apiBaseUserRankUrl + "/GetUser_RankDropDown";
             var endRankGroup = apiBaseRankGroupUrl + "/GetRankGroupDropDown";
             if (Id == null)
@@ -92,8 +92,8 @@ namespace Sire.Web.Controllers
                             {
                                 if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                                 {
-                                    var OperatorData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
-                                    ViewBag.Operator = OperatorData;
+                                    var VesselData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+                                    ViewBag.Vessel = VesselData;
                                 }
                                 else
                                 {
@@ -159,8 +159,8 @@ namespace Sire.Web.Controllers
                             {
                                 if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                                 {
-                                    var OperatorData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IOperatorResponse.Content.ReadAsStringAsync().Result);
-                                    ViewBag.Operator = OperatorData;
+                                    var VesselData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IOperatorResponse.Content.ReadAsStringAsync().Result);
+                                    ViewBag.Vessel = VesselData;
                                 }
                                 else
                                 {
@@ -271,7 +271,7 @@ namespace Sire.Web.Controllers
 
                          
 
-                                var enduser = apiBaseOperatorUrl + "/GetOperatorDropDown";
+                                var enduser = apiBaseVesselUrl + "/GetVesselDropDown";
                                 var endUserRank = apiBaseUserRankUrl + "/GetUser_RankDropDown";
                                 var endRankGroup = apiBaseRankGroupUrl + "/GetRankGroupDropDown";
 
@@ -279,8 +279,8 @@ namespace Sire.Web.Controllers
                                 {
                                     if (IUserResponse.StatusCode == System.Net.HttpStatusCode.OK)
                                     {
-                                        var OperatorData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
-                                        ViewBag.Operator = OperatorData;
+                                        var VesselData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+                                        ViewBag.Vessel = VesselData;
                                     }
                                     else
                                     {
@@ -334,7 +334,7 @@ namespace Sire.Web.Controllers
             using (HttpClient client = new HttpClient())
             {
                 StringContent content = new StringContent(JsonConvert.SerializeObject(UserDto), Encoding.UTF8, "application/json");
-                var enduser = apiBaseOperatorUrl + "/GetOperatorDropDown";
+                var enduser = apiBaseVesselUrl + "/GetVesselDropDown";
                 var endUserRank = apiBaseUserRankUrl + "/GetUser_RankDropDown";
                 var endRankGroup = apiBaseRankGroupUrl + "/GetRankGroupDropDown";
 
@@ -342,8 +342,8 @@ namespace Sire.Web.Controllers
                 {
                     if (IUserResponse.StatusCode == System.Net.HttpStatusCode.OK)
                     {
-                        var OperatorData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
-                        ViewBag.Operator = OperatorData;
+                        var VesselData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+                        ViewBag.Vessel = VesselData;
                     }
                     else
                     {
@@ -411,6 +411,22 @@ namespace Sire.Web.Controllers
                 }
             }
             return RedirectToAction(nameof(Index));
+        }
+        public async Task<JsonResult> GetVesselDetails(int Id)
+        {
+            var endvessel = apiBaseVesselUrl + "/getVesselDetails/" + Id;
+
+            using (HttpClient client = new HttpClient())
+            {
+                using (var Response = await client.GetAsync(endvessel))
+                {
+
+                    var data = JsonConvert.DeserializeObject<VesselDto>(Response.Content.ReadAsStringAsync().Result);
+                    return Json(data);
+
+                }
+            }
+
         }
     }
 }

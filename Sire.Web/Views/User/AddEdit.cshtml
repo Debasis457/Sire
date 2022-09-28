@@ -1,9 +1,12 @@
-﻿@model Sire.Data.Dto.UserMgt.UserDto
+﻿@using Sire.Data.Dto.UserMgt
+@model Sire.Data.Dto.UserMgt.UserDto
 @{
     ViewBag.Title = "User";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
 }
 
+<script src="~/assets/lib/jquery/jquery-3.3.1.min.js"></script>
+<script src="~/js/pagescript/user.js"></script>
 <div class="row fix-head">
         <div class="col-md-12">
             <div class="card m-b-0">
@@ -39,24 +42,45 @@
                         <input type="hidden" asp-for="Id" />
                         
                     }
-                  
+                   <div class="col-sm-2 pr-0 h-40">
+                        <label class="fnt-lable" for="UserType">UserType</label>
+                    </div>
+                    <div class="col-sm-2 pr-4 h-40">
+                       
+                        <select asp-for="UserType" asp-items="Html.GetEnumSelectList<User_Types>()" class="form-control select2">
+                            <option selected="selected" value="">Select</option>
+                        </select>
 
-                    <div class="col-sm-2 pr-0 h-40">
-                        <label class="fnt-lable" for="Operator_Id">Operator Name</label>
+                    </div>
+                      <div class="col-sm-2 pr-0 h-40">
+                        <label class="fnt-lable" for="UserName">User Name</label>
                     </div>
                     <div class="col-sm-2 pr-4 h-40">
-                       @* <input type="text" asp-for="Operator_Id"  class="form-control inp" />*@
-                        @Html.DropDownList("Operator_Id",new SelectList(ViewBag.Operator, "Id", "Value"),"--Select--" ,new { @class = "form-control select2"} )
+                        <input type="text" asp-for="UserName" class="form-control inp" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                       
+                    </div>
+                    <div class="col-sm-2 pr-0 h-40">
+                        <label class="fnt-lable" for="Vessel_Id">Vessel Name</label>
+                    </div>
+                    <div class="col-sm-2 pr-4 h-40">
+                        @Html.DropDownList("Vessel_Id",new SelectList(ViewBag.Vessel, "Id", "Value"),"--Select--" ,new { @class = "form-control select2"} )
                    
-           @*   
-              <select name="Operator" class="form-control" asp-for="Operator_Id" asp-items="@(new SelectList(ViewBag.Operator_Id, "Id", "Value"))"></select>
-              *@
+           
               </div>
-                    <div class="col-sm-2 pr-0 h-40">
-                        <label class="fnt-lable" for="Name">Full Name</label>
+              <div class="col-sm-2 pr-0 h-40">
+                        <label class="fnt-lable" for="VesselIMo">Vessel IMO Number</label>
                     </div>
                     <div class="col-sm-2 pr-4 h-40">
-                        <input type="text" asp-for="Full_Name" class="form-control inp" />
+                        <input type="text" id="Status" asp-for="VesselIMo" class="form-control inp"  style="font-weight:bold; font-size:15px;" readonly/>
+                       
+
+                    </div>
+                    <div class="col-sm-2 pr-0 h-40">
+                        <label class="fnt-lable" for="UserId">User Id</label>
+                    </div>
+                    <div class="col-sm-2 pr-4 h-40">
+                        <input type="text" asp-for="UserID" class="form-control inp" />
                        
                     </div>
 
@@ -66,16 +90,24 @@
                     </div>
                     <div class="col-sm-2 pr-4 h-40">
                         <input type="text" asp-for="EmailId" class="form-control inp" />
+                        <span asp-validation-for="EmailId" class="text-danger"></span>
                        
                     </div>
-                   
+                    <div class="col-sm-2 pr-0 h-40">
+                        <label class="fnt-lable" for="MobileNo">Mobile No</label>
+                    </div>
+                    <div class="col-sm-2 pr-4 h-40">
+                        <input type="text" asp-for="MobileNo" class="form-control inp" />
+                        <span asp-validation-for="MobileNo" class="text-danger"></span>
+                       
+                    </div>
                      <div class="col-sm-2 pr-0 h-40">
                         <label class="fnt-lable">Rank Name</label>
                     </div>
                     <div class="col-sm-2 pr-4 h-40">
                      
                         @Html.DropDownList("Rank_Id",new SelectList(ViewBag.Rank, "Id", "Value"),"Select" , new { @class = "form-control select2"})
-
+                        <span asp-validation-for="Rank_Id" class="text-danger"></span>
 
                     </div>
                      <div class="col-sm-2 pr-0 h-40">
@@ -83,7 +115,7 @@
                     </div> 
                     <div class="col-sm-2 pr-4 h-40">
                     @Html.DropDownList("Rank_Group_Id",new SelectList(ViewBag.RankGroup, "Id", "Value"),"Select" , new { @class = "form-control select2"})
-                   
+                        <span asp-validation-for="Rank_Group_Id" class="text-danger"></span>
                     </div>
 
                     <div class="col-sm-2 pr-0 h-40">
@@ -91,7 +123,7 @@
                     </div>
                     <div class="col-sm-2 pr-4 h-40">
                         <input type="password" asp-for="Password" class="form-control inp" />
-                       
+                        <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
 
                     <div class="col-sm-2 pr-0 h-40">
@@ -99,18 +131,17 @@
                     </div>
                     <div class="col-sm-2 pr-4 h-40">
                         <input type="password" asp-for="ConfirmPassword" class="form-control inp" />
-                        
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                     </div>
 
 
-                      <div class="col-sm-2 pr-0 h-40">
+                    @*  <div class="col-sm-2 pr-0 h-40">
                         <label class="fnt-lable" for="is_admin">Is Admin</label>
                         
                     </div>
 
                       <div class="col-sm-2 pr-4 h-40">
-                     @*  @Html.CheckBoxFor(m => m.is_admin)*@
-                           @* <input type="text"  asp-for="is_admin" class="form-control inp" />*@
+                    
                         <label class="switch">
                             <input class="switch-input" id="is_admin" type="checkbox" value="is_admin"  />
                             <span class="switch-label" data-on="Yes" data-off="No"></span>
@@ -118,28 +149,14 @@
                         </label>
 
                     </div>
-                    @* <div class="col-sm-2 pr-0 h-40">
-                        <label class="fnt-lable " for="UserID">User Id</label>
-                    </div>
-                    <div class="col-sm-2 pr-4 h-40">
-                        <input type="text" asp-for="UserID"  class="form-control inp" />
-                    </div>*@
+                   *@
 
                     <div class="col-sm-7 pt-2">
                         <button type="submit" class="n-btn  btn-success" id="btnSubmitOpt" onclick="return setMd5Password('Password', 'ConfirmPassword');">Submit</button>
                                         <a class="n-btn btn-danger" asp-action="Index">Back</a>
                        <input type="reset" name="Clear" value="Clear" class="n-btn btn-warning" />
                     </div>
-                     <div class="col-sm-12 pt-2">
-                            <span asp-validation-for="Full_Name" class="text-danger"></span>
-                            <span asp-validation-for="EmailId" class="text-danger"></span>
-                            <span asp-validation-for="Rank_Id" class="text-danger"></span>                                 
-                            <span asp-validation-for="Rank_Group_Id" class="text-danger"></span>
-                             <span asp-validation-for="Password" class="text-danger"></span>
-                             <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                            
-                         </div>
-
+                    
                 </form>
             </div>
 

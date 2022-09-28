@@ -77,7 +77,7 @@ namespace Sire.Api.Controllers.User
                 IsFirstTime = true,
                 UserId = authUser.Id,
                 RoleTokenId = roleTokenId,
-                Full_Name = authUser.Full_Name,
+                Full_Name = authUser.UserName,
                 EmailId = authUser.EmailId,
                 RoleId = roleId,
                 VesselId = vessel != null ? vessel.Vessel_Id : 0

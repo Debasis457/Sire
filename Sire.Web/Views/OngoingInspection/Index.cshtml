@@ -1,0 +1,137 @@
+﻿
+@{
+    ViewBag.Title = "Operator";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+    int i = 0;
+}
+
+<!-- Navigation Fixed Bar-->
+<div class="row fix-head">
+    <div class="col-md-12">
+        <div class="card m-b-0">
+            <div class="card-body head-tit">
+                <div class="col-sm-5">
+                    <h5 class="head-tit-fnt">Ongoing Inspections</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Top Buttons-->
+<div class="col-sm-12">
+
+
+
+    <nav class="navbar navbar-light bg-light">
+        <div class="row-sm-12">
+            <div class="col-lg-2">
+                <button class="btn btn-outline-success" type="submit">Training</button>
+            </div>
+            <div class="col-lg-2">
+                <button class="btn btn-outline-success" type="button">Inspection</button>
+            </div>
+            <div class="col-lg-2">
+                <button class="btn btn-outline-success" type="button">Alert Confg</button>
+            </div>
+            <div class="col-lg-1">
+                <button class="btn btn-outline-success" type="button">KPI</button>
+            </div>
+            <div class="col-lg-2">
+                <button class="btn btn-outline-success" type="button">Procedure</button>
+            </div>
+            <div class="col-lg-2">
+                <button class="btn btn-outline-success" type="button">Manage</button>
+            </div>
+        </div>
+    </nav>
+    </>
+
+</div>
+<form asp-controller="Vessel" asp-action="AddInspection">
+                   
+
+
+  <!--Secondary-Buttons-->
+<div class="container" style="margin-left:200px">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                <div class="btn-group mr-2" role="group" aria-label="First group">
+                    <button type="button" class="btn btn-success">Update PIQ & HVPQ</button>
+                    <button type="button" class="btn btn-success">Change Accesor &  Reviewer</button>
+                    <button type="button" class="btn btn-success">Photo Repository</button>
+                    <button type="button" class="btn btn-success">Certificates Repository</button>
+                    <button type="button" class="btn btn-success">Question</button>
+                    <button type="submit" class="btn btn-success">New Inspection</button>
+                 
+                </div>
+            </div>
+        </div>
+        
+
+    </div>   
+
+</div>
+</form>
+
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-12 col-md-12">
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: 70%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">70%</div>
+                        <div class="progress-bar bg-danger" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">30%</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <a href="#" class="link-primary">Ongoing Inspection</a>
+                    <a href="#" class="link-primary">View Progress</a>
+                </div>
+
+
+            </div>
+        </div>
+        
+
+    </div>
+
+</div>
+
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="table-responsive">
+                            <table class="table table-borderless table-striped table-hover js-basic-example dataTable" id="example1">
+                                <thead>
+                                    <tr role="row">
+                                        <th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending" style="width: 158px;">
+                                            Date
+                                        </th>
+                                        <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                            Type of Pre-Vet
+                                        </th>
+
+                                        <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending" style="width: 155px;">
+                                            Observation
+                                        </th>
+                                        <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                            Status
+                                        </th>
+                                    </tr>
+                                </thead>
+                            </table>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>

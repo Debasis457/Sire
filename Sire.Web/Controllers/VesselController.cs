@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -8,6 +9,7 @@ using Sire.Common;
 using Sire.Data.Dto.Inspection;
 using Sire.Data.Dto.Master;
 using Sire.Data.Dto.UserMgt;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
@@ -417,13 +419,17 @@ namespace Sire.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> AddInspection(InspectionDto inspectionDto)
         {
+                    var vesselid = Convert.ToInt32(HttpContext.Session.GetString("VesselId"));
+                    var operatorid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+                    //  inspectionDto.Vessel_Id = inspectionDto.Id;
+                    inspectionDto.Vessel_Id = vesselid;
+                    inspectionDto.Operator_Id = operatorid;
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
-
-                    inspectionDto.Vessel_Id = inspectionDto.Id;
-                    inspectionDto.Id = 0;
+                    
+                    //inspectionDto.Id = 0;
                     StringContent content = new StringContent(JsonConvert.SerializeObject(inspectionDto), Encoding.UTF8, "application/json");
 
                     using (var Response = await client.PostAsync(apiBaseInspectionUrl, content))
@@ -432,10 +438,10 @@ namespace Sire.Web.Controllers
                         if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                         {
                             ViewBag.IsEdit = false;
-                            inspectionDto = new InspectionDto();
+                            //inspectionDto = new InspectionDto();
                             using (var InspectionDtoData = await client.GetAsync(apiBaseUrl))
                             {
-                                var data = JsonConvert.DeserializeObject<List<InspectionDto>>(InspectionDtoData.Content.ReadAsStringAsync().Result);
+                                var data = JsonConvert.DeserializeObject<List<InspectionDto>>(Response.Content.ReadAsStringAsync().Result);
 
                                 return RedirectToAction("Index", "InspectionQuestion", new { @id = adddata });
 

@@ -45,10 +45,16 @@
                             <thead>
                                 <tr role="row">
                                     <th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending" style="width: 158px;">
-                                        Operator 
+                                        Vessel 
                                     </th>
                                     <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
                                        Full Name
+                                    </th>
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                       Email Id
+                                    </th>
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                        Mobile No
                                     </th>
                                      <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
                                        Rank
@@ -68,10 +74,16 @@
                                     var satus = item.IsDeleted == false ? "Active" : "Deactive";
                                     <tr>
                                         <td>
-                                            @item.Operator_Id
+                                            @item.Vessel_Id
                                         </td>
                                         <td>
-                                            @item.Full_Name
+                                            @item.UserName
+                                        </td>
+                                        <td>
+                                            @item.EmailId
+                                        </td>
+                                        <td>
+                                            @item.MobileNo
                                         </td>
                                           <td>
                                             @item.User_Rank.Rank

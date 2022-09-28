@@ -123,9 +123,19 @@ div.dataTables_filter > label > input[type="search"] {
     width: auto;
     -webkit-appearance: searchfield;
 }
+.Divbg {
+    
+    padding: 10px;
+    color: #fff ;   
+    width: 175px;
+}
 
+    .Divbg:hover {
+        background: red;
+    }
 a:hover {
     text-decoration: none;
+   
 }
 .table thead th{
     background-image: none;
@@ -416,9 +426,9 @@ ul#pills-tab > .nav-item {
     flex: none !important;
 }
 
-    ul#pills-tab > li > a.nav-link.active {
-        background-color: #347bbb !important;
-    }
+ul#pills-tab > li > a.nav-link.active {
+    background-color: #ff0000 !important;
+}
 .pcoded-navbar.navbar-collapsed ~ .pcoded-main-container {
     margin-left: 0px !important;
 }

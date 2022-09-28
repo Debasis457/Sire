@@ -8,8 +8,6 @@ namespace Sire.Data.Dto.ShipManagement
 {
     public class Piq_HvpqDto : BaseDto
     {
-
-
         public string piq_hvpq_question { get; set; }
         public string Operand { get; set; }
         public string Type { get; set; }

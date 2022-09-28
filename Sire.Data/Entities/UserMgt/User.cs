@@ -9,19 +9,29 @@ namespace Sire.Data.Entities.UserMgt
     {
         public string UserID { get; set; }
         public string EmailId { get; set; }
-        public int Operator_Id { get; set; }
-        public string Full_Name { get; set; }
+        public int Vessel_Id { get; set; }
+        public string UserName { get; set; }
         public bool? is_admin { get; set; }
         [ForeignKey("User_Rank")]
         public int Rank_Id { get; set; }
         [ForeignKey("RankGroup")]
         public int Rank_Group_Id { get; set; }
-        public string Password { get; set; }
+        public string Password { get; set; }   
 
         public User_Rank User_Rank { get; set; }
 
         public RankGroup RankGroup { get; set; }
-
-
+        public User_Types UserType { get; set; }
+        public int MobileNo { get; set; }
+        
+    }
+    public enum User_Types
+    {
+        Ecg_Admin = 1,
+        Operator = 2,
+        Operator_Admin = 3,
+        Captain = 4,
+        Reviewer_Crew = 5,
+        Non_Reviewer_Crew = 6
     }
 }

@@ -22,6 +22,7 @@ namespace Sire.Web.Controllers
         string apiBaseOperatorUrl = string.Empty;
         string apiBaseVesselUrl = string.Empty;
         string apiBaseQuestionUrl = string.Empty;
+        string apiBaseVessel_Url = string.Empty;
         public OperatorDashboard(ILogger<OperatorDashboard> logger,
             Microsoft.Extensions.Configuration.IConfiguration iConfig
             )
@@ -30,7 +31,7 @@ namespace Sire.Web.Controllers
             _iConfig = iConfig;
            
             apiBaseVesselUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/User_Vessel";
-  
+            apiBaseVessel_Url = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Vessel";
         }
         public async Task<IActionResult> Index(int? Id)
         {
@@ -83,6 +84,28 @@ namespace Sire.Web.Controllers
                     }
                 }
             }
+        }
+
+
+        public async Task<ActionResult> GetVesselDetails(int? Id)
+        {
+            var endvessel = apiBaseVessel_Url + "/GetVesselData/" + Id;
+
+            using (HttpClient client = new HttpClient())
+            {
+
+                using (var Response = await client.GetAsync(endvessel))
+                {
+
+                    var data = JsonConvert.DeserializeObject<VesselDto>(Response.Content.ReadAsStringAsync().Result);
+
+
+                    //  return RedirectToAction("Index", "VesselDetails", new { @id = data });
+
+                    return View("~/Views/VesselDetails/Index.cshtml", data);
+                }
+            }
+
         }
 
     }

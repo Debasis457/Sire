@@ -25,6 +25,7 @@ namespace Sire.Web.Controllers
         private readonly Microsoft.Extensions.Configuration.IConfiguration _iConfig;
         string apiBaseUrl = string.Empty;
         string apiBaseQuestionUrl = string.Empty;
+        string apiBaseUserRankUrl = string.Empty;
         public TrainingQuestionController(ILogger<TrainingQuestionController> logger,
             Microsoft.Extensions.Configuration.IConfiguration iConfig
             )
@@ -33,10 +34,11 @@ namespace Sire.Web.Controllers
             _iConfig = iConfig;
             apiBaseUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/trainingquestion";
             apiBaseQuestionUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/question";
-
+            apiBaseUserRankUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/User_Rank";
         }
         //Dharini
-        public async Task<IActionResult> Index(int? id)
+       
+            public async Task<IActionResult> Index(int? id)
         {
             TempData["TrainingId"] = id;
 
@@ -55,8 +57,8 @@ namespace Sire.Web.Controllers
                             {
 
                                 var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
-                                return View(data);
-                            }
+                            return View(data);
+                        }
                             else
                             {
                                 ModelState.Clear();
@@ -101,11 +103,126 @@ namespace Sire.Web.Controllers
                     {
                         ModelState.Clear();
                         ModelState.AddModelError(string.Empty, "Invalid Data");
-                        return PartialView();
+                        return View();
                     }
                 }
             }
         }
+        public async Task<PartialViewResult> GetQuestion(int? id)
+        {
+            TempData["TrainingId"] = id;
+
+            id = id == null ? 0 : id;
+            try
+            {
+
+
+                using (HttpClient client = new HttpClient())
+                {
+                    var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+                    var endpoint = apiBaseUrl + "/" + id + "/" + userid;
+
+                    using (var Response = await client.GetAsync(endpoint))
+                    {
+                        if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                        {
+
+                            var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
+                            return PartialView("QuestionLibrary", data);
+                        }
+                        else
+                        {
+                            ModelState.Clear();
+                            ModelState.AddModelError(string.Empty, "Invalid Data");
+                            return PartialView();
+                        }
+                    }
+
+
+                }
+
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+
+        }
+
+        public async Task<PartialViewResult> GetRenkBaseQuestion(int? id)
+        {
+            TempData["TrainingId"] = id;
+
+            id = id == null ? 0 : id;
+            var endUserRank = apiBaseUserRankUrl + "/GetUser_RankDropDown";
+            try
+            {
+
+
+                using (HttpClient client = new HttpClient())
+                {
+                    var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+                    var endpoint = apiBaseUrl + "/" + id + "/" + userid;
+
+                    using (var Response = await client.GetAsync(endpoint))
+                    {
+                        if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                        {
+                            var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
+
+
+                            using (var IUserResponse = await client.GetAsync(endUserRank))
+                            {
+                                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                                {
+                                    var RankData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+                                    ViewBag.Rank = RankData;
+                                }
+                                else
+                                {
+                                    ModelState.Clear();
+                                }
+                            }
+
+
+
+                            return PartialView("RankBaseQuestion", data);
+                        }
+                        else
+                        {
+                            ModelState.Clear();
+                            ModelState.AddModelError(string.Empty, "Invalid Data");
+                            return PartialView();
+                        }
+                    }
+
+
+                }
+
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+
+        }
+        public async Task<PartialViewResult> GetApplicableQuestions(int? id)
+        {
+            return PartialView("ApplicableQuestions");
+        }
+
+        public async Task<PartialViewResult> GetCIVQquestion(int? id)
+        {
+            return PartialView("PredictedCIVQ");
+        }
+
+        public async Task<PartialViewResult> GetTagQuestion(int? id)
+        {
+            return PartialView("TaggedQuestions");
+        }
+
 
     }
 
