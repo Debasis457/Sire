@@ -21,6 +21,7 @@ namespace Sire.Web.Controllers
         string apiBaseUrl = string.Empty;
         string apiBaseUserUrl = string.Empty;
         string apiBaseVesselUrl = string.Empty;
+string apiBaseOperatorVesselUrl = string.Empty;
 
         public VesselPopUpController(ILogger<UserVesselController> logger,
             Microsoft.Extensions.Configuration.IConfiguration iConfig
@@ -30,7 +31,7 @@ namespace Sire.Web.Controllers
             _iConfig = iConfig;
 
             apiBaseVesselUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Vessel";
-
+            apiBaseOperatorVesselUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/User_Vessel";
         }
 
         public async Task<IActionResult> SelectVessel()
@@ -140,18 +141,22 @@ namespace Sire.Web.Controllers
 
         public async Task<IActionResult> OperatorWiseVessels()
         {
-
             using (HttpClient client = new HttpClient())
             {
-                var operatorid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
-                var endvessel = apiBaseVesselUrl + "/GetVesselbyOperator/" + operatorid;
+                var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+                var endvessel = apiBaseOperatorVesselUrl + "/GetVessel/" + userid;
 
                 using (var IUserResponse = await client.GetAsync(endvessel))
                 {
                     if (IUserResponse.StatusCode == System.Net.HttpStatusCode.OK)
                     {
-                        var VesselData = JsonConvert.DeserializeObject<IEnumerable<VesselDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
-                        ViewBag.Vessel = VesselData;
+                        var VesselData = JsonConvert.DeserializeObject<IEnumerable<User_VesselDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+                        List<VesselDto> vesselDtos = new List<VesselDto>();
+                        foreach(User_VesselDto uvd in VesselData)
+                        {
+                            vesselDtos.Add(new VesselDto() { Id = uvd.Id, Name = uvd.Vessel.Name });
+                        }
+                        ViewBag.Vessel = vesselDtos;
 
                     }
                     else
@@ -160,12 +165,8 @@ namespace Sire.Web.Controllers
                     }
                 }
             }
-            ViewBag.IsEdit = true;
-
+            
             return View();
-
-
-
         }
 
         [ValidateAntiForgeryToken]

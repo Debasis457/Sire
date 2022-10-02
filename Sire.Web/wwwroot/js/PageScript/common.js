@@ -283,3 +283,23 @@ $(document).ready(function () {
             $("#InspectionsForm #IsAllowdForNew").val("true");
     });
 });
+
+function gotoOngoingInspection(event, vesselId)
+{
+    debugger
+    if (vesselId == 0) {
+        event.preventDefault();
+        swal({
+            title: "Info",
+            text: "Vessel not assigned",
+            type: "info",
+            showCancelButton: false,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Ok",
+            closeOnConfirm: false,
+            closeOnCancel: false
+
+        });
+        return false;
+    }
+}

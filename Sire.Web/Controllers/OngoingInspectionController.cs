@@ -133,7 +133,6 @@ namespace Sire.Web.Controllers
             {
                 var lastInspectionId = Convert.ToInt32(string.IsNullOrEmpty(InspectionId) ? 0 : InspectionId);
                 return RedirectToAction("", "InspectionQuestion", new { @id = lastInspectionId });
-
             }
             return View();
         }

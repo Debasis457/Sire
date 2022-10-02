@@ -8,6 +8,7 @@ using Sire.Data.Dto.Master;
 using Sire.Data.Dto.Operator;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -29,19 +30,21 @@ namespace Sire.Web.Controllers
         {
             _logger = logger;
             _iConfig = iConfig;
-           
+
             apiBaseVesselUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/User_Vessel";
             apiBaseVessel_Url = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Vessel";
         }
         public async Task<IActionResult> Index(int? Id)
         {
-
-
+            var usertype = Convert.ToInt32(HttpContext.Session.GetString("RoleId"));
+            ViewBag.UserType = usertype;
+            ViewBag.VesselId = 0;
             if (Id == null)
             {
                 using (HttpClient client = new HttpClient())
                 {
                     var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+
                     string endpoint = apiBaseVesselUrl + "/GetVessel/" + userid; /*+ this.HttpContext.Session.GetString("UserId"); ;*/
                     using (var Response = await client.GetAsync(endpoint))
                     {
@@ -49,6 +52,10 @@ namespace Sire.Web.Controllers
                         {
                             ViewBag.IsEdit = true;
                             var data = JsonConvert.DeserializeObject<List<User_VesselDto>>(Response.Content.ReadAsStringAsync().Result);
+                            if (usertype == 1)
+                            {
+                                ViewBag.VesselId = data.Count > 0 ? data.FirstOrDefault().Vessel_Id : 0;
+                            }
                             return View(data);
                         }
                         else
@@ -73,6 +80,10 @@ namespace Sire.Web.Controllers
                         {
                             ViewBag.IsEdit = true;
                             var data = JsonConvert.DeserializeObject<List<User_VesselDto>>(Response.Content.ReadAsStringAsync().Result);
+                            if (usertype == 1)
+                            {
+                                ViewBag.VesselId = data.Count > 0 ? data.FirstOrDefault().Vessel_Id : 0;
+                            }
                             return View(data);
                         }
                         else
@@ -108,5 +119,14 @@ namespace Sire.Web.Controllers
 
         }
 
+        public IActionResult GoToAction(int? type, int? vesselId)
+        {
+            if(type == 1)
+            {
+                TempData["vessselId"] = vesselId;
+                return RedirectToAction("Index", "OngoingInspection");
+            }
+            return RedirectToAction("Index", "TrainingQuestion");
+        }
     }
 }

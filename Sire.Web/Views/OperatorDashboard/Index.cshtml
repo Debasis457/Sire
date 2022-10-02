@@ -26,13 +26,11 @@
 </div>
 
 
-<form asp-action="Index" asp-controller="TrainingQuestion">
+<form asp-action="GoToAction" asp-controller="OperatorDashboard">
 
     <!--Upper-Section-->
 
     <div class="col-sm-12">
-
-
 
         <nav class="navbar navbar-light bg-light">
             <div class="row-sm-12">
@@ -40,7 +38,21 @@
                     <button class="btn btn-outline-success" type="submit">Training</button>
                 </div>
                 <div class="col-lg-2">
-                    <button class="btn btn-outline-success" type="button" data-toggle="modal" data-target="#myOperatorWiseVesselModal" data-backdrop="false">Inspection</button>
+                    @if(ViewBag.UserType == 1)
+                    {
+                        <button class="btn btn-outline-success" type="submit" onclick="return gotoOngoingInspection(event,@ViewBag.VesselId);">Inspection</button>
+                        <input type="hidden" name="type" value="1">
+                        <input type="hidden" name="vesselId" value="@ViewBag.VesselId">
+                    }
+                    else if(ViewBag.UserType == 2)
+                    {
+                        <button class="btn btn-outline-success" type="button" data-toggle="modal" data-target="#myOperatorWiseVesselModal" data-backdrop="false">Inspection</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-outline-success" type="button">Inspection</button>
+                    }
+                    
                 </div>
                 <div class="col-lg-2">
                     <button class="btn btn-outline-success" type="button">Alert Confg</button>
@@ -56,8 +68,6 @@
                 </div>
             </div>
         </nav>
-        </>
-
     </div>
 
 
@@ -377,7 +387,6 @@
 
             </div>
         </div>
-    </div>
     </div>
 
 
