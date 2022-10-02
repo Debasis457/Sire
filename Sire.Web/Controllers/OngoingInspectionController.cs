@@ -27,10 +27,8 @@ namespace Sire.Web.Controllers
         private readonly ILogger<OngoingInspectionController> _logger;
         private readonly Microsoft.Extensions.Configuration.IConfiguration _iConfig;
         string apiBaseUrl = string.Empty;
-        string apiBaseQuestionUrl = string.Empty;
-        string apiBaseResponseUrl = string.Empty;
-        string apiBaseQuestionResponseUrl = string.Empty;
-        string apiBaseAssesorReviewerUrl = string.Empty;
+        string apiBaseVesselUrl = string.Empty;
+
         enum InspectionType : int { Standard = 0, Full = 1 };
         public OngoingInspectionController(ILogger<OngoingInspectionController> logger, IConfiguration iConfig)
         {
@@ -38,8 +36,10 @@ namespace Sire.Web.Controllers
             _iConfig = iConfig;
 
             apiBaseUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Inspection";
+            apiBaseVesselUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Vessel";
+
         }
-        [Route("OngoingInspection/id")]
+        
         public async Task<IActionResult> Index()
         {
             ViewBag.EnumList = from InspectionType e in Enum.GetValues(typeof(InspectionType))
@@ -83,25 +83,36 @@ namespace Sire.Web.Controllers
         }
 
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> GoToInspections(int? Id, string IsAllowdForNew, string InspectionId)
+        public async Task<ActionResult> GoToInspections(int? Id, bool? IsAllowdForNew, int? InspectionId)
         {
-            var operatorid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+            var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
             var vesselId = Convert.ToInt32(TempData["vessselId"]);
             TempData.Keep();
-            if (IsAllowdForNew == "true")
+            if (IsAllowdForNew == true)
             {
                 InspectionDto inspectionDto = new InspectionDto();
                 inspectionDto.InspectionType = Id;
                 inspectionDto.Vessel_Id = vesselId;
-                inspectionDto.Operator_Id = operatorid;
+                //inspectionDto.Operator_Id = userid;
                 inspectionDto.Started_At = DateTime.Now;
                 try
                 {
                     using (HttpClient client = new HttpClient())
                     {
+                        string endpoint = apiBaseVesselUrl + "/GetVesselData/" + vesselId;
+                        using (var VesselResponse = await client.GetAsync(endpoint))
+                        {
+                            if (VesselResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                            {
+                                var data = JsonConvert.DeserializeObject<VesselDto>(VesselResponse.Content.ReadAsStringAsync().Result);
+                                if(data != null)
+                                {
+                                    inspectionDto.Operator_Id = data.Operator_id;
+                                }
+                            }
+                        }
 
                         StringContent content = new StringContent(JsonConvert.SerializeObject(inspectionDto), Encoding.UTF8, "application/json");
-
                         using (var Response = await client.PostAsync(apiBaseUrl, content))
                         {
                             var adddata = JsonConvert.DeserializeObject<int>(Response.Content.ReadAsStringAsync().Result);
@@ -131,8 +142,7 @@ namespace Sire.Web.Controllers
             }
             else
             {
-                var lastInspectionId = Convert.ToInt32(string.IsNullOrEmpty(InspectionId) ? 0 : InspectionId);
-                return RedirectToAction("", "InspectionQuestion", new { @id = lastInspectionId });
+                return RedirectToAction("", "InspectionQuestion", new { @id = InspectionId });
             }
             return View();
         }

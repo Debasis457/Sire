@@ -278,7 +278,7 @@ $(document).ready(function () {
 
     $("#InspectionsForm").on("submit", function (event) {
         if ($("#InspectionsForm #InspectionId").val() != "")
-            $("#InspectionsForm #IsAllowdForNew").val(window.confirm("Do you want to proceed with a new Inspection?"));
+            $("#InspectionsForm #IsAllowdForNew").val(window.confirm("An inspection for this vessel already exists. Do you still want to proceed with a new Inspection?"));
         else
             $("#InspectionsForm #IsAllowdForNew").val("true");
     });
