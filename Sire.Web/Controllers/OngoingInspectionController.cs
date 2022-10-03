@@ -1,23 +1,19 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Azure.Amqp.Framing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Sire.Data.Dto.Inspection;
-using Sire.Data.Dto.Master;
 using Sire.Data.Dto.Question;
-using Sire.Web.Models;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sire.Web.Controllers
 {
@@ -25,11 +21,14 @@ namespace Sire.Web.Controllers
     public class OngoingInspectionController : Controller
     {
         private readonly ILogger<OngoingInspectionController> _logger;
-        private readonly Microsoft.Extensions.Configuration.IConfiguration _iConfig;
+        private readonly IConfiguration _iConfig;
         string apiBaseUrl = string.Empty;
         string apiBaseVesselUrl = string.Empty;
+        string apiQuestionUrl = string.Empty;
+        string apiAssesorReviewerUrl = string.Empty;
 
         enum InspectionType : int { Standard = 0, Full = 1 };
+
         public OngoingInspectionController(ILogger<OngoingInspectionController> logger, IConfiguration iConfig)
         {
             _logger = logger;
@@ -37,7 +36,8 @@ namespace Sire.Web.Controllers
 
             apiBaseUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Inspection";
             apiBaseVesselUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Vessel";
-
+            apiQuestionUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Question";
+            apiAssesorReviewerUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/AssesorReviewer";
         }
         
         public async Task<IActionResult> Index()
@@ -54,29 +54,24 @@ namespace Sire.Web.Controllers
             var operatorid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
             if (vesselId > 0)
             {
-                using (HttpClient client = new HttpClient())
+                using HttpClient client = new();
+                string endpoint = apiBaseUrl + "/" + operatorid + "/" + vesselId;
+                using var Response = await client.GetAsync(endpoint);
+                if (Response.StatusCode == HttpStatusCode.OK)
                 {
-                    string endpoint = apiBaseUrl + "/" + operatorid + "/" + vesselId;
-                    using (var Response = await client.GetAsync(endpoint))
+                    var inspectionData = JsonConvert.DeserializeObject<IEnumerable<InspectionDto>>(Response.Content.ReadAsStringAsync().Result);
+                    var lastInspectionData = inspectionData.OrderByDescending(d => d.Started_At).FirstOrDefault();
+                    if (lastInspectionData != null)
                     {
-                        if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                        {
-                            var InspectionData = JsonConvert.DeserializeObject<IEnumerable<InspectionDto>>(Response.Content.ReadAsStringAsync().Result);
-                            var lastInspectionData = InspectionData.OrderByDescending(d => d.Started_At).FirstOrDefault();
-                            if (lastInspectionData != null)
-                            {
-                                return View(lastInspectionData);
-                            }
-                        }
-                        else
-                        {
-                            ModelState.Clear();
-                            ModelState.AddModelError(string.Empty, "Invalid Data");
-                            return View();
-                        }
+                        return View(lastInspectionData);
                     }
                 }
-
+                else
+                {
+                    ModelState.Clear();
+                    ModelState.AddModelError(string.Empty, "Invalid Data");
+                    return View();
+                }
             }
 
             return View();
@@ -85,53 +80,59 @@ namespace Sire.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> GoToInspections(int? Id, bool? IsAllowdForNew, int? InspectionId)
         {
-            var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+            var userId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+            var rankGroupId = Convert.ToInt32(HttpContext.Session.GetString("RankGroupId"));
             var vesselId = Convert.ToInt32(TempData["vessselId"]);
             TempData.Keep();
             if (IsAllowdForNew == true)
             {
-                InspectionDto inspectionDto = new InspectionDto();
-                inspectionDto.InspectionType = Id;
-                inspectionDto.Vessel_Id = vesselId;
-                //inspectionDto.Operator_Id = userid;
-                inspectionDto.Started_At = DateTime.Now;
+                InspectionDto inspectionDto = new()
+                {
+                    InspectionType = Id,
+                    Vessel_Id = vesselId,
+                    Operator_Id = userId,
+                    Started_At = DateTime.Now
+                };
+
                 try
                 {
-                    using (HttpClient client = new HttpClient())
+                    using HttpClient client = new();
+
+                    using var questionsResponse = await client.GetAsync(apiQuestionUrl + "/GetQuestionsByRankId/" + rankGroupId);
+                    if (questionsResponse.StatusCode == HttpStatusCode.OK)
                     {
-                        string endpoint = apiBaseVesselUrl + "/GetVesselData/" + vesselId;
-                        using (var VesselResponse = await client.GetAsync(endpoint))
+                        var questionsData = JsonConvert.DeserializeObject<List<QuestionDto>>(questionsResponse.Content.ReadAsStringAsync().Result);
+
+                        var inspectionContent = new StringContent(JsonConvert.SerializeObject(inspectionDto), Encoding.UTF8, "application/json");
+                        using var inspectionResponse = await client.PostAsync(apiBaseUrl, inspectionContent);
+                        if (inspectionResponse.StatusCode == HttpStatusCode.OK)
                         {
-                            if (VesselResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                            var newInspectionId = JsonConvert.DeserializeObject<int>(inspectionResponse.Content.ReadAsStringAsync().Result);
+
+                            var inspectionQuestions = new List<Inspection_QuestionDto>();
+                            foreach (var item in questionsData)
                             {
-                                var data = JsonConvert.DeserializeObject<VesselDto>(VesselResponse.Content.ReadAsStringAsync().Result);
-                                if(data != null)
+                                inspectionQuestions.Add(new Inspection_QuestionDto
                                 {
-                                    inspectionDto.Operator_Id = data.Operator_id;
-                                }
+                                    Inspection_Id = newInspectionId,
+                                    Question_Id = item.Id,
+                                    Assessor_Id = item.DAssessore,
+                                    Reviewer_Id = item.DReviewer
+                                });
+                            }
+
+                            var inspectionQuestionsContent = new StringContent(JsonConvert.SerializeObject(inspectionQuestions), Encoding.UTF8, "application/json");
+                            var inspectionQuestionsInsertResponse = await client.PostAsync(apiAssesorReviewerUrl, inspectionQuestionsContent);
+                            if (inspectionQuestionsInsertResponse.StatusCode == HttpStatusCode.OK)
+                            {
+                                return RedirectToAction(string.Empty, "InspectionQuestion", new { @id = newInspectionId });
                             }
                         }
-
-                        StringContent content = new StringContent(JsonConvert.SerializeObject(inspectionDto), Encoding.UTF8, "application/json");
-                        using (var Response = await client.PostAsync(apiBaseUrl, content))
+                        else
                         {
-                            var adddata = JsonConvert.DeserializeObject<int>(Response.Content.ReadAsStringAsync().Result);
-                            if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                            {
-                                using (var InspectionDtoData = await client.GetAsync(apiBaseUrl))
-                                {
-                                    var data = JsonConvert.DeserializeObject<List<InspectionDto>>(InspectionDtoData.Content.ReadAsStringAsync().Result);
-
-                                    return RedirectToAction("", "InspectionQuestion", new { @id = adddata });
-                                }
-
-                            }
-                            else
-                            {
-                                ModelState.Clear();
-                                ModelState.AddModelError(string.Empty, "Invalid Data");
-                                return View();
-                            }
+                            ModelState.Clear();
+                            ModelState.AddModelError(string.Empty, "Invalid Data");
+                            return View();
                         }
                     }
                 }
@@ -144,6 +145,7 @@ namespace Sire.Web.Controllers
             {
                 return RedirectToAction("", "InspectionQuestion", new { @id = InspectionId });
             }
+
             return View();
         }
     }

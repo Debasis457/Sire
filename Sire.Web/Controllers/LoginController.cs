@@ -1,19 +1,13 @@
-﻿using AutoMapper.Configuration;
-using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Sire.Data.Dto.Master;
 using Sire.Data.Dto.UserMgt;
-using Sire.Data.Entities.Master;
-using Sire.Data.Entities.Training;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sire.Web.Controllers
 {
@@ -21,10 +15,10 @@ namespace Sire.Web.Controllers
     {
 
         private readonly ILogger<LoginController> _logger;
-        private readonly Microsoft.Extensions.Configuration.IConfiguration _iConfig;
+        private readonly IConfiguration _iConfig;
 
         public LoginController(ILogger<LoginController> logger,
-            Microsoft.Extensions.Configuration.IConfiguration iConfig
+            IConfiguration iConfig
             )
         {
             _logger = logger;
@@ -41,65 +35,61 @@ namespace Sire.Web.Controllers
         {
             // Change URL If you are changeing port
             string apiBaseUrl = _iConfig.GetValue<string>("apiUrl:url").ToString();
-            using (HttpClient client = new HttpClient())
+            using HttpClient client = new HttpClient();
+            StringContent content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+            string endpoint = apiBaseUrl + "/login";
+            using var Response = await client.PostAsync(endpoint, content);
+            if (Response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                StringContent content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
-                string endpoint = apiBaseUrl + "/login";
-                using (var Response = await client.PostAsync(endpoint, content))
+                // Get Response Here
+                var data = JsonConvert.DeserializeObject<LoginResponseDto>(Response.Content.ReadAsStringAsync().Result);
+                if (data.RoleId == 2)
                 {
-                    if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
 
+                    var VesselId = Convert.ToInt32(TempData["VesselId"]);
+                    var UserId = Convert.ToInt32(TempData["UserId"]);
 
-                        // Get Response Here
-                        var data = JsonConvert.DeserializeObject<LoginResponseDto>(Response.Content.ReadAsStringAsync().Result);
-                        if (data.RoleId == 2)
-                        {
+                    // TempData["Dashboard"] = JsonConvert.SerializeObject(user);
+                    HttpContext.Session.SetString("UserName", Convert.ToString(data.Full_Name));
+                    HttpContext.Session.SetString("Email", Convert.ToString(data.EmailId));
+                    HttpContext.Session.SetString("Token", Convert.ToString(data.Token));
+                    HttpContext.Session.SetString("UserId", Convert.ToString(data.UserId));
+                    HttpContext.Session.SetString("VesselId", Convert.ToString(data.VesselId));
+                    HttpContext.Session.SetString("RoleId", Convert.ToString(data.RoleId));
+                    HttpContext.Session.SetString("RankGroupId", Convert.ToString(data.RankGroupId));
+                    UserId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
 
-                            var VesselId = Convert.ToInt32(TempData["VesselId"]);
-                            var UserId = Convert.ToInt32(TempData["UserId"]);
+                    return RedirectToAction("Index", "OperatorDashboard", new { @id = UserId });
+                }
+                else
+                {
+                    TempData["Dashboard"] = JsonConvert.SerializeObject(user);
+                    HttpContext.Session.SetString("UserName", Convert.ToString(data.Full_Name));
+                    HttpContext.Session.SetString("Email", Convert.ToString(data.EmailId));
+                    HttpContext.Session.SetString("Token", Convert.ToString(data.Token));
+                    HttpContext.Session.SetString("UserId", Convert.ToString(data.UserId));
+                    HttpContext.Session.SetString("VesselId", Convert.ToString(data.VesselId));
+                    HttpContext.Session.SetString("RoleId", Convert.ToString(data.RoleId));
+                    HttpContext.Session.SetString("RankGroupId", Convert.ToString(data.RankGroupId));
 
-                            // TempData["Dashboard"] = JsonConvert.SerializeObject(user);
-                            HttpContext.Session.SetString("UserName", Convert.ToString(data.Full_Name));
-                            HttpContext.Session.SetString("Email", Convert.ToString(data.EmailId));
-                            HttpContext.Session.SetString("Token", Convert.ToString(data.Token));
-                            HttpContext.Session.SetString("UserId", Convert.ToString(data.UserId));
-                            HttpContext.Session.SetString("VesselId", Convert.ToString(data.VesselId));
-                            HttpContext.Session.SetString("RoleId", Convert.ToString(data.RoleId));
-                            UserId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
-                            return RedirectToAction("Index", "OperatorDashboard", new { @id = UserId });
-                            
-                        }
-                        else
-                        {
-                            TempData["Dashboard"] = JsonConvert.SerializeObject(user);
-                            HttpContext.Session.SetString("UserName", Convert.ToString(data.Full_Name));
-                            HttpContext.Session.SetString("Email", Convert.ToString(data.EmailId));
-                            HttpContext.Session.SetString("Token", Convert.ToString(data.Token));
-                            HttpContext.Session.SetString("UserId", Convert.ToString(data.UserId));
-                            HttpContext.Session.SetString("VesselId", Convert.ToString(data.VesselId));
-                            HttpContext.Session.SetString("RoleId", Convert.ToString(data.RoleId));
-                            return RedirectToAction("Index", "Dashboard");
-                        }
-                    }
-                    else
-                    {
-                        ModelState.Clear();
-                        /*ModelState.AddModelError(string.Empty, "Invalid Data");*/
-                        ViewBag.errormessage = "Username or Password is Incorrect";
-
-
-                        return View();
-                    }
+                    return RedirectToAction("Index", "Dashboard");
                 }
             }
+            else
+            {
+                ModelState.Clear();
+                /*ModelState.AddModelError(string.Empty, "Invalid Data");*/
+                ViewBag.errormessage = "Username or Password is Incorrect";
+
+                return View();
+            }
         }
+
         [HttpGet]
         public ActionResult Logout()
         {
             HttpContext.Session.Clear();
             return RedirectToAction("Index", "Login");
         }
-
     }
 }

@@ -1,17 +1,13 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using System.Linq;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sire.Common.UnitOfWork;
-using Sire.Data.Dto.Operator;
 using Sire.Data.Dto.Question;
-using Sire.Data.Dto.Training;
 using Sire.Domain.Context;
 using Sire.Helper;
 using Sire.Respository.Question;
-using Sire.Respository.Training;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Sire.Api.Controllers.Question
 {
@@ -54,18 +50,16 @@ namespace Sire.Api.Controllers.Question
         public IActionResult Get(int id)
         {
             if (id <= 0) return BadRequest();
-            var test = _questionRepository.Find(id);           
+            var test = _questionRepository.Find(id);
             var QuestionDto = _mapper.Map<QuestionDto>(test);
-          
+
             return Ok(QuestionDto);
         }
-
 
         [AllowAnonymous]
         [HttpGet("GetResponse")]
         public IActionResult GetResponse()
         {
-           
             var ResponseValue = _questionResponseRepository.AllIncluding().ToList();
 
             var QuestionResponseDto = _mapper.Map<List<QuestionResponseDto>>(ResponseValue);
@@ -94,20 +88,31 @@ namespace Sire.Api.Controllers.Question
         [HttpGet("GetQuestionBySection/{id}")]
         public IActionResult GetQuestionBySection(int? id)
         {
-            var tests = _questionRepository.FindBy(x=>x.Section == id).OrderByDescending(x => x.Id).ToList();
-            var testsDto = _mapper.Map<IEnumerable<QuestionDto>>(tests);
+            var questions = _questionRepository.FindBy(x => x.Section == id).OrderByDescending(x => x.Id).ToList();
+            var questionsDto = _mapper.Map<IEnumerable<QuestionDto>>(questions);
 
-            return Ok(testsDto);
+            return Ok(questionsDto);
         }
 
         [AllowAnonymous]
         [HttpGet("GetQuestionById/{Id}")]
-        public IActionResult GetQuestionById(int? Id)
+        public IActionResult GetQuestionById(int? id)
         {
-            var tests = _questionRepository.FindBy(x => x.Id == Id).OrderByDescending(x => x.Id).ToList();
-            var testsDto = _mapper.Map<IEnumerable<QuestionDto>>(tests);
+            var questions = _questionRepository.FindBy(x => x.Id == id).OrderByDescending(x => x.Id).ToList();
+            var questionsDto = _mapper.Map<IEnumerable<QuestionDto>>(questions);
 
-            return Ok(testsDto);
+            return Ok(questionsDto);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("GetQuestionsByRankId/{id}")]
+        public IActionResult GetQuestionsByRankId(int id)
+        {
+            var questions = _questionRepository.FindBy(x => x.Rank_Group_Id == id).OrderByDescending(x => x.Id);
+
+            var questionsDto = _mapper.Map<IEnumerable<QuestionDto>>(questions);
+
+            return Ok(questionsDto);
         }
     }
 }

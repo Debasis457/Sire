@@ -1,22 +1,18 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sire.Api.Controllers.Common;
 using Sire.Api.Helpers;
 using Sire.Common.UnitOfWork;
-using Sire.Data.Dto.Master;
 using Sire.Data.Dto.UserMgt;
-using Sire.Data.Entities.UserMgt;
 using Sire.Domain.Context;
 using Sire.Helper;
-using Sire.Respository.Master;
 using Sire.Respository.UserMgt;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Sire.Api.Controllers.User
 {
@@ -24,7 +20,6 @@ namespace Sire.Api.Controllers.User
     [ApiController]
     public class LoginController : BaseController
     {
-
         private readonly IJwtTokenAccesser _jwtTokenAccesser;
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
@@ -42,7 +37,6 @@ namespace Sire.Api.Controllers.User
             _jwtTokenAccesser = jwtTokenAccesser;
         }
 
-
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
@@ -57,9 +51,7 @@ namespace Sire.Api.Controllers.User
                 return BadRequest(ModelState);
             }
 
-
             var roleId = _uow.Context.Role.Where(x => x.User_Id == user.Id).FirstOrDefault();
-
 
             return Ok(BuildUserAuthObject(user, (int)roleId.RoleType));
         }
@@ -80,9 +72,10 @@ namespace Sire.Api.Controllers.User
                 Full_Name = authUser.UserName,
                 EmailId = authUser.EmailId,
                 RoleId = roleId,
-                VesselId = vessel != null ? vessel.Vessel_Id : 0
+                VesselId = vessel != null ? vessel.Vessel_Id : 0,
+                RankId = authUser.Rank_Id,
+                RankGroupId = authUser.Rank_Group_Id
             };
-
 
             /*var imageUrl = _uploadSettingRepository.All
                .FirstOrDefault()?.ImageUrl;*/
@@ -110,11 +103,13 @@ namespace Sire.Api.Controllers.User
 
         private string BuildJwtToken(Sire.Data.Entities.UserMgt.User authUser, int roleId)
         {
-            var userInfo = new UserInfo();
-            userInfo.UserId = authUser.Id;
-            userInfo.UserName = authUser.EmailId;
-            userInfo.CompanyId = 1;
-            userInfo.RoleId = roleId;
+            var userInfo = new UserInfo
+            {
+                UserId = authUser.Id,
+                UserName = authUser.EmailId,
+                CompanyId = 1,
+                RoleId = roleId
+            };
             var claims = new List<Claim> { new Claim("sire_user_token", userInfo.ToJsonString()) };
             return _userRepository.GenerateAccessToken(claims);
         }

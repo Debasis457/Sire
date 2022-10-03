@@ -1,4 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -8,12 +15,6 @@ using Sire.Data.Dto.Inspection;
 using Sire.Data.Dto.Master;
 using Sire.Data.Dto.Question;
 using Sire.Web.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
 
 namespace Sire.Web.Controllers
 {
@@ -22,7 +23,7 @@ namespace Sire.Web.Controllers
     {
         private readonly IMapper _mapper;
         private readonly ILogger<InspectionController> _logger;
-        private readonly Microsoft.Extensions.Configuration.IConfiguration _iConfig;
+        private readonly IConfiguration _iConfig;
         string apiBaseUrl = string.Empty;
         string apiBaseOperatorUrl = string.Empty;
         string apiBaseVesselUrl = string.Empty;
@@ -52,100 +53,81 @@ namespace Sire.Web.Controllers
             {
                 ViewBag.IsEdit = false;
 
-                using (HttpClient client = new HttpClient())
+                using (HttpClient client = new())
                 {
                     string endpoint = apiBaseUrl + "/" + Id;
-                    using (var Response = await client.GetAsync(endpoint))
+                    using var Response = await client.GetAsync(endpoint);
+                    if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
+                        ViewBag.IsEdit = true;
+
+                        using var IUserResponse = await client.GetAsync(enduser);
                         if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                         {
-                            ViewBag.IsEdit = true;
-
-
-                            using (var IUserResponse = await client.GetAsync(enduser))
-                            {
-                                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                                {
-                                    var OperatorData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
-                                    ViewBag.Operator_Id = OperatorData;
-                                }
-                                else
-                                {
-                                    ModelState.Clear();
-                                }
-                            }
-
+                            var OperatorData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+                            ViewBag.Operator_Id = OperatorData;
                         }
                         else
                         {
                             ModelState.Clear();
-                            ModelState.AddModelError(string.Empty, "Invalid Data");
-                            return View();
                         }
                     }
+                    else
+                    {
+                        ModelState.Clear();
+                        ModelState.AddModelError(string.Empty, "Invalid Data");
+                        return View();
+                    }
                 }
-
 
                 return View();
             }
             else
             {
+                using HttpClient client = new();
 
-                using (HttpClient client = new HttpClient())
+                string endpoint = apiBaseUrl + "/" + Id;
+                using (var Response = await client.GetAsync(endpoint))
                 {
-
-                    string endpoint = apiBaseUrl + "/" + Id;
-                    using (var Response = await client.GetAsync(endpoint))
+                    if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
+                        ViewBag.IsEdit = true;
+
+                        var data = JsonConvert.DeserializeObject<InspectionDto>(Response.Content.ReadAsStringAsync().Result);
+
+                        using var IOperatorResponse = await client.GetAsync(enduser);
                         if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                         {
-                            ViewBag.IsEdit = true;
-
-                            var data = JsonConvert.DeserializeObject<InspectionDto>(Response.Content.ReadAsStringAsync().Result);
-
-                            using (var IOperatorResponse = await client.GetAsync(enduser))
-                            {
-                                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                                {
-                                    var OperatorData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IOperatorResponse.Content.ReadAsStringAsync().Result);
-                                    ViewBag.Operator_Id = OperatorData;
-                                }
-                                else
-                                {
-                                    ModelState.Clear();
-                                }
-                            }
-
+                            var OperatorData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IOperatorResponse.Content.ReadAsStringAsync().Result);
+                            ViewBag.Operator_Id = OperatorData;
                         }
                         else
                         {
                             ModelState.Clear();
-                            ModelState.AddModelError(string.Empty, "Invalid Data");
-                            return View();
                         }
                     }
-                    return View();
+                    else
+                    {
+                        ModelState.Clear();
+                        ModelState.AddModelError(string.Empty, "Invalid Data");
+                        return View();
+                    }
                 }
 
+                return View();
             }
         }
-
 
         public async Task<JsonResult> GetVessel(int Id)
         {
             var endvessel = apiBaseVesselUrl + "/GetVesselbyOperator/" + Id;
 
-            using (HttpClient client = new HttpClient())
-            {
-                using (var Response = await client.GetAsync(endvessel))
-                {
+            using HttpClient client = new();
+            using var Response = await client.GetAsync(endvessel);
 
-                    var data = JsonConvert.DeserializeObject<List<VesselDto>>(Response.Content.ReadAsStringAsync().Result).ToList();
-                    return Json(data);
-
-                }
-            }
-
+            var data = JsonConvert.DeserializeObject<List<VesselDto>>(Response.Content.ReadAsStringAsync().Result).ToList();
+            
+            return Json(data);
         }
 
         [HttpPost]
@@ -153,169 +135,138 @@ namespace Sire.Web.Controllers
         {
             try
             {
-                using (HttpClient client = new HttpClient())
+                using HttpClient client = new HttpClient();
+
+                StringContent content = new StringContent(JsonConvert.SerializeObject(inspectionDto), Encoding.UTF8, "application/json");
+
+                using var Response = await client.PostAsync(apiBaseUrl, content);
+                var adddata = JsonConvert.DeserializeObject<int>(Response.Content.ReadAsStringAsync().Result);
+                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
+                    ViewBag.IsEdit = false;
+                    inspectionDto = new InspectionDto();
+                    using var InspectionDtoData = await client.GetAsync(apiBaseUrl);
+                    var data = JsonConvert.DeserializeObject<List<InspectionDto>>(InspectionDtoData.Content.ReadAsStringAsync().Result);
 
-                    StringContent content = new StringContent(JsonConvert.SerializeObject(inspectionDto), Encoding.UTF8, "application/json");
-
-                    using (var Response = await client.PostAsync(apiBaseUrl, content))
-                    {
-                        var adddata = JsonConvert.DeserializeObject<int>(Response.Content.ReadAsStringAsync().Result);
-                        if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                        {
-                            ViewBag.IsEdit = false;
-                            inspectionDto = new InspectionDto();
-                            using (var InspectionDtoData = await client.GetAsync(apiBaseUrl))
-                            {
-                                var data = JsonConvert.DeserializeObject<List<InspectionDto>>(InspectionDtoData.Content.ReadAsStringAsync().Result);
-
-                                return RedirectToAction("Index", "AssesorReviewer", new { @inspectionid = adddata });
-                            }
-                        }
-                        else
-                        {
-                            ModelState.Clear();
-                            ModelState.AddModelError(string.Empty, "Invalid Data");
-                            return View();
-                        }
-                    }
+                    return RedirectToAction("Index", "AssesorReviewer", new { @inspectionid = adddata });
+                }
+                else
+                {
+                    ModelState.Clear();
+                    ModelState.AddModelError(string.Empty, "Invalid Data");
+                    return View();
                 }
             }
             catch (DbUpdateConcurrencyException)
             {
                 throw;
             }
-
-            return View();
         }
-
 
         public async Task<PartialViewResult> GetCheck()
         {
-
-
             var endquestion = apiBaseQuestionUrl + "/GetQuestion";
 
-            using (HttpClient client = new HttpClient())
+            using HttpClient client = new HttpClient();
+            using var Response = await client.GetAsync(endquestion);
+            if (Response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                using (var Response = await client.GetAsync(endquestion))
-                {
-                    if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        var result = Response.Content.ReadAsStringAsync().Result;
+                var result = Response.Content.ReadAsStringAsync().Result;
 
-                        var data = JsonConvert.DeserializeObject<IEnumerable<QuestionDto>>(Response.Content.ReadAsStringAsync().Result);
+                var data = JsonConvert.DeserializeObject<IEnumerable<QuestionDto>>(Response.Content.ReadAsStringAsync().Result);
 
-                        return PartialView("Index", data);
-                    }
-                    else
-                    {
-                        ModelState.Clear();
-                        ModelState.AddModelError(string.Empty, "Invalid Data");
-                        return PartialView();
-                    }
-                }
+                return PartialView("Index", data);
             }
-
+            else
+            {
+                ModelState.Clear();
+                ModelState.AddModelError(string.Empty, "Invalid Data");
+                return PartialView();
+            }
         }
 
-        public async Task<PartialViewResult> GetQuestionBySection(int? id, int? inspectionId = 1)
+        public async Task<PartialViewResult> GetQuestionBySection(int id)
         {
+            var inspectionId = Convert.ToInt32(TempData["InspectionId"]);
+            TempData.Keep();
             var endquestion = apiBaseQuestionUrl + "/GetQuestionBySection/" + id;
             var inspectionQuestion = apiBaseAssesorReviewerUrl + "/GetAssesordataByInspection/" + inspectionId + "/" + id;
 
-            using (HttpClient client = new HttpClient())
+            using HttpClient client = new HttpClient();
+            using var Response = await client.GetAsync(endquestion);
+            if (Response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                using (var Response = await client.GetAsync(endquestion))
+                var inspectionQuestionDtoModel = new List<InspectionQuestionDtoModel>();
+                var result = Response.Content.ReadAsStringAsync().Result;
+
+                var data = JsonConvert.DeserializeObject<IEnumerable<QuestionDto>>(Response.Content.ReadAsStringAsync().Result);
+
+                using (var inspectionQuestionResponse = await client.GetAsync(inspectionQuestion))
                 {
-                    if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                    if (inspectionQuestionResponse.StatusCode == System.Net.HttpStatusCode.OK)
                     {
-                        var inspectionQuestionDtoModel = new List<InspectionQuestionDtoModel>();
-                        var result = Response.Content.ReadAsStringAsync().Result;
+                        var inspectionQuestionResult = inspectionQuestionResponse.Content.ReadAsStringAsync().Result;
+                        var inspectionQuestionData = JsonConvert.DeserializeObject<IEnumerable<Inspection_QuestionDto>>(inspectionQuestionResult);
 
-                        var data = JsonConvert.DeserializeObject<IEnumerable<QuestionDto>>(Response.Content.ReadAsStringAsync().Result);
-
-                        using (var inspectionQuestionResponse = await client.GetAsync(inspectionQuestion))
+                        foreach (var item in inspectionQuestionData)
                         {
-                            if (inspectionQuestionResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                            var eachQuestion = data.FirstOrDefault(x => x.Id == item.Question_Id);
+                            if (eachQuestion != null)
                             {
-                                var inspectionQuestionResult = inspectionQuestionResponse.Content.ReadAsStringAsync().Result;
-                                var inspectionQuestionData = JsonConvert.DeserializeObject<IEnumerable<Inspection_QuestionDto>>(inspectionQuestionResult);
+                                var mappedInspectionQuestion = _mapper.Map<InspectionQuestionDtoModel>(eachQuestion);
+                                mappedInspectionQuestion.InspectionQuestionId = item.Id;
+                                mappedInspectionQuestion.AssesmentCompleted = item.Assesment_Completed;
+                                mappedInspectionQuestion.ReviewCompleted = item.Review_Completed;
 
-                                foreach (var item in inspectionQuestionData)
-                                {
-                                    var eachQuestion = data.FirstOrDefault(x => x.Id == item.Question_Id);
-                                    if (eachQuestion != null)
-                                    {
-                                        var mappedInspectionQuestion = _mapper.Map<InspectionQuestionDtoModel>(eachQuestion);
-                                        mappedInspectionQuestion.InspectionQuestionId = item.Id;
-                                        mappedInspectionQuestion.AssesmentCompleted = item.Assesment_Completed;
-                                        mappedInspectionQuestion.ReviewCompleted = item.Review_Completed;
-
-                                        inspectionQuestionDtoModel.Add(mappedInspectionQuestion);
-                                    }
-                                }
-                                //data = data.Where(x => inspectionQuestionData.Any(b => b.Question_Id == x.Id));
+                                inspectionQuestionDtoModel.Add(mappedInspectionQuestion);
                             }
                         }
-
-                        return PartialView("_InspectionQuetions", inspectionQuestionDtoModel);
-                        //return View("Index", data);
-                    }
-                    else
-                    {
-                        ModelState.Clear();
-                        ModelState.AddModelError(string.Empty, "Invalid Data");
-                        return PartialView();
+                        //data = data.Where(x => inspectionQuestionData.Any(b => b.Question_Id == x.Id));
                     }
                 }
+
+                return PartialView("_InspectionQuetions", inspectionQuestionDtoModel);
+                //return View("Index", data);
+            }
+            else
+            {
+                ModelState.Clear();
+                ModelState.AddModelError(string.Empty, "Invalid Data");
+                return PartialView();
             }
         }
-
-
 
         [HttpPost]
         public async Task<IActionResult> Index(InspectionDto inspectionDto)
         {
             try
             {
-                using (HttpClient client = new HttpClient())
+                using HttpClient client = new();
+
+                StringContent content = new(JsonConvert.SerializeObject(inspectionDto), Encoding.UTF8, "application/json");
+
+                using var Response = await client.PostAsync(apiBaseUrl, content);
+                var adddata = JsonConvert.DeserializeObject<int>(Response.Content.ReadAsStringAsync().Result);
+                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
+                    ViewBag.IsEdit = false;
+                    inspectionDto = new InspectionDto();
+                    using var InspectionDtoData = await client.GetAsync(apiBaseUrl);
+                    var data = JsonConvert.DeserializeObject<List<InspectionDto>>(InspectionDtoData.Content.ReadAsStringAsync().Result);
 
-                    StringContent content = new StringContent(JsonConvert.SerializeObject(inspectionDto), Encoding.UTF8, "application/json");
-
-                    using (var Response = await client.PostAsync(apiBaseUrl, content))
-                    {
-                        var adddata = JsonConvert.DeserializeObject<int>(Response.Content.ReadAsStringAsync().Result);
-                        if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                        {
-                            ViewBag.IsEdit = false;
-                            inspectionDto = new InspectionDto();
-                            using (var InspectionDtoData = await client.GetAsync(apiBaseUrl))
-                            {
-                                var data = JsonConvert.DeserializeObject<List<InspectionDto>>(InspectionDtoData.Content.ReadAsStringAsync().Result);
-
-                                return RedirectToAction("Index", "InspectionQuestion", new { @id = adddata });
-
-
-                            }
-
-                        }
-                        else
-                        {
-                            ModelState.Clear();
-                            ModelState.AddModelError(string.Empty, "Invalid Data");
-                            return View();
-                        }
-                    }
+                    return RedirectToAction("Index", "InspectionQuestion", new { @id = adddata });
+                }
+                else
+                {
+                    ModelState.Clear();
+                    ModelState.AddModelError(string.Empty, "Invalid Data");
+                    return View();
                 }
             }
             catch (DbUpdateConcurrencyException)
             {
                 throw;
             }
-
-            return View();
         }
     }
 }

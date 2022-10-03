@@ -1,4 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,13 +16,6 @@ using Newtonsoft.Json;
 using Sire.Data.Dto.Inspection;
 using Sire.Data.Dto.Question;
 using Sire.Web.Models;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sire.Web.Controllers
 {
@@ -22,7 +23,7 @@ namespace Sire.Web.Controllers
     public class InspectionFlowController : Controller
     {
         private readonly ILogger<InspectionController> _logger;
-        private readonly Microsoft.Extensions.Configuration.IConfiguration _iConfig;
+        private readonly IConfiguration _iConfig;
         string apiBaseUrl = string.Empty;
         string apiBaseQuestionUrl = string.Empty;
         string apiBaseResponseUrl = string.Empty;
@@ -47,31 +48,23 @@ namespace Sire.Web.Controllers
 
         public async Task<PartialViewResult> GetQueCheckList(int? id)
         {
-
-
             var endquestion = apiBaseQuestionUrl + "/" + id;
 
-            using (HttpClient client = new HttpClient())
+            using HttpClient client = new();
+            using var response = await client.GetAsync(endquestion);
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                using (var Response = await client.GetAsync(endquestion))
-                {
-                    if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        var result = Response.Content.ReadAsStringAsync().Result;
+                var result = response.Content.ReadAsStringAsync().Result;
 
-                        var data = JsonConvert.DeserializeObject<QuestionDto>(Response.Content.ReadAsStringAsync().Result);
+                var data = JsonConvert.DeserializeObject<QuestionDto>(response.Content.ReadAsStringAsync().Result);
 
-
-
-                        return PartialView("CheckList", data);
-                    }
-                    else
-                    {
-                        ModelState.Clear();
-                        ModelState.AddModelError(string.Empty, "Invalid Data");
-                        return PartialView();
-                    }
-                }
+                return PartialView("CheckList", data);
+            }
+            else
+            {
+                ModelState.Clear();
+                ModelState.AddModelError(string.Empty, "Invalid Data");
+                return PartialView();
             }
         }
 
@@ -79,27 +72,22 @@ namespace Sire.Web.Controllers
         {
             var endquestion = apiBaseQuestionUrl + "/" + Id;
 
-            using (HttpClient client = new HttpClient())
+            using HttpClient client = new();
+            using var response = await client.GetAsync(endquestion);
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                using (var Response = await client.GetAsync(endquestion))
-                {
-                    if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        var result = Response.Content.ReadAsStringAsync().Result;
+                var result = response.Content.ReadAsStringAsync().Result;
 
-                        var data = JsonConvert.DeserializeObject<QuestionDto>(Response.Content.ReadAsStringAsync().Result);
+                var data = JsonConvert.DeserializeObject<QuestionDto>(response.Content.ReadAsStringAsync().Result);
 
-                        return PartialView("Guidance", data);
-                    }
-                    else
-                    {
-                        ModelState.Clear();
-                        ModelState.AddModelError(string.Empty, "Invalid Data");
-                        return PartialView();
-                    }
-                }
+                return PartialView("Guidance", data);
             }
-
+            else
+            {
+                ModelState.Clear();
+                ModelState.AddModelError(string.Empty, "Invalid Data");
+                return PartialView();
+            }
         }
 
         public async Task<PartialViewResult> GetQuestionResponse(int? Id)
@@ -110,7 +98,7 @@ namespace Sire.Web.Controllers
 
             using HttpClient client = new();
             using var inspectionQuestionResponse = await client.GetAsync(inspectionQuestionUrl);
-            if (inspectionQuestionResponse.StatusCode == System.Net.HttpStatusCode.OK)
+            if (inspectionQuestionResponse.StatusCode == HttpStatusCode.OK)
             {
                 var inspectionQuestionResponseData = JsonConvert.DeserializeObject<Inspection_QuestionDto>(inspectionQuestionResponse.Content.ReadAsStringAsync().Result);
 
@@ -121,19 +109,19 @@ namespace Sire.Web.Controllers
 
                 var questionUrl = apiBaseQuestionUrl + "/" + inspectionQuestionResponseData.Question_Id;
                 using var questionResponse = await client.GetAsync(questionUrl);
-                if (questionResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                if (questionResponse.StatusCode == HttpStatusCode.OK)
                 {
                     var questionData = JsonConvert.DeserializeObject<QuestionDto>(questionResponse.Content.ReadAsStringAsync().Result);
 
                     questionResponseModel.questionDto = questionData;
 
                     using var QResponse = await client.GetAsync(questionResponseUrl);
-                    if (QResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                    if (QResponse.StatusCode == HttpStatusCode.OK)
                     {
                         questionResponseModel.questionResponseDtos = JsonConvert.DeserializeObject<IList<QuestionResponseDto>>(QResponse.Content.ReadAsStringAsync().Result).ToList();
 
                         using var IResponse = await client.GetAsync(inspectionQuestionResponseUrl);
-                        if (IResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                        if (IResponse.StatusCode == HttpStatusCode.OK)
                         {
                             questionResponseModel.inspectionResponseDtos = JsonConvert.DeserializeObject<IList<InspectionResponseDto>>(IResponse.Content.ReadAsStringAsync().Result).ToList();
 
@@ -150,33 +138,26 @@ namespace Sire.Web.Controllers
 
         public async Task<JsonResult> PassQuestionResponse(int Id)
         {
-
             var endquestion = apiBaseResponseUrl + "/" + Id;
 
-            using (HttpClient client = new HttpClient())
+            using HttpClient client = new();
+            using var response = await client.GetAsync(endquestion);
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                using (var Response = await client.GetAsync(endquestion))
-                {
-                    if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        var result = Response.Content.ReadAsStringAsync().Result;
+                var result = response.Content.ReadAsStringAsync().Result;
 
-                        var data = JsonConvert.DeserializeObject<QuestionDto>(Response.Content.ReadAsStringAsync().Result);
+                var data = JsonConvert.DeserializeObject<QuestionDto>(response.Content.ReadAsStringAsync().Result);
 
-                        return Json(data);
-                    }
-                    else
-                    {
-                        return Json(0);
-                    }
-                }
+                return Json(data);
             }
-
+            else
+            {
+                return Json(0);
+            }
         }
 
         [HttpPost]
         public async Task<ActionResult> SaveResponse([FromBody] List<InspectionResponseDto> data)
-
         {
             //return Json(null);
             var Id = data[0].Inspection_Question_id;
@@ -188,19 +169,17 @@ namespace Sire.Web.Controllers
                 {
                     using HttpClient client = new();
                     StringContent content = new(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
-                    using var Response = await client.PostAsync(apiBaseResponseUrl, content);
-                    if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                    using var response = await client.PostAsync(apiBaseResponseUrl, content);
+                    if (response.StatusCode == HttpStatusCode.OK)
                     {
-
                         // Get Response Here
 
                         using var FleetData = await client.GetAsync(endquestion);
-                        var result = Response.Content.ReadAsStringAsync().Result;
+                        var result = response.Content.ReadAsStringAsync().Result;
 
 
                         var data1 = JsonConvert.DeserializeObject<QuestionDto>(FleetData.Content.ReadAsStringAsync().Result);
                         return PartialView("Response", data1);
-
                     }
                     else
                     {
@@ -214,14 +193,13 @@ namespace Sire.Web.Controllers
                     throw;
                 }
             }
+
             return PartialView();
         }
 
         [HttpPost]
         public async Task<JsonResult> SaveQuestionResponse(List<InspectionResponseDto> data)
-
         {
-            //return Json(null);
             var Id = data[0].Inspection_Question_id;
 
             if (ModelState.IsValid)
@@ -232,7 +210,7 @@ namespace Sire.Web.Controllers
                     using HttpClient client = new();
                     StringContent content = new(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
                     using var Response = await client.PostAsync(apiBaseResponseUrl, content);
-                    if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                    if (Response.StatusCode == HttpStatusCode.OK)
                     {
                         return Json("Data Saved");
                     }
@@ -248,9 +226,10 @@ namespace Sire.Web.Controllers
                     throw;
                 }
             }
+
             return Json("Data Saved");
         }
-
+        
         public async Task<PartialViewResult> GetOpContent()
         {
             return PartialView("Op_SuppliedContent");
