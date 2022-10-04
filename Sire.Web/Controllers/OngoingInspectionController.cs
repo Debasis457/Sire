@@ -27,8 +27,6 @@ namespace Sire.Web.Controllers
         string apiQuestionUrl = string.Empty;
         string apiAssesorReviewerUrl = string.Empty;
 
-        enum InspectionType : int { Standard = 0, Full = 1 };
-
         public OngoingInspectionController(ILogger<OngoingInspectionController> logger, IConfiguration iConfig)
         {
             _logger = logger;
@@ -96,7 +94,7 @@ namespace Sire.Web.Controllers
             {
                 InspectionDto inspectionDto = new()
                 {
-                    InspectionType = Id,
+                    InspectionType = (InspectionType)Id,
                     Vessel_Id = vesselId,
                     Operator_Id = userId,
                     Started_At = DateTime.Now

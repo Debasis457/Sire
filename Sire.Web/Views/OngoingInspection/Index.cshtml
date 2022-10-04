@@ -105,22 +105,48 @@
                     <div class="table-responsive">
                         <table class="table table-borderless table-striped table-hover js-basic-example dataTable" id="example1">
                             <thead>
-                                <tr role="row">
-                                    <th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending" style="width: 158px;">
+                                <tr role="row" style="vertical-align:top;">
+                                    <th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="2" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending" style="width: 158px;">
                                         Date
                                     </th>
-                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="2" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
                                         Type of Pre-Vet
                                     </th>
 
-                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending" style="width: 155px;">
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="3" aria-label="Engine version: activate to sort column ascending" style="width: 155px;">
                                         Observation
                                     </th>
-                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="2" colspan="1" style="width: 222px;">
                                         Status
                                     </th>
                                 </tr>
+                                <tr role="row">
+                                    <th>Total Questions</th>
+                                    <th>Assesment Completed</th>
+                                    <th>Review Completed</th>
+                                </tr>
                             </thead>
+                            <tbody>
+                                @foreach (OngoingInspectionDto data in Model)
+                                {
+                                    var totalQuestions = data.InspectionQuestions.Count();
+                                    var assesmentCompleted = data.InspectionQuestions.Count(data=>data.Assesment_Completed);
+                                    var reviewCompleted = data.InspectionQuestions.Count(data => data.Review_Completed);
+                                    string status = "Not Started";
+                                    if (!data.Inspection.Completed_At.Equals(DateTime.MinValue))
+                                        status = "Completed";
+                                    else if (!data.Inspection.Started_At.Equals(DateTime.MinValue))
+                                        status = "In Progress";
+                                    <tr>
+                                        <td>@string.Format("{0:dd-MM-yyyy}", data.Inspection.Started_At)</td>
+                                        <td>@data.Inspection.InspectionType</td>
+                                        <td>@totalQuestions</td>
+                                        <td>@assesmentCompleted</td>
+                                        <td>@reviewCompleted</td>
+                                        <td>@status</td>
+                                    </tr>
+                                }
+                            </tbody>
                         </table>
                     </div>
                 </div>

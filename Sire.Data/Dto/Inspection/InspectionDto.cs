@@ -11,8 +11,10 @@ namespace Sire.Data.Dto.Inspection
         public int Operator_Id { get; set; }      
         public int Vessel_Id { get; set; }
         public int Description { get; set; }
-        public int? InspectionType { get; set; }
+        public InspectionType? InspectionType { get; set; }
         public DateTime Started_At { get; set; }
         public DateTime Completed_At { get; set; }
     }
+
+    public enum InspectionType { Standard = 0, Full = 1 };
 }
