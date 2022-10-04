@@ -1,23 +1,17 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Query.Expressions;
 using Sire.Common.UnitOfWork;
 using Sire.Data.Dto.Inspection;
 using Sire.Data.Dto.Master;
-using Sire.Data.Dto.Operator;
-using Sire.Data.Dto.ShipManagement;
 using Sire.Data.Entities.Inspection;
-using Sire.Data.Entities.Master;
 using Sire.Domain.Context;
 using Sire.Helper;
 using Sire.Respository.Inspection;
 using Sire.Respository.Master;
-using Sire.Respository.Operator;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 
 namespace Sire.Api.Controllers
 {
@@ -237,6 +231,21 @@ namespace Sire.Api.Controllers
             if (_uow.Save() <= 0) throw new Exception("Creating Test failed on save.");
             return Ok(mappedData.Id);
 
+        }
+
+        [AllowAnonymous]
+        [HttpGet("GetInspectionDetailsForVessel/{vesselId}/{userId}")]
+        public IActionResult GetInspectionDetailsForVessel(int vesselId, int userId)
+        {
+            var data = (from ins in _uow.Context.Inspection.Where(x => x.Vessel_Id == vesselId && x.Operator_id == userId)
+                        join insque in _uow.Context.Inspection_Question on ins.Id equals insque.inspection_id into InspectionQuestionGroup
+                        select new OngoingInspectionDto
+                        {
+                            Inspection = _mapper.Map<InspectionDto>(ins),
+                            InspectionQuestions = _mapper.Map<IEnumerable<Inspection_QuestionDto>>(InspectionQuestionGroup)
+                        }).OrderByDescending(x => x.Inspection.Started_At).ToList();
+
+            return Ok(data);
         }
     }
 }

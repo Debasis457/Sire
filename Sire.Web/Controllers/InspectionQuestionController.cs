@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -138,7 +139,7 @@ namespace Sire.Web.Controllers
         {
             using var client = new HttpClient();
             using var inspectionResponse = await client.GetAsync(apiBaseInspectionUrl + "/" + id);
-            if (inspectionResponse.StatusCode == System.Net.HttpStatusCode.OK)
+            if (inspectionResponse.StatusCode == HttpStatusCode.OK)
             {
                 var data = JsonConvert.DeserializeObject<InspectionDto>(inspectionResponse.Content.ReadAsStringAsync().Result);
                 data.Completed_At = DateTime.Now;

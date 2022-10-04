@@ -56,14 +56,22 @@ namespace Sire.Web.Controllers
             {
                 using HttpClient client = new();
                 string endpoint = apiBaseUrl + "/" + operatorid + "/" + vesselId;
-                using var Response = await client.GetAsync(endpoint);
-                if (Response.StatusCode == HttpStatusCode.OK)
+                using var response = await client.GetAsync(endpoint);
+                if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    var inspectionData = JsonConvert.DeserializeObject<IEnumerable<InspectionDto>>(Response.Content.ReadAsStringAsync().Result);
-                    var lastInspectionData = inspectionData.OrderByDescending(d => d.Started_At).FirstOrDefault();
-                    if (lastInspectionData != null)
+                    var ongoingInspectionsUrl = $"{apiAssesorReviewerUrl}/GetInspectionDetailsForVessel/{vesselId}/{operatorid}";
+                    using var ongoingInspectionsResponse = await client.GetAsync(ongoingInspectionsUrl);
+                    if (ongoingInspectionsResponse.StatusCode == HttpStatusCode.OK)
                     {
-                        return View(lastInspectionData);
+                        var ongoingInspectionsData = JsonConvert.DeserializeObject<IEnumerable<OngoingInspectionDto>>(ongoingInspectionsResponse.Content.ReadAsStringAsync().Result);
+                        return View(ongoingInspectionsData);
+
+                        //var inspectionData = JsonConvert.DeserializeObject<IEnumerable<InspectionDto>>(response.Content.ReadAsStringAsync().Result);
+                        //var lastInspectionData = inspectionData.OrderByDescending(d => d.Started_At).FirstOrDefault();
+                        //if (lastInspectionData != null)
+                        //{
+                        //    return View(lastInspectionData);
+                        //}
                     }
                 }
                 else
@@ -117,7 +125,8 @@ namespace Sire.Web.Controllers
                                     Inspection_Id = newInspectionId,
                                     Question_Id = item.Id,
                                     Assessor_Id = item.DAssessore,
-                                    Reviewer_Id = item.DReviewer
+                                    Reviewer_Id = item.DReviewer,
+                                    UserId = userId
                                 });
                             }
 

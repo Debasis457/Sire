@@ -10,6 +10,7 @@ namespace Sire.Data.Dto.Inspection
         public int Inspection_Id { get; set; }
         public int Question_Id { get; set; }
         public int Assessor_Id { get; set; }
+        public int UserId { get; set; }
         public int Reviewer_Id { get; set; }
         public bool Comment_By_Reviewer { get; set; }
         public bool Assesment_Completed { get; set; }
