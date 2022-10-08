@@ -37,7 +37,7 @@ namespace Sire.Web.Controllers
             apiQuestionUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Question";
             apiAssesorReviewerUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/AssesorReviewer";
         }
-        
+
         public async Task<IActionResult> Index()
         {
             ViewBag.EnumList = from InspectionType e in Enum.GetValues(typeof(InspectionType))
@@ -123,8 +123,7 @@ namespace Sire.Web.Controllers
                                     Inspection_Id = newInspectionId,
                                     Question_Id = item.Id,
                                     Assessor_Id = item.DAssessore,
-                                    Reviewer_Id = item.DReviewer,
-                                    UserId = userId
+                                    Reviewer_Id = item.DReviewer
                                 });
                             }
 

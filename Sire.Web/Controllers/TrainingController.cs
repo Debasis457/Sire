@@ -274,13 +274,13 @@ namespace Sire.Web.Controllers
             }
 
         }
-        public async Task<PartialViewResult> GetQuestionBySection(int? id)
+        public async Task<PartialViewResult> GetQuestionBySection(int? id, int? traningId)
         {
-            var trainingNumber = Convert.ToInt32(TempData["TrainingNumber"]);
+            var trainingNumber = traningId;
             var traineeId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
             var endquestion = apiBaseQuestionUrl + "/GetQuestionBySection/" + id;
             var taskSubmittedDataUrl = apiBaseTrainingResponseUrl + "/GetTriningResponseByTraning/" + trainingNumber;
-
+            ViewBag.TrainingId = traningId;
             QuestionTrainingModel taskModel = new()
             {
                 QuestionDtos = new List<QuestionDto>()

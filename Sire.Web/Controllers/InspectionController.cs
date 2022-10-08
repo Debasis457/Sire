@@ -126,7 +126,7 @@ namespace Sire.Web.Controllers
             using var Response = await client.GetAsync(endvessel);
 
             var data = JsonConvert.DeserializeObject<List<VesselDto>>(Response.Content.ReadAsStringAsync().Result).ToList();
-            
+
             return Json(data);
         }
 

@@ -29,7 +29,7 @@ function GetPIQLoad() {
             'ordering': false,
             'info': true,
             'autoWidth': false,
-           /* "scrollY": "520px",*/
+            /* "scrollY": "520px",*/
             "scrollX": false,
             "scrollCollapse": true,
             "paging": false,
@@ -43,25 +43,25 @@ function GetPIQLoad() {
         $('.select2').select2();
         $('.select2').width("100%");
 
-        if (PIQ_HVPQResult != null) {
-            if (PIQ_HVPQResult.length > 0) {
-                $.each(PIQ_HVPQResult, function (m, red) {
-                    if (red.IsType == "PIQ") {
-                        $("#PIQId_" + red.PIQ_HVPQId).val(red.PIQ_HVPQval);
-                        $("#PIQId_" + red.PIQ_HVPQId).select2().trigger('change');
+        //if (PIQ_HVPQResult != null) {
+        //    if (PIQ_HVPQResult.length > 0) {
+        //        $.each(PIQ_HVPQResult, function (m, red) {
+        //            if (red.IsType == "PIQ") {
+        //                $("#PIQId_" + red.PIQ_HVPQId).val(red.PIQ_HVPQval);
+        //                $("#PIQId_" + red.PIQ_HVPQId).select2().trigger('change');
 
-                        if (red.PIQ_HVPQtext == "YES") {
-                            $("#yesNoChkid_" + red.PIQ_HVPQId).prop("checked", true);
-                        }
-                        if (red.PIQ_HVPQtext == "NO") {
-                            $("#yesNoChkid_" + red.PIQ_HVPQId).prop("checked", false);
-                        }
+        //                if (red.PIQ_HVPQtext == "YES") {
+        //                    $("#yesNoChkid_" + red.PIQ_HVPQId).prop("checked", true);
+        //                }
+        //                if (red.PIQ_HVPQtext == "NO") {
+        //                    $("#yesNoChkid_" + red.PIQ_HVPQId).prop("checked", false);
+        //                }
 
-                    }
-                });
-            }
-        }
-        SetPIQHVPQ();
+        //            }
+        //        });
+        //    }
+        //}
+        //SetPIQHVPQ();
 
     });
 
@@ -121,6 +121,7 @@ function SetPIQHVPQ(vessale) {
     if ($rows.length > 0) {
         isCheck = true;
         $.each($rows, function (key, row) {
+            debugger;
             var selval = $("#PIQId_" + key).val();
             var responsetype = $("#PIQId_" + key).attr("data-responsetype");
             if (selval != "" && selval != null && selval != undefined && responsetype == "Dropdown") {
@@ -140,11 +141,21 @@ function SetPIQHVPQ(vessale) {
                         //"IsType": "PIQ",
                         //"ID_Q": ID_Q,
                         vessel_Id: parseInt(vessale),
-                        piq_Hvpq_Id: parseInt(ID_Q),
+                        piq_Hvpq_Id:  ID_Q,
                         response: seldataId
                     }
                     PIQ_HVPQResult.push(myjson);
                 }
+            }
+            else if (selval != "" && selval != null && (responsetype == "undefined" || responsetype == "Textbox")) {
+                var seltext = $("#PIQId_" + key).val();
+                var ID_Q = $("#PIQId_" + key).attr("data-id_q");
+                var myjson = {
+                    vessel_Id: parseInt(),
+                    piq_Hvpq_Id: ID_Q,
+                    response: seltext
+                }
+                PIQ_HVPQResult.push(myjson);
             }
             else {
                 var isSelect_ = $("#PIQId_" + key).prop("checked");
@@ -152,10 +163,12 @@ function SetPIQHVPQ(vessale) {
                 var seldatadesc = $("#PIQId_" + key).attr("data-desc");
                 var ID_Q = $("#PIQId_" + key).attr("data-id_q");
                 if (isSelect_ == true) {
-                    seldataId = $("#PIQId_" + key).attr("data-yes");
+                    seldataId = "Yes";
+                    $("#PIQId_" + key).val(seldataId);
                 }
                 else {
-                    seldataId = $("#PIQId_" + key).attr("data-no");
+                    seldataId = "No";
+                    $("#PIQId_" + key).val(seldataId);
 
                 }
                 var myjson = {
@@ -167,7 +180,7 @@ function SetPIQHVPQ(vessale) {
                     //"IsType": "PIQ",
                     //"ID_Q": ID_Q,
                     vessel_Id: parseInt(vessale),
-                    piq_Hvpq_Id: parseInt(ID_Q),
+                    piq_Hvpq_Id:  ID_Q,
                     response: seldataId
                 }
                 PIQ_HVPQResult.push(myjson);
@@ -179,17 +192,98 @@ function SetPIQHVPQ(vessale) {
     }
 }
 
+
+function SetHVPQ() {
+    debugger
+    HVPQResult = [];
+    var $rows = $('#HVPQDetails').find('tbody tr');
+    if ($rows.length > 0) {
+        isCheck = true;
+        $.each($rows, function (key, row) {
+            debugger;
+            var selval = $("#HVPQId_" + key).val();
+            var responsetype = $("#HVPQId_" + key).attr("data-responsetype");
+            if (selval != "" && selval != null && selval != undefined && responsetype == "Dropdown") {
+                var seltext = $("#HVPQId_" + key + " option:selected").text();
+                var seldataId = $("#HVPQId_" + key + " option:selected").attr("data-id");
+                var seldatadesc = $("#HVPQId_" + key + " option:selected").attr("data-desc");
+                var ID_Q = $("#HVPQId_" + key + " option:selected").attr("data-id_q");
+
+                if (seltext != "") {
+
+                    var myjson = {
+                        //"PIQ_HVPQId": key,
+                        //"PIQ_HVPQval": selval,
+                        //"PIQ_HVPQtext": seltext,
+                        //"PIQ_HVPQ_ID_SUB_Q": seldataId,
+                        //"PIQ_HVPQ_Q_Desc": seldatadesc,
+                        //"IsType": "PIQ",
+                        //"ID_Q": ID_Q,
+                        vessel_Id: parseInt(),
+                        piq_Hvpq_Id:  ID_Q,
+                        response: seldataId
+                    }
+                    HVPQResult.push(myjson);
+                }
+            }
+            else if (selval != "" && selval != null && selval != undefined && responsetype == "Textbox") {
+                var seltext = $("#HVPQId_" + key).val();
+                var ID_Q = $("#HVPQId_" + key).attr("data-id_q");
+                var myjson = {
+                    vessel_Id: parseInt(),
+                    piq_Hvpq_Id: ID_Q,
+                    response: seltext
+                }
+                HVPQResult.push(myjson);
+            }
+            else {
+                var isSelect_ = $("#HVPQId_" + key).prop("checked");
+                var seldataId = null;
+                var seldatadesc = $("#HVPQId_" + key).attr("data-desc");
+                var ID_Q = $("#HVPQId_" + key).attr("data-id_q");
+                if (isSelect_ == true) {
+                    // seldataId = $("#HVPQId_" + key).attr("data-yes");
+                    seldataId = "Yes";
+                    $("#HVPQId_" + key).val(seldataId);
+                }
+                else {
+                    //seldataId = $("#HVPQId_" + key).attr("data-no");
+                    seldataId = "No";
+                    $("#HVPQId_" + key).val(seldataId);
+
+                }
+                var myjson = {
+                    //"PIQ_HVPQId": key,
+                    //"PIQ_HVPQval": isSelect_,
+                    //"PIQ_HVPQtext": isSelect_,
+                    //"PIQ_HVPQ_ID_SUB_Q": seldataId,
+                    //"PIQ_HVPQ_Q_Desc": seldatadesc,
+                    //"IsType": "PIQ",
+                    //"ID_Q": ID_Q,
+                    vessel_Id: parseInt(),
+                    piq_Hvpq_Id:  ID_Q,
+                    response: seldataId
+                }
+                HVPQResult.push(myjson);
+
+            }
+        });
+
+        return HVPQResult;
+    }
+}
 function ToggelYesNo(id, chkid) {
+    debugger;
     var isSelect_ = $("#" + chkid).prop("checked");
     if (isSelect_) {
         var yesval = $("#" + chkid).attr("data-yes");
         $("#" + id).val(yesval);
-        $("#" + id).select2().trigger('change');
+        /* $("#" + id).select2().trigger('change');*/
     }
     else {
         var noval = $("#" + chkid).attr("data-no");
         $("#" + id).val(noval);
-        $("#" + id).select2().trigger('change');
+        /*   $("#" + id).select2().trigger('change');*/
     }
 }
 
@@ -472,25 +566,7 @@ function getbackGetHVPQ() {
 
 
 $("body").on("click", "#btnSubmitPIQ", function () {
-    debugger
-    var vessale = $("#VesselId option:selected").val();
-    var data = SetPIQHVPQ(vessale);
 
-    //Send the JSON array to Controller using AJAX.
-    $.ajax({
-        type: "POST",
-        dataType:"json",
-        data: JSON.stringify(data),
-        contentType: 'application/json',
-        url: "/PIQHVPQ/SavePIQ",
-        success: function (r) {
-            alert(r + " record(s) inserted.");
-        }
-    });
-});
-
-
-$("body").on("click", "#btnSubmitHVPQ", function () {
     debugger
     var vessale = $("#VesselId option:selected").val();
     var data = SetPIQHVPQ(vessale);
@@ -501,9 +577,36 @@ $("body").on("click", "#btnSubmitHVPQ", function () {
         dataType: "json",
         data: JSON.stringify(data),
         contentType: 'application/json',
+        url: "/PIQHVPQ/SavePIQ",
+        success: function (r) {
+            debugger;
+            alert(r + " record(s) inserted.");
+            swal("PIQ Added Successfully");
+            window.onkeydown = null;
+            window.onfocus = null;
+            SetPIQHVPQ(vessale) = "";
+        }
+    });
+});
+
+
+$("body").on("click", "#btnSubmitHVPQ", function () {
+    debugger
+    var vessale = $("#VesselId option:selected").val();
+    var data = SetHVPQ(vessale);
+    debugger
+    //Send the JSON array to Controller using AJAX.
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        data: JSON.stringify(data),
+        contentType: 'application/json',
         url: "/PIQHVPQ/SaveHVPQ",
         success: function (r) {
             alert(r + " record(s) inserted.");
+            swal("HVPQ Added Successfully");
+            window.onkeydown = null;
+            window.onfocus = null;
         }
     });
 });

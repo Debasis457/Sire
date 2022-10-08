@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +9,11 @@ using Sire.Data.Dto.Inspection;
 using Sire.Data.Dto.Master;
 using Sire.Data.Dto.Question;
 using Sire.Web.Models;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Sire.Web.Controllers
 {
@@ -48,7 +47,7 @@ namespace Sire.Web.Controllers
                 using HttpClient client = new();
                 using (var inspectionResponse = await client.GetAsync(apiBaseInspectionUrl + "/" + id))
                 {
-                    if (inspectionResponse.StatusCode == HttpStatusCode.OK)
+                    if (inspectionResponse.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         var data = JsonConvert.DeserializeObject<InspectionDto>(inspectionResponse.Content.ReadAsStringAsync().Result);
                         inspectionQuestionSectionModel.InspectionDto = data;
@@ -77,6 +76,8 @@ namespace Sire.Web.Controllers
             {
                 throw;
             }
+
+            return View();
         }
 
         public async Task<IActionResult> AddEdit(int? id)
@@ -86,7 +87,7 @@ namespace Sire.Web.Controllers
             {
                 using HttpClient client = new();
                 using var inspectionQuestionResponse = await client.GetAsync(inspectionQuestionUrl);
-                if (inspectionQuestionResponse.StatusCode == HttpStatusCode.OK)
+                if (inspectionQuestionResponse.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     var inspectionQuestionData = JsonConvert.DeserializeObject<Inspection_QuestionDto>(inspectionQuestionResponse.Content.ReadAsStringAsync().Result);
 
@@ -116,30 +117,35 @@ namespace Sire.Web.Controllers
         {
             var endquestion = apiBaseQuestionUrl + "/" + id;
 
-            using HttpClient client = new HttpClient();
-            using var response = await client.GetAsync(endquestion);
-            if (response.StatusCode == HttpStatusCode.OK)
+            using (HttpClient client = new HttpClient())
             {
-                var result = response.Content.ReadAsStringAsync().Result;
+                using (var Response = await client.GetAsync(endquestion))
+                {
+                    if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var result = Response.Content.ReadAsStringAsync().Result;
 
-                var data = JsonConvert.DeserializeObject<QuestionDto>(response.Content.ReadAsStringAsync().Result);
+                        var data = JsonConvert.DeserializeObject<QuestionDto>(Response.Content.ReadAsStringAsync().Result);
 
-                return View("~/Views/InspectionFlow/Index.cshtml", data);
-            }
-            else
-            {
-                ModelState.Clear();
-                ModelState.AddModelError(string.Empty, "Invalid Data");
-                return PartialView();
+                        return View("~/Views/InspectionFlow/Index.cshtml", data);
+                    }
+                    else
+                    {
+                        ModelState.Clear();
+                        ModelState.AddModelError(string.Empty, "Invalid Data");
+                        return PartialView();
+                    }
+                }
             }
         }
+
 
         [HttpGet]
         public async Task<IActionResult> CompleteInspection(int id)
         {
             using var client = new HttpClient();
             using var inspectionResponse = await client.GetAsync(apiBaseInspectionUrl + "/" + id);
-            if (inspectionResponse.StatusCode == HttpStatusCode.OK)
+            if (inspectionResponse.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 var data = JsonConvert.DeserializeObject<InspectionDto>(inspectionResponse.Content.ReadAsStringAsync().Result);
                 data.Completed_At = DateTime.Now;

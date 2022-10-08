@@ -21,7 +21,7 @@ namespace Sire.Web.Controllers
         string apiBaseUrl = string.Empty;
         string apiBaseUserUrl = string.Empty;
         string apiBaseVesselUrl = string.Empty;
-string apiBaseOperatorVesselUrl = string.Empty;
+        string apiBaseOperatorVesselUrl = string.Empty;
 
         public VesselPopUpController(ILogger<UserVesselController> logger,
             Microsoft.Extensions.Configuration.IConfiguration iConfig
@@ -116,7 +116,7 @@ string apiBaseOperatorVesselUrl = string.Empty;
             }
 
         }
-        
+
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> GetVesselDetails(int? Id)
         {
@@ -152,7 +152,7 @@ string apiBaseOperatorVesselUrl = string.Empty;
                     {
                         var VesselData = JsonConvert.DeserializeObject<IEnumerable<User_VesselDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
                         List<VesselDto> vesselDtos = new List<VesselDto>();
-                        foreach(User_VesselDto uvd in VesselData)
+                        foreach (User_VesselDto uvd in VesselData)
                         {
                             vesselDtos.Add(new VesselDto() { Id = uvd.Id, Name = uvd.Vessel.Name });
                         }
@@ -165,7 +165,7 @@ string apiBaseOperatorVesselUrl = string.Empty;
                     }
                 }
             }
-            
+
             return View();
         }
 

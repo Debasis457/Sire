@@ -19781,7 +19781,8 @@ pre[class*=language-]:before {
 }
 
 .bg-c-green {
-    background: linear-gradient(45deg, #2ed8b6, #59e0c5);
+    /*background: linear-gradient(45deg, #2ed8b6, #59e0c5);*/
+    border-left: 10px solid #55dfc4;
 }
 
 .text-c-green {

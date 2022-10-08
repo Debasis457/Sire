@@ -201,8 +201,8 @@ namespace Sire.Web.Controllers
         public async Task<IActionResult> AddEdit(User_VesselDto User_VesselDto)
         {
 
-            if (ModelState.IsValid)
-            {
+            /*if (ModelState.IsValid)
+            {*/
                 try
                 {
                     using (HttpClient client = new HttpClient())
@@ -244,41 +244,10 @@ namespace Sire.Web.Controllers
                 {
                     throw;
                 }
-         }
+         /*}*/
 
-            using (HttpClient client = new HttpClient())
-            {
-                var enduser = apiBaseUserUrl + "/GetUserDropDown";
-                var endvessel = apiBaseVesselUrl + "/GetVesselDropDown";
-                using (var IUserResponse = await client.GetAsync(enduser))
-                {
-                    if (IUserResponse.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        var UserData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
-                        ViewBag.User = UserData;
-
-                    }
-                    else
-                    {
-                        ModelState.Clear();
-                    }
-                }
-                using (var IUserResponse = await client.GetAsync(endvessel))
-                {
-                    if (IUserResponse.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        var VesselData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
-                        ViewBag.Vessel = VesselData;
-
-                    }
-                    else
-                    {
-                        ModelState.Clear();
-                    }
-                }
-            }
-            ViewBag.IsEdit = false;
-            ViewBag.Alert = "";
+           
+            
             return View();
         }
 

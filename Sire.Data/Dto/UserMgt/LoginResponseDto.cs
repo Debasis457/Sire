@@ -28,8 +28,8 @@ namespace Sire.Data.Dto.UserMgt
 
         public int? VesselId { get; set; }
 
-        public int RankId { get; set; }
+        public int? RankId { get; set; }
 
-        public int RankGroupId { get; set; }
+        public int? RankGroupId { get; set; }
     }
 }

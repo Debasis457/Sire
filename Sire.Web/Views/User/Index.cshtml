@@ -86,10 +86,10 @@
                                             @item.MobileNo
                                         </td>
                                           <td>
-                                            @item.User_Rank.Rank
+                                            @item?.User_Rank?.Rank
                                         </td>
                                           <td>
-                                            @item.RankGroup.Rank_Group
+                                            @item?.RankGroup?.Rank_Group
                                         </td>
                                         <td>
                                             <a class="btn btn-success" asp-action="AddEdit" asp-route-Id="@item.Id" style="padding:4px;font-size:9px;" title="Edit"><i class="fa fa-fw fa-edit"></i></a>

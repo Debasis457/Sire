@@ -91,6 +91,8 @@ namespace Sire.Api.Controllers.Training
             var testsDto = _mapper.Map<Training_TaskDto>(data);
             if(ResponseData != null)
             {
+                if (testsDto == null)
+                    testsDto = new Training_TaskDto();
                 testsDto.IsResponse = true;
             }
             return Ok(testsDto);

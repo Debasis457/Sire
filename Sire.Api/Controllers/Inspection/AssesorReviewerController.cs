@@ -142,7 +142,7 @@ namespace Sire.Api.Controllers
                 var assesmentCompletionCount = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == item.Id)
                                                 join sub in _uow.Context.QuetionSubSection on sec.Id equals sub.QuetionSectionId
                                                 join que in _uow.Context.Question on sub.Id equals que.Section
-                                                join ins in _uow.Context.Inspection_Question.Where(x => x.inspection_id == id && x.assesment_completed) on que.Id equals ins.question_id
+                                                join ins in _uow.Context.Inspection_Question.Where(x => x.inspection_id == id && x.assesment_completed == true) on que.Id equals ins.question_id
                                                 select new
                                                 {
                                                     que.Id
@@ -162,14 +162,14 @@ namespace Sire.Api.Controllers
                                   }).ToList().Count;
 
                     subb.ResTotal = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == item.Id)
-                                                     join sub in _uow.Context.QuetionSubSection.Where(x => x.Id == subb.Id) on sec.Id equals sub.QuetionSectionId
-                                                     join que in _uow.Context.Question on sub.Id equals que.Section
-                                                     join ins in _uow.Context.Inspection_Question.Where(x => x.inspection_id == id && x.assesment_completed) on que.Id equals ins.question_id
-                                                     select new
-                                                     {
-                                                         que.Id
+                                     join sub in _uow.Context.QuetionSubSection.Where(x => x.Id == subb.Id) on sec.Id equals sub.QuetionSectionId
+                                     join que in _uow.Context.Question on sub.Id equals que.Section
+                                     join ins in _uow.Context.Inspection_Question.Where(x => x.inspection_id == id && x.assesment_completed == true) on que.Id equals ins.question_id
+                                     select new
+                                     {
+                                         que.Id
 
-                                                     }).ToList().Count;
+                                     }).ToList().Count;
                 }
                 item.Total = count;
                 item.ResTotal = assesmentCompletionCount;
@@ -182,12 +182,12 @@ namespace Sire.Api.Controllers
         public IActionResult GetAssesordataByInspection(int? id, int? sectionId)
         {
             var data = (from quetion in _uow.Context.Question.Where(x => x.Section == sectionId)
-                        join assque in _uow.Context.Inspection_Question.Where(x => x.inspection_id == id) on quetion.Id equals assque.question_id //into g
-                        //from assque in g.DefaultIfEmpty()
-                        join userrew in _uow.Context.User on assque.reviewer_id equals userrew.Id //into r
-                        //from userrew in r.DefaultIfEmpty()
-                        join userass in _uow.Context.User on assque.assessor_id equals userass.Id //into a
-                        //from userass in a.DefaultIfEmpty()
+                        join assque in _uow.Context.Inspection_Question.Where(x => x.inspection_id == id) on quetion.Id equals assque.question_id into g
+                        from assque in g.DefaultIfEmpty()
+                        join userrew in _uow.Context.User on assque.reviewer_id equals userrew.Id into r
+                        from userrew in r.DefaultIfEmpty()
+                        join userass in _uow.Context.User on assque.assessor_id equals userass.Id into a
+                        from userass in a.DefaultIfEmpty()
                         select new Inspection_QuestionDto
                         {
                             Id = assque != null ? assque.Id : 0,
@@ -198,8 +198,8 @@ namespace Sire.Api.Controllers
                             Assessor_Name = assque != null ? userass.UserName : "",
                             Question_Id = quetion.Id,
                             Question_Text = quetion.Questions,
-                            Assesment_Completed = assque.assesment_completed,
-                            Review_Completed = assque.review_completed
+                            Assesment_Completed = assque != null ? assque.assesment_completed : false,
+                            Review_Completed = assque != null ? assque.review_completed : false
 
                         }).ToList();
 
@@ -244,6 +244,36 @@ namespace Sire.Api.Controllers
                             Inspection = _mapper.Map<InspectionDto>(ins),
                             InspectionQuestions = _mapper.Map<IEnumerable<Inspection_QuestionDto>>(InspectionQuestionGroup)
                         }).OrderByDescending(x => x.Inspection.Started_At).ToList();
+
+            return Ok(data);
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet("GetAssesordataByInspectionSeperate/{id}/{inspectionId}")]
+        public IActionResult GetAssesordataByInspectionSeperate(int? id, int? inspectionId)
+        {
+            var data = (from quetion in _uow.Context.Question.Where(x => x.Section == id)
+                        join assque in _uow.Context.Inspection_Question.Where(x => x.inspection_id == inspectionId) on quetion.Id equals assque.question_id into g
+                        from assque in g.DefaultIfEmpty()
+                        join userrew in _uow.Context.User on assque.reviewer_id equals userrew.Id into r
+                        from userrew in r.DefaultIfEmpty()
+                        join userass in _uow.Context.User on assque.assessor_id equals userass.Id into a
+                        from userass in a.DefaultIfEmpty()
+                        select new Inspection_QuestionDto
+                        {
+                            Id = assque != null ? assque.Id : 0,
+                            Reviewer_Id = assque != null ? assque.reviewer_id : 0,
+                            Assessor_Id = assque != null ? assque.assessor_id : 0,
+                            Inspection_Id = assque != null ? assque.inspection_id : 0,
+                            Reviewer_Name = assque != null ? userrew.UserName : "",
+                            Assessor_Name = assque != null ? userass.UserName : "",
+                            Question_Id = quetion.Id,
+                            Question_Text = quetion.Questions,
+                            Assesment_Completed = assque != null ? assque.assesment_completed : false,
+                            Review_Completed = assque != null ? assque.review_completed : false
+
+                        }).ToList();
 
             return Ok(data);
         }

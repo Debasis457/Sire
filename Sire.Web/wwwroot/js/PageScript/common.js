@@ -64,7 +64,7 @@ function move(e, id) {
 }
 
 function reload() {
-    
+
     swal({
         title: 'Confirmation',
         text: 'Are You Sure You Want To Reset?',
@@ -78,7 +78,7 @@ function reload() {
         closeOnCancel: true
     },
         function (isConfirm) {
-            
+
             if (isConfirm) {
                 var refreshUrl = $("#refreshUrl").val();
                 window.location.href = '' + refreshUrl;
@@ -101,7 +101,7 @@ function Exit() {
         closeOnCancel: true
     },
         function (isConfirm) {
-            
+
             if (isConfirm) {
                 window.location.href = '/Dashboard/Index/';
             }
@@ -154,8 +154,8 @@ function isNumber(txt, evt) {
         }
     } else {
         if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-           
-                return false;
+
+            return false;
         }
     }
     return true;
@@ -164,7 +164,7 @@ function isNumber(txt, evt) {
 
 
 function isNumberDec(el, evt) {
-    
+
     var charCode = (evt.which) ? evt.which : event.keyCode;
     var number = el.value.split('.');
     if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
@@ -284,8 +284,7 @@ $(document).ready(function () {
     });
 });
 
-function gotoOngoingInspection(event, vesselId)
-{
+function gotoOngoingInspection(event, vesselId) {
     debugger
     if (vesselId == 0) {
         event.preventDefault();

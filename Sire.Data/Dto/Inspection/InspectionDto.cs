@@ -5,10 +5,10 @@ using System.Text;
 
 namespace Sire.Data.Dto.Inspection
 {
-    public class InspectionDto :BaseDto
+    public class InspectionDto : BaseDto
     {
-      
-        public int Operator_Id { get; set; }      
+
+        public int Operator_Id { get; set; }
         public int Vessel_Id { get; set; }
         public int Description { get; set; }
         public InspectionType? InspectionType { get; set; }

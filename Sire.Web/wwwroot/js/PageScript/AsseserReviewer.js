@@ -22,50 +22,83 @@
 });
 
 $("#btnSubmitAss").click(function () {
-    var CheckedList = [];
-    $("#ASSREWDetailsBody input[type=checkbox]:checked").each(function () {
-        var ass = $("#AssesorId option:selected").val() == "" || $("#AssesorId option:selected").val() == null ? 0 : $("#AssesorId option:selected").val();
-        var rew = $("#ReviewerId option:selected").val() == "" || $("#ReviewerId option:selected").val() == null ? 0 : $("#ReviewerId option:selected").val();
+    debugger
+    if ($('#AssesorId').val() == "") {
+        swal("warning", "Please Select Assesor", "warning");
+        window.onkeydown = null;
+        window.onfocus = null;
+    }
+    else
+        if ($(".quetionlist").is(':checked')) {
+            var CheckedList = [];
+            $("#ASSREWDetailsBody input[type=checkbox]:checked").each(function () {
+                var ass = $("#AssesorId option:selected").val() == "" || $("#AssesorId option:selected").val() == null ? 0 : $("#AssesorId option:selected").val();
+                var rew = $("#ReviewerId option:selected").val() == "" || $("#ReviewerId option:selected").val() == null ? 0 : $("#ReviewerId option:selected").val();
 
-        var row = $(this).closest("tr")[0];
-        var obj = { IsAssesor: true, Inspection_Id: $("#hdninspectionId").val(), question_Id: row.cells[0].innerHTML.trim(), assessor_Id: ass, reviewer_Id: rew }
-        CheckedList.push(obj);
-    });
+                var row = $(this).closest("tr")[0];
+                var obj = { IsAssesor: true, Inspection_Id: $("#hdninspectionId").val() == '' ? null : $("#hdninspectionId").val(), question_Id: row.cells[0].innerHTML.trim(), assessor_Id: ass, reviewer_Id: rew }
+                CheckedList.push(obj);
+            });
 
-    $.ajax({
-        type: "POST",
-        dataType: "json",
-        data: JSON.stringify(CheckedList),
-        contentType: 'application/json',
-        url: "/AssesorReviewer/AddEdit",
-        success: function (r) {
-            GetQuestionBySection($("#hdnsectionId").val());
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                data: JSON.stringify(CheckedList),
+                contentType: 'application/json',
+                url: "/AssesorReviewer/AddEdit",
+                success: function (r) {
+                    swal("Assesor Added Successfully");
+                    window.onkeydown = null;
+                    window.onfocus = null;
+                    GetQuestionBySection($("#hdnsectionId").val());
+                }
+            });
         }
-    });
+
+        else {
+            swal("warning", "Please Select Question", "warning");
+            window.onkeydown = null;
+            window.onfocus = null;
+        }
 });
 
 $("#btnSubmitRew").click(function () {
-     
-    var CheckedList = [];
-    var ass = $("#AssesorId option:selected").val() == "" || $("#AssesorId option:selected").val() == null ? 0 : $("#AssesorId option:selected").val();
-    var rew = $("#ReviewerId option:selected").val() == "" || $("#ReviewerId option:selected").val() == null ? 0 : $("#ReviewerId option:selected").val();
-    $("#ASSREWDetailsBody input[type=checkbox]:checked").each(function () {
-        debugger
-        var row = $(this).closest("tr")[0];
-        var obj = { IsAssesor: false, Inspection_Id: $("#hdninspectionId").val(), question_Id: row.cells[0].innerHTML.trim(), assessor_Id: ass, reviewer_Id: rew }
-        CheckedList.push(obj);
-    });
+    if ($('#ReviewerId').val() == "") {
+        swal("warning", "Please Select Reviewer", "warning");
+        window.onkeydown = null;
+        window.onfocus = null;
+    }
+    if ($(".quetionlist").is(':checked')) {
+        var CheckedList = [];
+       
+        $("#ASSREWDetailsBody input[type=checkbox]:checked").each(function () {
+            var ass = $("#AssesorId option:selected").val() == "" || $("#AssesorId option:selected").val() == null ? 0 : $("#AssesorId option:selected").val();
+            var rew = $("#ReviewerId option:selected").val() == "" || $("#ReviewerId option:selected").val() == null ? 0 : $("#ReviewerId option:selected").val();
+            debugger
+            var row = $(this).closest("tr")[0];
+            var obj = { IsAssesor: false, Inspection_Id: $("#hdninspectionId").val() == '' ? null : $("#hdninspectionId").val(), question_Id: row.cells[0].innerHTML.trim(), assessor_Id: ass, reviewer_Id: rew }
+            CheckedList.push(obj);
+        });
 
-    $.ajax({
-        type: "POST",
-        dataType: "json",
-        data: JSON.stringify(CheckedList),
-        contentType: 'application/json',
-        url: "/AssesorReviewer/AddEdit",
-        success: function (r) {
-            GetQuestionBySection($("#hdnsectionId").val());
-        }
-    });
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            data: JSON.stringify(CheckedList),
+            contentType: 'application/json',
+            url: "/AssesorReviewer/AddEdit",
+            success: function (r) {
+                swal("Reviewer Added Successfully");
+                window.onkeydown = null;
+                window.onfocus = null;
+                GetQuestionBySection($("#hdnsectionId").val());
+            }
+        });
+    }
+    else {
+        swal("warning", "Please Select Question", "warning");
+        window.onkeydown = null;
+        window.onfocus = null;
+    }
 });
 
 function SetAssRew() {

@@ -5,11 +5,11 @@
 }
 @foreach (var item in Model)
 {
-    if (item.AssesmentCompleted)
+    if (item.AssesmentCompleted == true)
     {
         inspectionQuestionStatus = "card bg-c-yellow";
     }
-    else if (item.ReviewCompleted)
+    else if (item.ReviewCompleted == true)
     {
         inspectionQuestionStatus = "card bg-c-green";
     }

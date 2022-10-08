@@ -114,5 +114,15 @@ namespace Sire.Api.Controllers.Question
 
             return Ok(questionsDto);
         }
+
+       /* [AllowAnonymous]
+        [HttpGet("GetQuestionByRank/{id}")]
+        public IActionResult GetQuestionByRank(int? id)
+        {
+            var tests = _questionRepository.FindBy(x => x.Rank == id).OrderByDescending(x => x.Id).ToList();
+            var testsDto = _mapper.Map<IEnumerable<QuestionDto>>(tests);
+
+            return Ok(testsDto);
+        }*/
     }
 }

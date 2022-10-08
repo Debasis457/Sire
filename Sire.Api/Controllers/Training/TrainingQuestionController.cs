@@ -103,8 +103,6 @@ namespace Sire.Api.Controllers.Training
                                      join sub in _uow.Context.QuetionSubSection on sec.Id equals sub.QuetionSectionId
                                      join que in _uow.Context.Question on sub.Id equals que.Section
                                      join res in _uow.Context.TraningResponse.Where(x=>x.Training_Id == traningid && x.Trainee_Id == userid) on que.Id equals res.Question_Id
-                                     into aa
-                                     from res in aa.DefaultIfEmpty()
                                      select new
                                      {
                                          que.Id
@@ -125,9 +123,7 @@ namespace Sire.Api.Controllers.Training
                     subb.ResTotal = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == item.Id)
                                   join sub in _uow.Context.QuetionSubSection.Where(x => x.Id == subb.Id) on sec.Id equals sub.QuetionSectionId
                                   join que in _uow.Context.Question on sub.Id equals que.Section
-                                  join res in _uow.Context.TraningResponse.Where(x=>x.Training_Id == traningid && x.Trainee_Id == userid) on que.Id equals res.Question_Id into aa
-                                  from res in aa.DefaultIfEmpty()
-
+                                  join res in _uow.Context.TraningResponse.Where(x=>x.Training_Id == traningid && x.Trainee_Id == userid) on que.Id equals res.Question_Id 
                                   select new
                                   {
                                       que.Id

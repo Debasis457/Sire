@@ -49,6 +49,7 @@ namespace Sire.Domain.Context
         public DbSet<TraningResponse> TraningResponse { get; set; }
         public DbSet<Training_Task> Training_Task { get; set; }
         public DbSet<InspectionResponse> InspectionResponse { get; set; }
+        public DbSet<PIQ_HVPQ_Response> PIQ_HVPQ_Response { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.DefalutMappingValue();

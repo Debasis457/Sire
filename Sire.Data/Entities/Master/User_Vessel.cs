@@ -11,10 +11,10 @@ namespace Sire.Data.Entities.Master
     {
         [ForeignKey("User")]
         public int User_Id { get; set; }
-        [ForeignKey("Vessel")]
         public int Vessel_Id { get; set; }
         public bool? is_own_vessel { get; set; }
-        public User User{ get; set; }
-        public Vessel Vessel { get; set; }
+        public virtual User User{ get; set; }
+        public virtual Vessel Vessel { get; set; }
+        public virtual Fleet Fleet { get; set; }
     }
 }

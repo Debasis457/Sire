@@ -2,6 +2,11 @@
 var QuestionResult = [];
 $("#id").val("0");
 
+
+$(document).ready(function () {
+    GetQueCheckList($("#hdnQuestionId").val());
+})
+
 function GetQueCheckList(Id) { 
     debugger;
     $("#CheckList").empty();
@@ -21,9 +26,16 @@ function GetQuestionDetails(Id) {
 function GetTask(id) {
     debugger;
     $("#Tasks").empty();
-
-    $("#Tasks").load("/TrainingFlow/GetTasks/" + id, function () {
-
+    var trainingId = $("#hdnTraningId").val();
+    $("#Tasks").load("/TrainingFlow/GetTasks/" + id + "&trainingId=" + trainingId, function () {
+ 
+        if (trainingId == "0") {
+            debugger;
+            $("#taskButton").hide();
+        } else {
+            $("#taskButton").show();
+        }
+      
     });
 } 
 

@@ -3,7 +3,18 @@
     int l = 0;
 }
 <script src="~/js/PageScript/AsseserReviewer.js"></script>
-
+<style>
+    .qudiv {
+        white-space: normal;
+        font-size: 14px;
+        text-align: left;
+    }
+    .qudivtd {
+        white-space: normal;
+        font-size: 11px;
+        text-align: left;
+    }
+</style>
 <form>
     <div class="row">
         <div class="col-lg-12  col-sm-12  pl-5 pr-5">
@@ -51,18 +62,21 @@
                                         <td style="display:none">
                                             @rec.Question_Id
                                         </td>
-                                        <td>
+                                        <td style="width:3%">
                                             <input type="checkbox" class="quetionlist" id="chk_child_@rec.Id" data-quetionid=@rec.Question_Id>
 
                                         </td>
-                                        <td>
-
-                                            @rec.Question_Text
+                                        
+                                        <td style="width:70%">
+                                                <div class="qudiv">
+                                                  @rec.Question_Text
+                                                </div>
+                                            
                                         </td>
-                                        <td>
+                                        <td style="width:12%">
                                             @rec.Assessor_Name
-                                        </td>
-                                        <td>
+                                        </td >
+                                        <td style="width:12%">
                                             @rec.Reviewer_Name
 
                                         </td>

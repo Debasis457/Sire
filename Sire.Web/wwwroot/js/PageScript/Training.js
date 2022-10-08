@@ -35,12 +35,49 @@
     });
 });
 function GetQuestionBySection(id) {
+    debugger
+    var traningId = $("#hdnTraningId").val();
     $.ajax({
         type: "GET",
-        url: "/Training/GetQuestionBySection/" + id,
+        url: "/Training/GetQuestionBySection?id=" + id + "&traningId=" + traningId,
 
         success: function (r) {
             $(".bindPartialQuetion").html(r);
         }
     });
+}
+
+function GetApplicableQuestionBySection(id) {
+    debugger
+    var traningId = $("#hdnTraningId").val();
+    $.ajax({
+        type: "GET",
+        url: "/Training/GetQuestionBySection?id=" + id + "&traningId=" + traningId,
+
+        success: function (r) {
+            $(".bindPartialQuetion").html(r);
+        }
+    });
+}
+function GetQuestionByRank() {
+
+    debugger;
+ /*   var traningId = $("#hdnTraningId").val();*/
+    var Rank_Id = $("#Rank_Id option:selected").val();
+    if (Rank_Id != "" && Rank_Id != "Select") {
+        $.ajax({
+            type: "POST",
+            url: "/TrainingQuestion/GetQuestionByRank/" + Rank_Id,
+            data: '{"id":' + Rank_Id + '}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+
+            success: function (result) {
+                debugger;
+                console.log(result);
+
+                $("#bindPartialQuetion").html(result);
+            }
+        });
+    }
 }

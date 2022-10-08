@@ -9,7 +9,7 @@ namespace Sire.Data.Entities.ShipManagement
 
         public int Vessel_Id { get; set; }
         public string Response { get; set; }
-        public int Piq_Hvpq_Id { get; set; }
-        public Piq_Hvpq Piq_Hvpq { get; set; }
+        public string Piq_Hvpq_Id { get; set; }
+        //public Piq_Hvpq Piq_Hvpq { get; set; }
     }
 }

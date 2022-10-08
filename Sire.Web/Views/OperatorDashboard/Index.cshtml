@@ -1,5 +1,8 @@
-﻿@model IEnumerable<Sire.Data.Dto.Master.User_VesselDto>
-
+﻿@*@model IEnumerable<Sire.Data.Dto.Master.User_VesselDto>*@
+@model OperatorDashboardModel
+@{
+    var fleetVessels = Model?.FleetVessels;
+}
 
 @*@model Sire.Data.Dto.Master.User_VesselDto*@
 
@@ -11,6 +14,29 @@
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
     int i = 0;
 }
+
+
+
+<style>
+    .expandChildTable:before {
+        content: "+";
+        display: block;
+        cursor: pointer;
+    }
+
+    .expandChildTable.selected:before {
+        content: "-";
+    }
+
+    .childTableRow {
+        display: none;
+       
+    }
+
+    /*.childTableRow table {
+                    border:solid #555;
+                }*/
+</style>
 
 <!-- Navigation Fixed Bar-->
 <div class="row fix-head">
@@ -33,18 +59,18 @@
     <div class="col-sm-12">
 
         <nav class="navbar navbar-light bg-light">
-            <div class="row-sm-12">
+            <div class="row-sm-12" style="margin-right:50%">
                 <div class="col-lg-2">
                     <button class="btn btn-outline-success" type="submit">Training</button>
                 </div>
                 <div class="col-lg-2">
-                    @if(ViewBag.UserType == 1)
+                    @if (ViewBag.UserType == 1)
                     {
                         <button class="btn btn-outline-success" type="submit" onclick="return gotoOngoingInspection(event,@ViewBag.VesselId);">Inspection</button>
                         <input type="hidden" name="type" value="1">
                         <input type="hidden" name="vesselId" value="@ViewBag.VesselId">
                     }
-                    else if(ViewBag.UserType == 2)
+                    else if (ViewBag.UserType == 2)
                     {
                         <button class="btn btn-outline-success" type="button" data-toggle="modal" data-target="#myOperatorWiseVesselModal" data-backdrop="false">Inspection</button>
                     }
@@ -52,12 +78,12 @@
                     {
                         <button class="btn btn-outline-success" type="button">Inspection</button>
                     }
-                    
+
                 </div>
                 <div class="col-lg-2">
                     <button class="btn btn-outline-success" type="button">Alert Confg</button>
                 </div>
-                <div class="col-lg-2">
+                <div class="col-lg-1">
                     <button class="btn btn-outline-success" type="button">KPI</button>
                 </div>
                 <div class="col-lg-2">
@@ -83,7 +109,10 @@
                                 <thead>
                                     <tr role="row">
                                         <th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending" style="width: 158px;">
-                                            Fleet
+
+                                        </th>
+                                        <th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending" style="width: 158px;">
+                                            Fleet Name
                                         </th>
                                         <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
                                             Ship
@@ -98,25 +127,62 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (Model != null && Model.ToList().Count > 0)
+                                    @if (fleetVessels != null && fleetVessels.Any())
                                     {
-                                        foreach (var item in Model)
+                                        foreach (var item in fleetVessels)
                                         {
                                             <tr>
+                                                <td><span class="expandChildTable"></span></td>
+                                                @* <td>
+                                        @item.Key.Id
+                                        </td>*@
                                                 <td>
-                                                    @item.Vessel.Fleet_id
+                                                    @item.Key
                                                 </td>
-                                                <td>
-                                                    <a asp-action="GetVesselDetails" asp-route-Id="@item.Vessel_Id">  @item.Vessel.Name</a>
-                                                   
-                                                    
-                                                </td>
-                                                <td>
-                                                    <span class="badge bg-primary rounded-pill">@item.Vessel.Vessel_Type</span>
-                                                </td>
-                                                <td>
-                                                    <a class="btn btn-success" asp-action="" asp-route-Id="@item.Id" style="padding:4px;font-size:9px;" title="Manage"><i class="fa-solid fa-screwdriver-wrench"></i></a>
+                                                <td> </td>
+                                                <td> </td>
+                                                <td> </td>
+                                            </tr>
+                                            <tr id="@item.Key" class="childTableRow">
+                                                <td colspan="5">
+                                                    <table class="table table-borderless table-striped table-hover js-basic-example dataTable" id="example2">
+                                                        @* <thead>
+                                                <tr role="row">
+                                                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                                Ship
+                                                </th>
 
+                                                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending" style="width: 155px;">
+                                                Type
+                                                </th>
+                                                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 222px;">
+                                                Action
+                                                </th>
+                                                </tr>
+                                                </thead>*@
+                                                        <tbody>
+                                                            @foreach (var vessel in @item.Value)
+                                                            {
+                                                                <tr>
+                                                                    <td> </td>
+                                                                    <td> </td>
+
+                                                                    <td> </td>
+                                                                    <td> </td>
+                                                                    <td> </td>
+                                                                    <td>
+                                                                        <a asp-action="GetVesselDetails" asp-route-Id="@vessel.Vessel_Id">@vessel.Vessel.Name</a>
+                                                                    </td>
+                                                                    <td>
+                                                                        <span class="badge bg-primary rounded-pill">@vessel.Vessel.Vessel_Type</span>
+                                                                    </td>
+                                                                    <td>
+                                                                        <a class="btn btn-success" asp-action="" asp-route-Id="@vessel.Id" style="padding:4px;font-size:9px;" title="Manage"><i class="fa-solid fa-screwdriver-wrench"></i></a>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
                                                 </td>
                                             </tr>
                                             i = i + 1;
@@ -151,6 +217,13 @@
         </div>
     </div>
 
+    <script>
+        $(function () {
+            $('.expandChildTable').on('click', function () {
+                $(this).toggleClass('selected').closest('tr').next().toggle();
+            })
+        });
+    </script>
 
 
 
@@ -191,25 +264,28 @@
                                         <td>5 Due</td>
                                         <td>4 Due</td>
                                     </tr>
-                                     <tr>
+                                    <tr>
 
                                         <td>Vessel 2 </td>
                                         <td><span class="badge bg-primary rounded-pill">Oil</span></td>
                                         <td>5 Due</td>
                                         <td>4 Due</td>
-                                    </tr> <tr>
+                                    </tr>
+                                    <tr>
 
                                         <td>Vessel 3 </td>
                                         <td><span class="badge bg-primary rounded-pill">Oil</span></td>
                                         <td>5 Due</td>
                                         <td>4 Due</td>
-                                    </tr> <tr>
+                                    </tr>
+                                    <tr>
 
                                         <td>Vessel 4 </td>
                                         <td><span class="badge bg-primary rounded-pill">Oil</span></td>
                                         <td>5 Due</td>
                                         <td>4 Due</td>
-                                    </tr> <tr>
+                                    </tr>
+                                    <tr>
 
                                         <td>Vessel 5 </td>
                                         <td><span class="badge bg-primary rounded-pill">Oil</span></td>
@@ -398,7 +474,7 @@
                 <div class="row">
                     <div class="col">
                         <div class="table-responsive">
-                             <h5 class="head-tit-fnt">Sire Status</h5>
+                            <h5 class="head-tit-fnt">Sire Status</h5>
                             <table class="table table-bordered table-striped table-hover js-basic-example dataTable" id="example1">
                                 <thead>
                                     <tr role="row">
@@ -451,9 +527,5 @@
             </div>
         </div>
     </div>
-
-
-
-
 
 </form>

@@ -6,8 +6,8 @@ namespace Sire.Web.Models
     {
         public int InspectionQuestionId { get; set; }
 
-        public bool AssesmentCompleted { get; set; }
-
-        public bool ReviewCompleted { get; set; }
+        public bool? AssesmentCompleted { get; set; }
+                   
+        public bool? ReviewCompleted { get; set; }
     }
 }

@@ -215,15 +215,15 @@ namespace Sire.Web.Controllers
         public async Task<IActionResult> AddEdit(VesselDto vesselDto)
         {
 
-            if (ModelState.IsValid)
+           /* if (ModelState.IsValid)
             {
-                try
+             */   try
                 {
                     using (HttpClient client = new HttpClient())
                     {
                         StringContent content = new StringContent(JsonConvert.SerializeObject(vesselDto), Encoding.UTF8, "application/json");
                         
-                    using (var Response = await client.PostAsync(apiBaseUrl, content))
+                        using (var Response = await client.PostAsync(apiBaseUrl, content))
                         {
                             if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                             {
@@ -233,10 +233,10 @@ namespace Sire.Web.Controllers
                                 using (var VesselData = await client.GetAsync(apiBaseUrl))
                                 {
                                     var data = JsonConvert.DeserializeObject<List<VesselDto>>(VesselData.Content.ReadAsStringAsync().Result);
-                                if (vesselDto.Id == 0)
-                                {
-                                    ViewBag.Alert = CommonServices.ShowAlert(Alerts.Success, "Record added Successfully");
-                                }
+                                        if (vesselDto.Id == 0)
+                                        {
+                                        ViewBag.Alert = CommonServices.ShowAlert(Alerts.Success, "Record added Successfully");
+                                    }
                                 else
                                 {
                                     ViewBag.Alert = CommonServices.ShowAlert(Alerts.Success, "Record Updated Successfully");
@@ -247,7 +247,7 @@ namespace Sire.Web.Controllers
                                 }
 
                             }
-                            else
+                            /*else
                             {
                             ViewBag.IsEdit = true;
 
@@ -282,10 +282,10 @@ namespace Sire.Web.Controllers
                             }
                             ModelState.Clear();
                             ViewBag.Alert = CommonServices.ShowAlert(Alerts.Warning, "Vessel Name Already Exists");
-                                                   
+                                                   */
                             // ModelState.AddModelError(string.Empty, "Invalid Data");
                             return View();
-                            }
+                           // }
                         }
                     }
                 }
@@ -293,8 +293,8 @@ namespace Sire.Web.Controllers
                 {
                     throw;
                 }
-            }
-            using (HttpClient client = new HttpClient())
+           /* }*/
+           /* using (HttpClient client = new HttpClient())
             {
                 StringContent content = new StringContent(JsonConvert.SerializeObject(vesselDto), Encoding.UTF8, "application/json");
                 var enduser = apiBaseOperatorUrl + "/GetOperatorDropDown";
@@ -329,57 +329,17 @@ namespace Sire.Web.Controllers
                             ModelState.Clear();
                         }
                     }
+                  
                 }
             }
 
 
            // InitializeVesselDropdowns();
             ViewBag.IsEdit = false;
-            ViewBag.Alert = "";
+            ViewBag.Alert = "";*/
             return View();
         }
 
-
-        private async Task InitializeVesselDropdowns()
-        {
-
-            using (HttpClient client = new HttpClient())
-            {
-              
-                var enduser = apiBaseOperatorUrl + "/GetOperatorDropDown";
-                var endvesseltype = apiBaseFleetUrl + "/GetVesselTypeDropDown";
-                var endfleet = apiBaseFleetUrl + "/GetFleetDropDown";
-               
-
-                    using (var IUserResponse = await client.GetAsync(enduser))
-                    {
-                        if (IUserResponse.StatusCode == System.Net.HttpStatusCode.OK)
-                        {
-                            var UserData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
-                            ViewBag.Operator = UserData;
-
-                        }
-                        else
-                        {
-                            ModelState.Clear();
-                        }
-                    }
-                    using (var FleetResponse = await client.GetAsync(endfleet))
-                    {
-                        if (FleetResponse.StatusCode == System.Net.HttpStatusCode.OK)
-                        {
-                            var UserData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(FleetResponse.Content.ReadAsStringAsync().Result);
-                            ViewBag.Fleet = UserData;
-
-                        }
-                        else
-                        {
-                            ModelState.Clear();
-                        }
-                    }
-               
-            }
-        }
 
         public async Task<IActionResult> Delete(int Id)
         {

@@ -8,11 +8,8 @@ namespace Sire.Data.Entities.ShipManagement
 {
     public class PIQ_HVPQ_Response : BaseEntity
     {
-
-        [ForeignKey("Piq_Hvpq")]
-        public int piq_hvpq_id { get; set; }
+        public string piq_hvpq_id { get; set; }
         public string value { get; set; }
-        public Piq_Hvpq Piq_Hvpq { get; set; }
 
     }
 }

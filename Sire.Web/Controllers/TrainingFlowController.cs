@@ -43,11 +43,11 @@ namespace Sire.Web.Controllers
             apiBaseTrainingResponseUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/TraningResponse";
         }
 
-        
-        public async Task<PartialViewResult> GetQueCheckList(int? id)
-        {
+            public async Task<PartialViewResult> GetQueCheckList(int? id)
+            {
 
-
+            TempData["TrainingId"] = id;
+            
             var endquestion = apiBaseQuestionUrl + "/" + id;
 
             using (HttpClient client = new HttpClient())
@@ -60,7 +60,9 @@ namespace Sire.Web.Controllers
 
                         var data = JsonConvert.DeserializeObject<QuestionDto>(Response.Content.ReadAsStringAsync().Result);
 
+                        var checklist = data.Checklist.Replace("? ", "<br />");
 
+                        ViewBag.Check=checklist;
 
                         return PartialView("CheckList", data);
                     }
@@ -104,64 +106,48 @@ namespace Sire.Web.Controllers
         }
 
 
-        public async Task<PartialViewResult> GetTasks(int? id)
+        public async Task<PartialViewResult> GetTasks(int? id,  int? trainingId)
         {
+
+
+            TempData["TrainingId"] = trainingId;
+            ViewBag.TrainingId = id == null ? 0 : id;
             var trainingNumber = Convert.ToInt32(TempData["TrainingNumber"]);
-            var trainingId = Convert.ToInt32(TempData["TrainingId"]);
+            var trnId = Convert.ToInt32(TempData["TrainingId"]);
             var questionId = Convert.ToInt32(TempData["QuestionId"]);
             TraningResponseDto _traningResponseDto = new TraningResponseDto();
             _traningResponseDto.Question_Id = questionId;
             _traningResponseDto.Trainee_Id = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
-            _traningResponseDto.Training_Id = trainingId;
+            _traningResponseDto.Training_Id = trnId;
             TempData.Keep();
 
             //var taskSubmittedDataUrl = apiBaseTrainingResponseUrl + "/GetTriningResponseByTraningByUser/" + trainingNumber + "/" + questionId + "/" + _traningResponseDto.Trainee_Id;
 
 
             var traningTaskUrl = apiBaseTrainingResponseUrl + "/GetTraningTaskByQuetion/";
-
-            using (HttpClient client = new())
-            {
-                StringContent content = new(JsonConvert.SerializeObject(_traningResponseDto), Encoding.UTF8, "application/json");
-                using var Response = await client.PostAsync(traningTaskUrl, content);
-                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+           
+                using (HttpClient client = new())
                 {
-                    var result = Response.Content.ReadAsStringAsync().Result;
-                    //if (result.Length > 2)
-                    //{
-                    var data = JsonConvert.DeserializeObject<Training_TaskDto>(result);
-                    return PartialView("Tasks", data);
-                    //}
+                    StringContent content = new(JsonConvert.SerializeObject(_traningResponseDto), Encoding.UTF8, "application/json");
+                    using var Response = await client.PostAsync(traningTaskUrl, content);
+                    if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var result = Response.Content.ReadAsStringAsync().Result;
+                        //if (result.Length > 2)
+                        //{
+                        var data = JsonConvert.DeserializeObject<Training_TaskDto>(result);
+                        return PartialView("Tasks", data);
+                        //}
+                    }
+                    else
+                    {
+                        return PartialView("Tasks");
+                    }
                 }
-                else
-                {
-                    return PartialView("Tasks");
-                }
-            }
-            /* var endquestion = apiBaseQuestionUrl + "/" + Id;
-
-             using (HttpClient client = new HttpClient())
-             {
-                 using (var Response = await client.GetAsync(endquestion))
-                 {
-                     if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                     {
-                         var result = Response.Content.ReadAsStringAsync().Result;
-
-                         var data = JsonConvert.DeserializeObject<QuestionDto>(Response.Content.ReadAsStringAsync().Result);
- */
-
+            
 
             return PartialView("Tasks");
-            /*}
-            else
-            {
-                ModelState.Clear();
-                ModelState.AddModelError(string.Empty, "Invalid Data");
-                return PartialView();
-            }
-        }
-    }*/
+           
         }
 
         public async Task<PartialViewResult> GetOpContent()
@@ -169,14 +155,7 @@ namespace Sire.Web.Controllers
             return PartialView("Op_SuppliedContent");
         }
 
-        /* [HttpPost]
-         public async Task<IActionResult> FileUpload(IFormFile file)
-         {
-             await UploadFile(file);
-             return RedirectToAction("GetDetails", "TrainingQuestion");
-
-         }*/
-
+      
         [HttpGet]
         public async Task<IActionResult> DownloadFile()
         {

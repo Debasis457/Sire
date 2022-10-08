@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Sire.Domain.Migrations
 {
-    public partial class Initial : Migration
+    public partial class _1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -71,7 +71,9 @@ namespace Sire.Domain.Migrations
                     DeletedDate = table.Column<DateTime>(nullable: true),
                     DeletedBy = table.Column<int>(nullable: true),
                     Name = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true)
+                    Description = table.Column<string>(nullable: true),
+                    Imo_Number = table.Column<string>(nullable: true),
+                    Vessel_Count = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -90,7 +92,6 @@ namespace Sire.Domain.Migrations
                     ModifiedBy = table.Column<int>(nullable: true),
                     DeletedDate = table.Column<DateTime>(nullable: true),
                     DeletedBy = table.Column<int>(nullable: true),
-                    question_id = table.Column<int>(nullable: false),
                     piq_hvpq_question = table.Column<string>(nullable: true),
                     Operand = table.Column<string>(nullable: true),
                     Type = table.Column<string>(nullable: true),
@@ -100,47 +101,6 @@ namespace Sire.Domain.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Piq_Hvpq", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Question",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedDate = table.Column<DateTime>(nullable: true),
-                    CreatedBy = table.Column<int>(nullable: true),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
-                    ModifiedBy = table.Column<int>(nullable: true),
-                    DeletedDate = table.Column<DateTime>(nullable: true),
-                    DeletedBy = table.Column<int>(nullable: true),
-                    Chapter = table.Column<int>(nullable: false),
-                    Section = table.Column<int>(nullable: false),
-                    Question_Number = table.Column<int>(nullable: false),
-                    Questions = table.Column<string>(nullable: true),
-                    Short_Text = table.Column<string>(nullable: true),
-                    Question_Type = table.Column<string>(nullable: true),
-                    Chemical = table.Column<bool>(nullable: true),
-                    LNG = table.Column<bool>(nullable: true),
-                    LPG = table.Column<bool>(nullable: true),
-                    OIL = table.Column<bool>(nullable: true),
-                    Conditional = table.Column<bool>(nullable: true),
-                    Hardware_Response_Type = table.Column<string>(nullable: true),
-                    Human_Response_Type = table.Column<string>(nullable: true),
-                    Process_Response_Type = table.Column<string>(nullable: true),
-                    Objective = table.Column<string>(nullable: true),
-                    Industry_Guidance = table.Column<string>(nullable: true),
-                    Inspection_Guidance = table.Column<string>(nullable: true),
-                    Suggested_Inspection_actions = table.Column<string>(nullable: true),
-                    Potential_for_Negative = table.Column<string>(nullable: true),
-                    Checklist = table.Column<string>(nullable: true),
-                    Expected_Evidence = table.Column<string>(nullable: true),
-                    Rank = table.Column<int>(nullable: false),
-                    Rank_Group_Id = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Question", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -157,11 +117,32 @@ namespace Sire.Domain.Migrations
                     DeletedBy = table.Column<int>(nullable: true),
                     Response_Type = table.Column<int>(nullable: false),
                     Response_Type_Cateogary = table.Column<int>(nullable: false),
-                    Value = table.Column<string>(nullable: true)
+                    Value = table.Column<string>(nullable: true),
+                    QuestionId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_QuestionResponse", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "QuestionRoviq",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
+                    CreatedBy = table.Column<int>(nullable: true),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    ModifiedBy = table.Column<int>(nullable: true),
+                    DeletedDate = table.Column<DateTime>(nullable: true),
+                    DeletedBy = table.Column<int>(nullable: true),
+                    QuestionId = table.Column<int>(nullable: true),
+                    Roviq_Type = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QuestionRoviq", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -200,26 +181,6 @@ namespace Sire.Domain.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RankGroup", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Role",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedDate = table.Column<DateTime>(nullable: true),
-                    CreatedBy = table.Column<int>(nullable: true),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
-                    ModifiedBy = table.Column<int>(nullable: true),
-                    DeletedDate = table.Column<DateTime>(nullable: true),
-                    DeletedBy = table.Column<int>(nullable: true),
-                    Description = table.Column<string>(type: "VARCHAR(100)", nullable: true),
-                    RoleType = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Role", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -485,12 +446,14 @@ namespace Sire.Domain.Migrations
                     DeletedBy = table.Column<int>(nullable: true),
                     UserID = table.Column<string>(nullable: true),
                     EmailId = table.Column<string>(nullable: true),
-                    Operator_Id = table.Column<int>(nullable: false),
-                    Full_Name = table.Column<string>(nullable: true),
+                    Vessel_Id = table.Column<int>(nullable: false),
+                    UserName = table.Column<string>(nullable: true),
                     is_admin = table.Column<bool>(nullable: true),
                     Rank_Id = table.Column<int>(nullable: false),
                     Rank_Group_Id = table.Column<int>(nullable: false),
-                    Password = table.Column<string>(nullable: true)
+                    Password = table.Column<string>(nullable: true),
+                    UserType = table.Column<int>(nullable: false),
+                    MobileNo = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -568,7 +531,7 @@ namespace Sire.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "User_Vessel",
+                name: "Question",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -579,15 +542,66 @@ namespace Sire.Domain.Migrations
                     ModifiedBy = table.Column<int>(nullable: true),
                     DeletedDate = table.Column<DateTime>(nullable: true),
                     DeletedBy = table.Column<int>(nullable: true),
-                    User_Id = table.Column<int>(nullable: false),
-                    Vessel_Id = table.Column<int>(nullable: false),
-                    is_own_vessel = table.Column<bool>(nullable: true)
+                    Chapter = table.Column<int>(nullable: false),
+                    Section = table.Column<int>(nullable: false),
+                    Question_Number = table.Column<int>(nullable: false),
+                    Questions = table.Column<string>(nullable: true),
+                    Short_Question = table.Column<string>(nullable: true),
+                    Question_Type = table.Column<string>(nullable: true),
+                    Chemical = table.Column<bool>(nullable: true),
+                    LNG = table.Column<bool>(nullable: true),
+                    LPG = table.Column<bool>(nullable: true),
+                    OIL = table.Column<bool>(nullable: true),
+                    Conditional = table.Column<bool>(nullable: true),
+                    Hardware_Response_Type = table.Column<int>(nullable: false),
+                    Human_Response_Type = table.Column<int>(nullable: false),
+                    Process_Response_Type = table.Column<int>(nullable: false),
+                    Objective = table.Column<string>(nullable: true),
+                    Industry_Guidance = table.Column<string>(nullable: true),
+                    Inspection_Guidance = table.Column<string>(nullable: true),
+                    Suggested_Inspection_actions = table.Column<string>(nullable: true),
+                    Potential_for_Negative = table.Column<string>(nullable: true),
+                    Checklist = table.Column<string>(nullable: true),
+                    Expected_Evidence = table.Column<string>(nullable: true),
+                    Section_Name = table.Column<string>(nullable: true),
+                    Rank = table.Column<int>(nullable: false),
+                    Rank_Group_Id = table.Column<int>(nullable: false),
+                    DAssessore = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(nullable: true),
+                    DReviewer = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User_Vessel", x => x.Id);
+                    table.PrimaryKey("PK_Question", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_User_Vessel_User_User_Id",
+                        name: "FK_Question_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Role",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
+                    CreatedBy = table.Column<int>(nullable: true),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    ModifiedBy = table.Column<int>(nullable: true),
+                    DeletedDate = table.Column<DateTime>(nullable: true),
+                    DeletedBy = table.Column<int>(nullable: true),
+                    Description = table.Column<string>(type: "VARCHAR(100)", nullable: true),
+                    RoleType = table.Column<int>(nullable: false),
+                    User_Id = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Role", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Role_User_User_Id",
                         column: x => x.User_Id,
                         principalTable: "User",
                         principalColumn: "Id",
@@ -610,7 +624,8 @@ namespace Sire.Domain.Migrations
                     Fleet_id = table.Column<int>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Vessel_Type = table.Column<int>(nullable: false),
-                    IMO = table.Column<string>(nullable: true)
+                    IMO = table.Column<string>(nullable: true),
+                    Flag = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -657,6 +672,33 @@ namespace Sire.Domain.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "User_Vessel",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
+                    CreatedBy = table.Column<int>(nullable: true),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    ModifiedBy = table.Column<int>(nullable: true),
+                    DeletedDate = table.Column<DateTime>(nullable: true),
+                    DeletedBy = table.Column<int>(nullable: true),
+                    User_Id = table.Column<int>(nullable: false),
+                    Vessel_Id = table.Column<int>(nullable: false),
+                    is_own_vessel = table.Column<bool>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_User_Vessel", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_User_Vessel_User_User_Id",
+                        column: x => x.User_Id,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Fleet_Fleet_Head_Id",
                 table: "Fleet",
@@ -678,9 +720,19 @@ namespace Sire.Domain.Migrations
                 column: "piq_hvpq_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Question_UserId",
+                table: "Question",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_QuetionSubSection_QuetionSectionId",
                 table: "QuetionSubSection",
                 column: "QuetionSectionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Role_User_Id",
+                table: "Role",
+                column: "User_Id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_User_Rank_Group_Id",
@@ -696,6 +748,11 @@ namespace Sire.Domain.Migrations
                 name: "IX_User_Vessel_User_Id",
                 table: "User_Vessel",
                 column: "User_Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_User_Vessel_Vessel_Id",
+                table: "User_Vessel",
+                column: "Vessel_Id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Vessel_Fleet_id",
@@ -737,6 +794,9 @@ namespace Sire.Domain.Migrations
                 name: "QuestionResponse");
 
             migrationBuilder.DropTable(
+                name: "QuestionRoviq");
+
+            migrationBuilder.DropTable(
                 name: "QuetionSubSection");
 
             migrationBuilder.DropTable(
@@ -764,10 +824,10 @@ namespace Sire.Domain.Migrations
                 name: "Vessel_Response_Piq_Hvpq");
 
             migrationBuilder.DropTable(
-                name: "Vessel");
+                name: "QuetionSection");
 
             migrationBuilder.DropTable(
-                name: "QuetionSection");
+                name: "Vessel");
 
             migrationBuilder.DropTable(
                 name: "Piq_Hvpq");

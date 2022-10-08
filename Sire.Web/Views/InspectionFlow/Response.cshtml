@@ -2,7 +2,7 @@
 @{
     int l = 0;
     var index = -1;
-    var inspectionQuestionCompleted = Model.inspectionQuestionDto.Assesment_Completed ? "disabled" : ""; //Convert.ToBoolean(TempData["InspectionCompleted"]) == true ? "disabled" : "";
+    var inspectionQuestionCompleted = Model.inspectionQuestionDto.Assesment_Completed == true ? "disabled" : ""; //Convert.ToBoolean(TempData["InspectionCompleted"]) == true ? "disabled" : "";
     TempData.Keep();
 }
 <style>

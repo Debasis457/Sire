@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Sire.Common;
 using Sire.Data.Dto.Master;
 using Sire.Data.Dto.ShipManagement;
+using Sire.Data.Entities.Master;
 using Sire.Data.Entities.ShipManagement;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,6 @@ namespace Sire.Web.Controllers
         string apiBaseUrl = string.Empty;
         string apiBaseVesselUrl = string.Empty;
         string apiBaseResponseUrl = string.Empty;
-
         public PIQHVPQController(ILogger<PIQHVPQController> logger,
             Microsoft.Extensions.Configuration.IConfiguration iConfig
             )
@@ -91,8 +91,9 @@ namespace Sire.Web.Controllers
             using (HttpClient client = new HttpClient())
             {
 
+                int vesselid = Convert.ToInt32(HttpContext.Session.GetString("VesselId"));
 
-                using (var Response = await client.GetAsync(apiBaseUrl))
+                using (var Response = await client.GetAsync(apiBaseUrl + "/" + vesselid))
                 {
                     if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
@@ -125,8 +126,9 @@ namespace Sire.Web.Controllers
             using (HttpClient client = new HttpClient())
             {
 
+                var vesselid = Convert.ToInt32(HttpContext.Session.GetString("VesselId"));
 
-                using (var Response = await client.GetAsync(apiBaseUrl))
+                using (var Response = await client.GetAsync(apiBaseUrl + "/" + vesselid))
                 {
                     if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                     {

@@ -1,10 +1,10 @@
 ﻿@using Sire.Data.Dto.ShipManagement
 
-@{ 
+@{
     IEnumerable<Sire.Data.Dto.ShipManagement.Piq_HvpqDto> HVPQList = (IEnumerable<Sire.Data.Dto.ShipManagement.Piq_HvpqDto>)ViewBag.HVPQList;
     int l = 0;
-  
-  
+   
+
 }
 
 
@@ -15,16 +15,16 @@
             <div class="table-responsive">
 
                 <table table id="HVPQDetails" class="table table-bordered table-hover piqhvpq" style="display:block;" cellspacing="0" width="100%">
-  <thead>
-    <tr>
+                    <thead>
+                        <tr>
 
-      <th scope="col">Question</th>
-      <th scope="col">Response</th>
-     
-    </tr>
-  </thead>
-  <tbody>
-     @foreach (var rec in HVPQList)
+                            <th scope="col">Question</th>
+                            <th scope="col">Response</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var rec in HVPQList)
                         {
                             <tr>
                                 <td>
@@ -33,7 +33,7 @@
                                 </td>
                                 <td>
 
-                                       @switch (@rec.ResponseType)
+                                    @switch (@rec.ResponseType)
                                     {
                                         case ResponseTypePIQ.Dropdown:
                                             @*
@@ -41,27 +41,33 @@
 
                                             <span>
 
-                                                <select class="form-control inp select2" id="PIQId_@l" data-responsetype="@rec.ResponseType">
+                                                <select class="form-control inp select2" id="HVPQId_@l" data-responsetype="@rec.ResponseType">
 
                                                     @foreach (var ent in rec.PIQ_HVPQ_Response)
                                                     {
-                                                        <option value="@ent.value" data-id="@ent.Id" data-desc="@rec.piq_hvpq_question" data-ID_Q="@rec.Id">@ent.value</option>
+                                                        <option value="@ent.value" data-id="@ent.Id" data-desc="@rec.piq_hvpq_question" data-ID_Q="@rec.PIQHVPQCode">@ent.value</option>
                                                     }
                                                 </select>
 
                                             </span>
                                             break;
                                         case ResponseTypePIQ.Textbox:
-                                            <span>  <input type="text" class="form-control inp" /></span>
+                                            <span>  <input type="text" id="HVPQId_@l" data-responsetype="@rec.ResponseType" data-ID_Q="@rec.PIQHVPQCode" class="form-control inp" /></span>
                                             break;
                                         case ResponseTypePIQ.Switch:
                                             <span>
                                                 @{
-                                                    int yes = rec.PIQ_HVPQ_Response.Where(x => x.value.ToUpper() == "YES").Select(x => x.Id).FirstOrDefault();
-                                                    int No = rec.PIQ_HVPQ_Response.Where(x => x.value.ToUpper() == "NO").Select(x => x.Id).FirstOrDefault();
+                                                    int yes = 0;
+                                                    int No = 0;
+                                                    if (rec.PIQ_HVPQ_Response != null)
+                                                    {
+                                                          yes = rec.PIQ_HVPQ_Response.Where(x => x.value.ToUpper() == "YES").Select(x => x.Id).FirstOrDefault();
+                                                          No = rec.PIQ_HVPQ_Response.Where(x => x.value.ToUpper() == "NO").Select(x => x.Id).FirstOrDefault();
+
+                                                    }
                                                 }
-                                                <label class="switch" onclick="ToggelYesNo('PIQId_@l','yesNoChkid_@l')" data-responsetype="@rec.ResponseType">
-                                                    <input class="switch-input" data-desc="@rec.piq_hvpq_question" data-yes="@yes" data-no="@No" data-ID_Q="@rec.Id" id="PIQId_@l" data-responsetype="@rec.ResponseType" type="checkbox" checked />
+                                                <label class="switch" onclick="ToggelYesNo('HVPQId_@l','yesNoChkid_@l')" data-responsetype="@rec.ResponseType">
+                                                    <input class="switch-input" data-desc="@rec.piq_hvpq_question" data-yes="@yes" data-no="@No" data-ID_Q="@rec.PIQHVPQCode" id="HVPQId_@l" data-responsetype="@rec.ResponseType" type="checkbox" checked />
                                                     <span class="switch-label" data-on="Yes" data-off="No"></span>
                                                     <span class="switch-handle"></span>
                                                 </label>
@@ -77,10 +83,10 @@
 
                             l = l + 1;
                         }
-    
-  </tbody>
-</table>
-               
+
+                    </tbody>
+                </table>
+
             </div>
             <button type="button" class="n-btn  btn-success" id="btnSubmitHVPQ">Submit</button>
         </form>

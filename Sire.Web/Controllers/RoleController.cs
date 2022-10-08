@@ -176,8 +176,8 @@ namespace Sire.Web.Controllers
         public async Task<IActionResult> AddEdit(RoleDto RoleDto)
         {
             
-            if (ModelState.IsValid)
-            {
+           /* if (ModelState.IsValid)
+            {*/
                 try
                 {
                     using (HttpClient client = new HttpClient())
@@ -221,43 +221,7 @@ namespace Sire.Web.Controllers
                 {
                     throw;
                 }
-            }
-           
-            using (HttpClient client = new HttpClient())
-                {
-                var enduser = apiBaseUserUrl + "/GetUserDropDown";
-
-                using (var Response = await client.GetAsync(enduser))
-                    {
-                        if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                        {                         
-                            
-                           
-                            using (var IUserResponse = await client.GetAsync(enduser))
-                            {
-                                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                                {
-                                    var UserData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
-                                    ViewBag.UserId = UserData;
-
-                                }
-                                else
-                                {
-                                    ModelState.Clear();
-                                }
-                            }
-                            
-                        }
-                        else
-                        {
-                            ModelState.Clear();
-                            ModelState.AddModelError(string.Empty, "Invalid Data");
-                            return View();
-                        }
-                    }
-                }
-            ViewBag.IsEdit = false;
-            ViewBag.Alert = "";
+            /*}*/
             return View();
         }
 

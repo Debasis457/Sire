@@ -7,12 +7,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20220912092405_adduserrank.cs" />
+    <Compile Remove="Migrations\20220912092405_adduserrank.Designer.cs" />
+    <Compile Remove="Migrations\20220912093210_adduserrank.cs" />
+    <Compile Remove="Migrations\20220912093210_adduserrank.Designer.cs" />
+    <Compile Remove="Migrations\20220912094045_adduserrank2.cs" />
+    <Compile Remove="Migrations\20220912094045_adduserrank2.Designer.cs" />
+    <Compile Remove="Migrations\20220912102019_addop.cs" />
+    <Compile Remove="Migrations\20220912102019_addop.Designer.cs" />
+    <Compile Remove="Migrations\20221004064553_addlatestsire.cs" />
+    <Compile Remove="Migrations\20221004064553_addlatestsire.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.3">
       <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 

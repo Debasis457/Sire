@@ -12,6 +12,9 @@ namespace Sire.Data.Dto.ShipManagement
         public string Operand { get; set; }
         public string Type { get; set; }
         public string Response { get; set; }
+        public int? QuestionId { get; set; }
+        public string PIQHVPQCode { get; set; }
+        public string Answered { get; set; }
         public ResponseTypePIQ ResponseType { get; set; }
         public List<PIQ_HVPQ_ResponseDto> PIQ_HVPQ_Response { get; set; }
     }

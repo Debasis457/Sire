@@ -27,6 +27,7 @@ namespace Sire.Web.Controllers
         string apiBaseResponseUrl = string.Empty;
         string apiBaseTraningQuetionUrl = string.Empty;
         string apiAssesorUrl = string.Empty;
+        string apiRankGroupUrl = string.Empty;
 
         public AssesorReviewerController(ILogger<AssesorReviewerController> logger,
             Microsoft.Extensions.Configuration.IConfiguration iConfig
@@ -38,7 +39,7 @@ namespace Sire.Web.Controllers
             apiBaseUserlUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/UserMaster";
             apiBaseTraningQuetionUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/trainingquestion";
             apiAssesorUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/AssesorReviewer";
-
+            apiRankGroupUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/RankGroup";
 
         }
 
@@ -50,7 +51,8 @@ namespace Sire.Web.Controllers
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    using (var Response = await client.GetAsync(apiBaseTraningQuetionUrl))
+                    var endpoint = apiBaseTraningQuetionUrl;
+                    using (var Response = await client.GetAsync(apiAssesorUrl))
                     {
                         if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                         {
@@ -111,15 +113,16 @@ namespace Sire.Web.Controllers
         {
             var endquestion = apiBaseUrl + "/GetQuestionBySection/" + id;
             var enduser = apiBaseUserlUrl + "/GetUserDropDown";
+            var endAssesor = apiRankGroupUrl + "/GetRankGroupDropDown";
 
             using (HttpClient client = new HttpClient())
             {
-                using (var Response = await client.GetAsync(enduser))
+                using (var Response = await client.GetAsync(endAssesor))
                 {
                     if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         ViewBag.IsEdit = true;
-                        using (var IUserResponse = await client.GetAsync(enduser))
+                        using (var IUserResponse = await client.GetAsync(endAssesor))
                         {
                             if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                             {
@@ -142,7 +145,7 @@ namespace Sire.Web.Controllers
                 }
 
                 inspectionId = inspectionId == null ? 0 : inspectionId;
-                var queendpoint = apiAssesorUrl + "/GetAssesordataByInspection/" + inspectionId + "/" + id;
+                var queendpoint = apiAssesorUrl + "/GetAssesordataByInspectionSeperate/" + id + "/" + inspectionId;
                 using (var Response = await client.GetAsync(queendpoint))
                 {
                     if (Response.StatusCode == System.Net.HttpStatusCode.OK)

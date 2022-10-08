@@ -6,16 +6,25 @@
 }
 
 
-<div class="col-sm-12">
-    <div class="card m-b-0 p-1">
-        <p>  <h4> @Model.Chapter . @Model.Section . @i</h4></p>
-        <h5 class="text-primary">@Model.Questions</h5>
-        <input type="hidden" id="hdnQuestionId" value="@Model.Id" > 
+
+
+<div class="col-md-12">
+    <div class="card m-b-0">
+        <br />
+    <!-- End Navigation Fixed Bar-->
+    <div class="col-sm-12">
+       
+             @Model.Chapter . @Model.Section . @i. @Model.Questions
+       
+    </div>
+    <br />
+      <div class="col-sm-12">
+       </div>
     </div>
 </div>
 
-
-
+   <input type="hidden" id="hdnQuestionId" value="@Model.Id" > 
+          <input type="hidden" id="hdnTraningId" value="@ViewBag.TrainingId" />
 <div class="col-md-12 mt-2">
     <div class="card m-b-0">
         <div class="card-header sub-head-tit">
@@ -24,7 +33,7 @@
                     <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#CheckList" role="tab" aria-controls="pills-home" aria-selected="true" onfocus="GetQueCheckList(@Model.Id)">CheckList</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#Tasks" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="GetTask(@Model.Id)">Task</a>
+                    <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#Tasks" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="GetTask(@Model.Id, @ViewBag.TraningId)">Task</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#Operator_Supplied_Content" role="tab" aria-controls="pills-contact" aria-selected="false" onclick="GetOpContent()">Operator Supplied Content</a>

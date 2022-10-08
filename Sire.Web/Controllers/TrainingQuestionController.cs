@@ -26,6 +26,7 @@ namespace Sire.Web.Controllers
         string apiBaseUrl = string.Empty;
         string apiBaseQuestionUrl = string.Empty;
         string apiBaseUserRankUrl = string.Empty;
+        string apiBaseRankGroupUrl = string.Empty;
         public TrainingQuestionController(ILogger<TrainingQuestionController> logger,
             Microsoft.Extensions.Configuration.IConfiguration iConfig
             )
@@ -35,13 +36,14 @@ namespace Sire.Web.Controllers
             apiBaseUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/trainingquestion";
             apiBaseQuestionUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/question";
             apiBaseUserRankUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/User_Rank";
+            apiBaseRankGroupUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/RankGroup";
         }
         //Dharini
        
             public async Task<IActionResult> Index(int? id)
         {
             TempData["TrainingId"] = id;
-
+            ViewBag.TrainingId = id == null ? 0 : id;
             id = id == null ? 0 : id;
             try {
 
@@ -82,9 +84,10 @@ namespace Sire.Web.Controllers
         [Route("TrainingQuestion/GetDetails/{trainingId}/{questionId}")]
         public async Task<IActionResult> GetDetails(int? trainingId, int? questionId)
         {
+            ViewBag.TrainingId = trainingId == null ? 0 : trainingId;
             TempData["TrainingId"] = trainingId;
             TempData["QuestionId"] = questionId;
-
+            //trainingId = (int) TempData["TrainingId"];
             var endquestion = apiBaseQuestionUrl + "/" + questionId;
 
             using (HttpClient client = new HttpClient())
@@ -111,12 +114,9 @@ namespace Sire.Web.Controllers
         public async Task<PartialViewResult> GetQuestion(int? id)
         {
             TempData["TrainingId"] = id;
-
             id = id == null ? 0 : id;
             try
             {
-
-
                 using (HttpClient client = new HttpClient())
                 {
                     var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
@@ -137,8 +137,6 @@ namespace Sire.Web.Controllers
                             return PartialView();
                         }
                     }
-
-
                 }
 
             }
@@ -146,8 +144,6 @@ namespace Sire.Web.Controllers
             {
                 throw;
             }
-
-
         }
 
         public async Task<PartialViewResult> GetRenkBaseQuestion(int? id)
@@ -155,11 +151,9 @@ namespace Sire.Web.Controllers
             TempData["TrainingId"] = id;
 
             id = id == null ? 0 : id;
-            var endUserRank = apiBaseUserRankUrl + "/GetUser_RankDropDown";
+            var endUserRank = apiBaseRankGroupUrl + "/GetRankGroupDropDown";
             try
             {
-
-
                 using (HttpClient client = new HttpClient())
                 {
                     var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
@@ -170,8 +164,6 @@ namespace Sire.Web.Controllers
                         if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                         {
                             var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
-
-
                             using (var IUserResponse = await client.GetAsync(endUserRank))
                             {
                                 if (Response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -184,10 +176,60 @@ namespace Sire.Web.Controllers
                                     ModelState.Clear();
                                 }
                             }
-
-
-
                             return PartialView("RankBaseQuestion", data);
+                        }
+                        else
+                        {
+                            ModelState.Clear();
+                            ModelState.AddModelError(string.Empty, "Invalid Data");
+                            return PartialView();
+                        }
+                    }
+                }
+
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+        }
+
+
+        public async Task<JsonResult> GetQuestionByRank(int Id)
+        {
+            var endvessel = apiBaseQuestionUrl + "/GetQuestionsByRankId/" + Id;
+
+            using (HttpClient client = new HttpClient())
+            {
+                using (var Response = await client.GetAsync(endvessel))
+                {
+
+                    var data = JsonConvert.DeserializeObject<List<QuestionDto>>(Response.Content.ReadAsStringAsync().Result);
+                    return Json(data);
+
+                }
+            }
+
+        }
+
+        public async Task<PartialViewResult> GetApplicableQuestions(int? id)
+        {
+            TempData["TrainingId"] = id;
+            id = id == null ? 0 : id;
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+                    var endpoint = apiBaseUrl + "/" + id + "/" + userid;
+
+                    using (var Response = await client.GetAsync(endpoint))
+                    {
+                        if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                        {
+
+                            var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
+                            return PartialView("ApplicableQuestions", data);
                         }
                         else
                         {
@@ -205,12 +247,6 @@ namespace Sire.Web.Controllers
             {
                 throw;
             }
-
-
-        }
-        public async Task<PartialViewResult> GetApplicableQuestions(int? id)
-        {
-            return PartialView("ApplicableQuestions");
         }
 
         public async Task<PartialViewResult> GetCIVQquestion(int? id)

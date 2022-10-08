@@ -130,8 +130,8 @@
                                 @foreach (OngoingInspectionDto data in Model)
                                 {
                                     var totalQuestions = data.InspectionQuestions.Count();
-                                    var assesmentCompleted = data.InspectionQuestions.Count(data=>data.Assesment_Completed);
-                                    var reviewCompleted = data.InspectionQuestions.Count(data => data.Review_Completed);
+                                    var assesmentCompleted = data.InspectionQuestions.Count(data => data.Assesment_Completed == true);
+                                    var reviewCompleted = data.InspectionQuestions.Count(data => data.Review_Completed == true);
                                     string status = "Not Started";
                                     if (!data.Inspection.Completed_At.Equals(DateTime.MinValue))
                                         status = "Completed";
