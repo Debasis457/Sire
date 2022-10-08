@@ -38,45 +38,9 @@ namespace Sire.Web.Controllers
             apiBaseInspectionUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Inspection";
         }
 
-        public async Task<IActionResult> Index(int? id = 1)
+        public IActionResult Index(int? id = 1)
         {
-            TempData["InspectionId"] = id;
-            var inspectionQuestionSectionModel = new InspectionQuestionSectionModel();
-            try
-            {
-                using HttpClient client = new();
-                using (var inspectionResponse = await client.GetAsync(apiBaseInspectionUrl + "/" + id))
-                {
-                    if (inspectionResponse.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        var data = JsonConvert.DeserializeObject<InspectionDto>(inspectionResponse.Content.ReadAsStringAsync().Result);
-                        inspectionQuestionSectionModel.InspectionDto = data;
-
-                        TempData["InspectionCompleted"] = data.Completed_At != DateTime.MinValue;
-                    }
-                }
-
-                var url = apiBaseUrl + "/GetSectionListByInspectionId" + "/" + id;
-                using var Response = await client.GetAsync(url);
-                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                {
-                    var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
-                    inspectionQuestionSectionModel.QuetionSectionDtos = data;
-
-                    return View(inspectionQuestionSectionModel);
-                }
-                else
-                {
-                    ModelState.Clear();
-                    ModelState.AddModelError(string.Empty, "Invalid Data");
-                    return View();
-                }
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-
+            ViewBag.InspectionId = id;
             return View();
         }
 
@@ -162,6 +126,216 @@ namespace Sire.Web.Controllers
                 ModelState.AddModelError(string.Empty, "Invalid Data");
                 return View();
             }
+        }
+
+        public async Task<IActionResult> GetQuestionLibrary(int id)
+        {
+            TempData["InspectionId"] = id;
+            var inspectionQuestionSectionModel = new InspectionQuestionSectionModel();
+            try
+            {
+                using HttpClient client = new();
+                using (var inspectionResponse = await client.GetAsync(apiBaseInspectionUrl + "/" + id))
+                {
+                    if (inspectionResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var data = JsonConvert.DeserializeObject<InspectionDto>(inspectionResponse.Content.ReadAsStringAsync().Result);
+                        inspectionQuestionSectionModel.InspectionDto = data;
+
+                        TempData["InspectionCompleted"] = data.Completed_At != DateTime.MinValue;
+                    }
+                }
+
+                var url = apiBaseUrl + "/GetSectionListByInspectionId" + "/" + id;
+                using var Response = await client.GetAsync(url);
+                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
+                    inspectionQuestionSectionModel.QuetionSectionDtos = data;
+
+                    return PartialView("QuestionLibrary", inspectionQuestionSectionModel);
+                }
+                else
+                {
+                    ModelState.Clear();
+                    ModelState.AddModelError(string.Empty, "Invalid Data");
+                    return PartialView();
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return PartialView();
+        }
+
+        public async Task<IActionResult> GetApplicableQuestions(int id)
+        {
+            TempData["InspectionId"] = id;
+            var inspectionQuestionSectionModel = new InspectionQuestionSectionModel();
+            try
+            {
+                using HttpClient client = new();
+                using (var inspectionResponse = await client.GetAsync(apiBaseInspectionUrl + "/" + id))
+                {
+                    if (inspectionResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var data = JsonConvert.DeserializeObject<InspectionDto>(inspectionResponse.Content.ReadAsStringAsync().Result);
+                        inspectionQuestionSectionModel.InspectionDto = data;
+
+                        TempData["InspectionCompleted"] = data.Completed_At != DateTime.MinValue;
+                    }
+                }
+
+                var url = apiBaseUrl + "/GetSectionListByInspectionId" + "/" + id;
+                using var Response = await client.GetAsync(url);
+                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
+                    inspectionQuestionSectionModel.QuetionSectionDtos = data;
+
+                    return PartialView("ApplicableQuestions", inspectionQuestionSectionModel);
+                }
+                else
+                {
+                    ModelState.Clear();
+                    ModelState.AddModelError(string.Empty, "Invalid Data");
+                    return PartialView();
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return PartialView();
+        }
+
+        public async Task<IActionResult> GetRankBasedQuestions(int id)
+        {
+            TempData["InspectionId"] = id;
+            var inspectionQuestionSectionModel = new InspectionQuestionSectionModel();
+            try
+            {
+                using HttpClient client = new();
+                using (var inspectionResponse = await client.GetAsync(apiBaseInspectionUrl + "/" + id))
+                {
+                    if (inspectionResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var data = JsonConvert.DeserializeObject<InspectionDto>(inspectionResponse.Content.ReadAsStringAsync().Result);
+                        inspectionQuestionSectionModel.InspectionDto = data;
+
+                        TempData["InspectionCompleted"] = data.Completed_At != DateTime.MinValue;
+                    }
+                }
+
+                var url = apiBaseUrl + "/GetSectionListByInspectionId" + "/" + id;
+                using var Response = await client.GetAsync(url);
+                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
+                    inspectionQuestionSectionModel.QuetionSectionDtos = data;
+
+                    return PartialView("RankBasedQuestions", inspectionQuestionSectionModel);
+                }
+                else
+                {
+                    ModelState.Clear();
+                    ModelState.AddModelError(string.Empty, "Invalid Data");
+                    return PartialView();
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return PartialView();
+        }
+
+        public async Task<IActionResult> GetPredictedCIVQuestions(int id)
+        {
+            TempData["InspectionId"] = id;
+            var inspectionQuestionSectionModel = new InspectionQuestionSectionModel();
+            try
+            {
+                using HttpClient client = new();
+                using (var inspectionResponse = await client.GetAsync(apiBaseInspectionUrl + "/" + id))
+                {
+                    if (inspectionResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var data = JsonConvert.DeserializeObject<InspectionDto>(inspectionResponse.Content.ReadAsStringAsync().Result);
+                        inspectionQuestionSectionModel.InspectionDto = data;
+
+                        TempData["InspectionCompleted"] = data.Completed_At != DateTime.MinValue;
+                    }
+                }
+
+                var url = apiBaseUrl + "/GetSectionListByInspectionId" + "/" + id;
+                using var Response = await client.GetAsync(url);
+                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
+                    inspectionQuestionSectionModel.QuetionSectionDtos = data;
+
+                    return PartialView("PredictedCIVQuestions", inspectionQuestionSectionModel);
+                }
+                else
+                {
+                    ModelState.Clear();
+                    ModelState.AddModelError(string.Empty, "Invalid Data");
+                    return PartialView();
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return PartialView();
+        }
+
+        public async Task<IActionResult> GetTaggedQuestions(int id)
+        {
+            TempData["InspectionId"] = id;
+            var inspectionQuestionSectionModel = new InspectionQuestionSectionModel();
+            try
+            {
+                using HttpClient client = new();
+                using (var inspectionResponse = await client.GetAsync(apiBaseInspectionUrl + "/" + id))
+                {
+                    if (inspectionResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var data = JsonConvert.DeserializeObject<InspectionDto>(inspectionResponse.Content.ReadAsStringAsync().Result);
+                        inspectionQuestionSectionModel.InspectionDto = data;
+
+                        TempData["TaggedQuestions"] = data.Completed_At != DateTime.MinValue;
+                    }
+                }
+
+                var url = apiBaseUrl + "/GetSectionListByInspectionId" + "/" + id;
+                using var Response = await client.GetAsync(url);
+                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
+                    inspectionQuestionSectionModel.QuetionSectionDtos = data;
+
+                    return PartialView("PredictedCIVQuestions", inspectionQuestionSectionModel);
+                }
+                else
+                {
+                    ModelState.Clear();
+                    ModelState.AddModelError(string.Empty, "Invalid Data");
+                    return PartialView();
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return PartialView();
         }
     }
 }
