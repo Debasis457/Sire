@@ -236,6 +236,36 @@ namespace Sire.Web.Controllers
             }
         }
 
+        public async Task<PartialViewResult> GetInspectionApplicableQuestionBySection(int sectionId)
+        {
+            var inspectionId = Convert.ToInt32(TempData["InspectionId"]);
+            int assessorId = 1;
+            int reviewerId = 1;
+            int vesselId = 1;
+            TempData.Keep();
+
+            var questionSectionUrl = apiBaseAssesorReviewerUrl + "/GetInspectionApplicableQuestionBySection/" + sectionId + "/" + assessorId + "/" + reviewerId + "/" + vesselId;
+            //var inspectionQuestion = apiBaseAssesorReviewerUrl + "/GetAssesordataByInspection/" + inspectionId + "/" + id;
+            using HttpClient client = new();
+            using var response = await client.GetAsync(questionSectionUrl);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var inspectionQuestionDtoModel = new List<InspectionQuestionDtoModel>();
+                var result = response.Content.ReadAsStringAsync().Result;
+
+                var data = JsonConvert.DeserializeObject<IEnumerable<Inspection_QuestionDto>>(response.Content.ReadAsStringAsync().Result);
+                inspectionQuestionDtoModel = _mapper.Map<List<InspectionQuestionDtoModel>>(data);
+
+                return PartialView("_InspectionQuetions", inspectionQuestionDtoModel);
+            }
+            else
+            {
+                ModelState.Clear();
+                ModelState.AddModelError(string.Empty, "Invalid Data");
+                return PartialView();
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> Index(InspectionDto inspectionDto)
         {

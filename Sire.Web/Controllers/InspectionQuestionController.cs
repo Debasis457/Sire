@@ -1,4 +1,11 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Security.Policy;
+using System.Text;
+using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,11 +16,6 @@ using Sire.Data.Dto.Inspection;
 using Sire.Data.Dto.Master;
 using Sire.Data.Dto.Question;
 using Sire.Web.Models;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sire.Web.Controllers
 {
@@ -51,13 +53,13 @@ namespace Sire.Web.Controllers
             {
                 using HttpClient client = new();
                 using var inspectionQuestionResponse = await client.GetAsync(inspectionQuestionUrl);
-                if (inspectionQuestionResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                if (inspectionQuestionResponse.StatusCode == HttpStatusCode.OK)
                 {
                     var inspectionQuestionData = JsonConvert.DeserializeObject<Inspection_QuestionDto>(inspectionQuestionResponse.Content.ReadAsStringAsync().Result);
 
                     var questionUrl = apiBaseQuestionUrl + "/" + inspectionQuestionData.Question_Id;
                     using var questionResponse = await client.GetAsync(questionUrl);
-                    if (questionResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                    if (questionResponse.StatusCode == HttpStatusCode.OK)
                     {
                         var questionResponseData = JsonConvert.DeserializeObject<QuestionDto>(questionResponse.Content.ReadAsStringAsync().Result);
                         var data = _mapper.Map<InspectionQuestionDtoModel>(questionResponseData);
@@ -85,7 +87,7 @@ namespace Sire.Web.Controllers
             {
                 using (var Response = await client.GetAsync(endquestion))
                 {
-                    if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                    if (Response.StatusCode == HttpStatusCode.OK)
                     {
                         var result = Response.Content.ReadAsStringAsync().Result;
 
@@ -103,13 +105,12 @@ namespace Sire.Web.Controllers
             }
         }
 
-
         [HttpGet]
         public async Task<IActionResult> CompleteInspection(int id)
         {
             using var client = new HttpClient();
             using var inspectionResponse = await client.GetAsync(apiBaseInspectionUrl + "/" + id);
-            if (inspectionResponse.StatusCode == System.Net.HttpStatusCode.OK)
+            if (inspectionResponse.StatusCode == HttpStatusCode.OK)
             {
                 var data = JsonConvert.DeserializeObject<InspectionDto>(inspectionResponse.Content.ReadAsStringAsync().Result);
                 data.Completed_At = DateTime.Now;
@@ -135,9 +136,18 @@ namespace Sire.Web.Controllers
             try
             {
                 using HttpClient client = new();
+
+                //using (var questionsResponse = await client.GetAsync(apiBaseQuestionUrl + "/" + "GetInspectionQuestionLibrary"))
+                //{
+                //    if (questionsResponse.StatusCode == HttpStatusCode.OK)
+                //    {
+
+                //    }    
+                //}
+
                 using (var inspectionResponse = await client.GetAsync(apiBaseInspectionUrl + "/" + id))
                 {
-                    if (inspectionResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                    if (inspectionResponse.StatusCode == HttpStatusCode.OK)
                     {
                         var data = JsonConvert.DeserializeObject<InspectionDto>(inspectionResponse.Content.ReadAsStringAsync().Result);
                         inspectionQuestionSectionModel.InspectionDto = data;
@@ -146,11 +156,11 @@ namespace Sire.Web.Controllers
                     }
                 }
 
-                var url = apiBaseUrl + "/GetSectionListByInspectionId" + "/" + id;
-                using var Response = await client.GetAsync(url);
-                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                var url = apiBaseUrl + "/GetSectionList";
+                using var response = await client.GetAsync(url);
+                if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
+                    var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(response.Content.ReadAsStringAsync().Result);
                     inspectionQuestionSectionModel.QuetionSectionDtos = data;
 
                     return PartialView("QuestionLibrary", inspectionQuestionSectionModel);
@@ -179,7 +189,7 @@ namespace Sire.Web.Controllers
                 using HttpClient client = new();
                 using (var inspectionResponse = await client.GetAsync(apiBaseInspectionUrl + "/" + id))
                 {
-                    if (inspectionResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                    if (inspectionResponse.StatusCode == HttpStatusCode.OK)
                     {
                         var data = JsonConvert.DeserializeObject<InspectionDto>(inspectionResponse.Content.ReadAsStringAsync().Result);
                         inspectionQuestionSectionModel.InspectionDto = data;
@@ -188,11 +198,11 @@ namespace Sire.Web.Controllers
                     }
                 }
 
-                var url = apiBaseUrl + "/GetSectionListByInspectionId" + "/" + id;
-                using var Response = await client.GetAsync(url);
-                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                var url = apiBaseUrl + "/GetSectionListQuestionLibrary";
+                using var response = await client.GetAsync(url);
+                if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
+                    var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(response.Content.ReadAsStringAsync().Result);
                     inspectionQuestionSectionModel.QuetionSectionDtos = data;
 
                     return PartialView("ApplicableQuestions", inspectionQuestionSectionModel);
@@ -221,7 +231,7 @@ namespace Sire.Web.Controllers
                 using HttpClient client = new();
                 using (var inspectionResponse = await client.GetAsync(apiBaseInspectionUrl + "/" + id))
                 {
-                    if (inspectionResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                    if (inspectionResponse.StatusCode == HttpStatusCode.OK)
                     {
                         var data = JsonConvert.DeserializeObject<InspectionDto>(inspectionResponse.Content.ReadAsStringAsync().Result);
                         inspectionQuestionSectionModel.InspectionDto = data;
@@ -232,7 +242,7 @@ namespace Sire.Web.Controllers
 
                 var url = apiBaseUrl + "/GetSectionListByInspectionId" + "/" + id;
                 using var Response = await client.GetAsync(url);
-                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                if (Response.StatusCode == HttpStatusCode.OK)
                 {
                     var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
                     inspectionQuestionSectionModel.QuetionSectionDtos = data;
@@ -263,7 +273,7 @@ namespace Sire.Web.Controllers
                 using HttpClient client = new();
                 using (var inspectionResponse = await client.GetAsync(apiBaseInspectionUrl + "/" + id))
                 {
-                    if (inspectionResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                    if (inspectionResponse.StatusCode == HttpStatusCode.OK)
                     {
                         var data = JsonConvert.DeserializeObject<InspectionDto>(inspectionResponse.Content.ReadAsStringAsync().Result);
                         inspectionQuestionSectionModel.InspectionDto = data;
@@ -274,7 +284,7 @@ namespace Sire.Web.Controllers
 
                 var url = apiBaseUrl + "/GetSectionListByInspectionId" + "/" + id;
                 using var Response = await client.GetAsync(url);
-                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                if (Response.StatusCode == HttpStatusCode.OK)
                 {
                     var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
                     inspectionQuestionSectionModel.QuetionSectionDtos = data;
@@ -305,7 +315,7 @@ namespace Sire.Web.Controllers
                 using HttpClient client = new();
                 using (var inspectionResponse = await client.GetAsync(apiBaseInspectionUrl + "/" + id))
                 {
-                    if (inspectionResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                    if (inspectionResponse.StatusCode == HttpStatusCode.OK)
                     {
                         var data = JsonConvert.DeserializeObject<InspectionDto>(inspectionResponse.Content.ReadAsStringAsync().Result);
                         inspectionQuestionSectionModel.InspectionDto = data;
@@ -316,7 +326,7 @@ namespace Sire.Web.Controllers
 
                 var url = apiBaseUrl + "/GetSectionListByInspectionId" + "/" + id;
                 using var Response = await client.GetAsync(url);
-                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                if (Response.StatusCode == HttpStatusCode.OK)
                 {
                     var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
                     inspectionQuestionSectionModel.QuetionSectionDtos = data;
