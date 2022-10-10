@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Sire.Common.UnitOfWork;
 using Sire.Data.Dto.Inspection;
 using Sire.Data.Dto.Master;
+using Sire.Data.Dto.Question;
 using Sire.Data.Entities.Inspection;
 using Sire.Domain.Context;
 using Sire.Helper;
 using Sire.Respository.Inspection;
 using Sire.Respository.Master;
+using Sire.Respository.ShipManagement;
 
 namespace Sire.Api.Controllers
 {
@@ -23,11 +25,13 @@ namespace Sire.Api.Controllers
         private readonly IInspection_QuestionRepository _inspection_QuestionRepository;
         private readonly IUnitOfWork<SireContext> _uow;
         private readonly IQuetionSectionRepository _quetionSectionRepository;
+        private readonly IPiq_HvpqRepository _piq_HvpqRepository;
 
         public AssesorReviewerController(
             IInspection_QuestionRepository inspection_QuestionRepository,
             IUnitOfWork<SireContext> uow, IMapper mapper,
             IQuetionSectionRepository quetionSectionRepository,
+            IPiq_HvpqRepository piqHvpqRepository,
             IJwtTokenAccesser jwtTokenAccesser)
         {
             _inspection_QuestionRepository = inspection_QuestionRepository;
@@ -35,6 +39,7 @@ namespace Sire.Api.Controllers
             _mapper = mapper;
             _jwtTokenAccesser = jwtTokenAccesser;
             _quetionSectionRepository = quetionSectionRepository;
+            _piq_HvpqRepository = piqHvpqRepository;
         }
 
         [AllowAnonymous]
@@ -87,8 +92,8 @@ namespace Sire.Api.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet]
-        public IActionResult GetSectionList(bool isDeleted)
+        [HttpGet("GetSectionList")]
+        public IActionResult GetSectionList()
         {
             var tests = _quetionSectionRepository.FindByInclude(x => x.Id > 0, x => x.QuetionSubSection)
                 .ToList();
@@ -276,6 +281,137 @@ namespace Sire.Api.Controllers
                         }).ToList();
 
             return Ok(data);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("GetSectionListQuestionLibrary")]
+        public IActionResult GetSectionListQuestionLibrary(int assessorId, int reviewerId, int vesselId)
+        {
+            var tests = _quetionSectionRepository.FindByInclude(x => x.Id > 0, x => x.QuetionSubSection)
+                .ToList();
+            var testsDto = _mapper.Map<IEnumerable<QuetionSectionDto>>(tests);
+            foreach (var item in testsDto)
+            {
+                var assRevQuestionIds = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == item.Id)
+                                         join sub in _uow.Context.QuetionSubSection
+                                            on sec.Id equals sub.QuetionSectionId
+                                         join que in _uow.Context.Question.Where(x => x.DAssessore == assessorId && x.DReviewer == reviewerId)
+                                            on sub.Id equals que.Section
+                                         select new
+                                         {
+                                             que.Id
+
+                                         }).ToList();
+
+                var piqHvpqQuestionsIds = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == item.Id)
+                                         join sub in _uow.Context.QuetionSubSection on sec.Id equals sub.QuetionSectionId
+                                         join que in _uow.Context.Question on sub.Id equals que.Section
+                                         join piqque in _uow.Context.PIQ_HVPQ_Response_Mapping1 on que.Id equals piqque.QuestionId
+                                         select new
+                                         {
+                                             piqque.Id
+
+                                         }).ToList();
+
+                var count = assRevQuestionIds.Union(piqHvpqQuestionsIds).Count();
+
+
+                foreach (var subb in item.QuetionSubSection)
+                {
+                    var assRevTotalQuestionIds = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == item.Id)
+                                                  join sub in _uow.Context.QuetionSubSection.Where(x => x.Id == subb.Id) on sec.Id equals sub.QuetionSectionId
+                                                  join que in _uow.Context.Question.Where(x => x.DAssessore == assessorId && x.DReviewer == reviewerId)
+                                                    on sub.Id equals que.Section
+                                                  select new
+                                                  {
+                                                      que.Id
+
+                                                  }).ToList();
+
+                    var piqHvpqTotalQuestionsIds = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == item.Id)
+                                                    join sub in _uow.Context.QuetionSubSection.Where(x => x.Id == subb.Id) on sec.Id equals sub.QuetionSectionId
+                                                    join que in _uow.Context.Question on sub.Id equals que.Section
+                                                    join piqque in _uow.Context.PIQ_HVPQ_Response_Mapping1 on que.Id equals piqque.QuestionId
+                                                    select new
+                                                    {
+                                                        piqque.Id
+
+                                                    }).ToList();
+
+                    subb.Total = assRevTotalQuestionIds.Union(piqHvpqTotalQuestionsIds).Count();
+                }
+                item.Total = count;
+            }
+            return Ok(testsDto);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("GetInspectionApplicableQuestionBySection")]
+        public IActionResult GetInspectionApplicableQuestionBySection(int sectionId, int vesselId, int assessorId, int reviewerId)
+        {
+            var piqHvpqQuestions = _piq_HvpqRepository.AllIncluding().ToList();
+            //var allQuestions = _questionRepository.AllIncluding().ToList();
+            var questions = new List<QuestionDto>();
+
+            var assRevQuestionsData = (from quetion in _uow.Context.Question.Where(x => x.Section == sectionId && x.DAssessore == assessorId && x.DReviewer == reviewerId)
+                        join userrew in _uow.Context.User on reviewerId equals userrew.Id into r
+                        from userrew in r.DefaultIfEmpty()
+                        join userass in _uow.Context.User on assessorId equals userass.Id into a
+                        from userass in a.DefaultIfEmpty()
+                        select new Inspection_QuestionDto
+                        {
+                            Id = 0,
+                            Reviewer_Id = reviewerId,
+                            Assessor_Id = assessorId,
+                            Inspection_Id = 0,
+                            Reviewer_Name = userrew != null ? userrew.UserName : "",
+                            Assessor_Name = userass != null ? userass.UserName : "",
+                            Question_Id = quetion.Id,
+                            Question_Text = quetion.Questions,
+                            Assesment_Completed = false,
+                            Review_Completed = false
+                        }).ToList();
+
+            var piqHvpqQuestionsData = (from quetion in _uow.Context.Question.Where(x => x.Section == sectionId && x.DAssessore == assessorId && x.DReviewer == reviewerId)
+                                        join userrew in _uow.Context.User on reviewerId equals userrew.Id into r
+                                        from userrew in r.DefaultIfEmpty()
+                                        join userass in _uow.Context.User on assessorId equals userass.Id into a
+                                        from userass in a.DefaultIfEmpty()
+                                        join piqque in _uow.Context.PIQ_HVPQ_Response_Mapping1 on quetion.Id equals piqque.QuestionId into p 
+                                        from pique in p.DefaultIfEmpty()
+                                        select new Inspection_QuestionDto
+                                        {
+                                            Id = 0,
+                                            Reviewer_Id = reviewerId,
+                                            Assessor_Id = assessorId,
+                                            Inspection_Id = 0,
+                                            Reviewer_Name = userrew != null ? userrew.UserName : "",
+                                            Assessor_Name = userass != null ? userass.UserName : "",
+                                            Question_Id = quetion.Id,
+                                            Question_Text = quetion.Questions,
+                                            Assesment_Completed = false,
+                                            Review_Completed = false
+                                        }).ToList();
+
+            return Ok(data);
+
+            //foreach (var piqHvpqQuestion in piqHvpqQuestions.GroupBy(x => x.QuestionId))
+            //{
+            //    if (piqHvpqQuestion.Count() == 1)
+            //    {
+            //        questions.Add(_mapper.Map<QuestionDto>(allQuestions.First(x => x.Id == piqHvpqQuestion.First().QuestionId)));
+            //        // Consider the question if there is only 1 PIQ/HVPQ question
+            //    }
+            //    else if (piqHvpqQuestion.Count() == 2)
+            //    {
+            //        if (piqHvpqQuestion.ElementAt(0).Type == piqHvpqQuestion.ElementAt(1).Type)
+            //        {
+
+            //        }
+            //    }
+            //}
+
+            return Ok(questions);
         }
     }
 }
