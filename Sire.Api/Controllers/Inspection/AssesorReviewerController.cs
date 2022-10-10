@@ -284,7 +284,7 @@ namespace Sire.Api.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("GetSectionListQuestionLibrary")]
+        [HttpGet("GetSectionListQuestionLibrary/{assessorId}/{reviewerId}/{vesselId}")]
         public IActionResult GetSectionListQuestionLibrary(int assessorId, int reviewerId, int vesselId)
         {
             var tests = _quetionSectionRepository.FindByInclude(x => x.Id > 0, x => x.QuetionSubSection)
@@ -306,7 +306,7 @@ namespace Sire.Api.Controllers
                 var piqHvpqQuestionsIds = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == item.Id)
                                          join sub in _uow.Context.QuetionSubSection on sec.Id equals sub.QuetionSectionId
                                          join que in _uow.Context.Question on sub.Id equals que.Section
-                                         join piqque in _uow.Context.PIQ_HVPQ_Response_Mapping1 on que.Id equals piqque.QuestionId
+                                         join piqque in _uow.Context.PIQ_HVPQ_Response_Mapping1.Where(x => x.VesselId == vesselId) on que.Id equals piqque.QuestionId
                                          select new
                                          {
                                              piqque.Id
@@ -346,13 +346,9 @@ namespace Sire.Api.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("GetInspectionApplicableQuestionBySection")]
-        public IActionResult GetInspectionApplicableQuestionBySection(int sectionId, int vesselId, int assessorId, int reviewerId)
+        [HttpGet("GetInspectionApplicableQuestionBySection/{sectionId}/{assessorId}/{reviewerId}/{vesselId}")]
+        public IActionResult GetInspectionApplicableQuestionBySection(int sectionId, int assessorId, int reviewerId, int vesselId)
         {
-            var piqHvpqQuestions = _piq_HvpqRepository.AllIncluding().ToList();
-            //var allQuestions = _questionRepository.AllIncluding().ToList();
-            var questions = new List<QuestionDto>();
-
             var assRevQuestionsData = (from quetion in _uow.Context.Question.Where(x => x.Section == sectionId && x.DAssessore == assessorId && x.DReviewer == reviewerId)
                         join userrew in _uow.Context.User on reviewerId equals userrew.Id into r
                         from userrew in r.DefaultIfEmpty()
@@ -372,13 +368,12 @@ namespace Sire.Api.Controllers
                             Review_Completed = false
                         }).ToList();
 
-            var piqHvpqQuestionsData = (from quetion in _uow.Context.Question.Where(x => x.Section == sectionId && x.DAssessore == assessorId && x.DReviewer == reviewerId)
+            var piqHvpqQuestionsData = (from quetion in _uow.Context.Question.Where(x => x.Section == sectionId)
                                         join userrew in _uow.Context.User on reviewerId equals userrew.Id into r
                                         from userrew in r.DefaultIfEmpty()
                                         join userass in _uow.Context.User on assessorId equals userass.Id into a
                                         from userass in a.DefaultIfEmpty()
-                                        join piqque in _uow.Context.PIQ_HVPQ_Response_Mapping1 on quetion.Id equals piqque.QuestionId into p 
-                                        from pique in p.DefaultIfEmpty()
+                                        join piqque in _uow.Context.PIQ_HVPQ_Response_Mapping1.Where(x => x.VesselId == vesselId) on quetion.Id equals piqque.QuestionId
                                         select new Inspection_QuestionDto
                                         {
                                             Id = 0,
@@ -393,7 +388,10 @@ namespace Sire.Api.Controllers
                                             Review_Completed = false
                                         }).ToList();
 
-            return Ok(data);
+            var mergedQuestions = new List<Inspection_QuestionDto>(assRevQuestionsData);
+            mergedQuestions.AddRange(piqHvpqQuestionsData.Where(p2 => assRevQuestionsData.All(x => x.Question_Id != x.Question_Id)));
+
+            return Ok(mergedQuestions);
 
             //foreach (var piqHvpqQuestion in piqHvpqQuestions.GroupBy(x => x.QuestionId))
             //{
@@ -410,8 +408,6 @@ namespace Sire.Api.Controllers
             //        }
             //    }
             //}
-
-            return Ok(questions);
         }
     }
 }

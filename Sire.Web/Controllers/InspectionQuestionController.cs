@@ -182,6 +182,9 @@ namespace Sire.Web.Controllers
 
         public async Task<IActionResult> GetApplicableQuestions(int id)
         {
+            var assessorId = 1;
+            var reviewerId = 1;
+            var vesselId = 4;
             TempData["InspectionId"] = id;
             var inspectionQuestionSectionModel = new InspectionQuestionSectionModel();
             try
@@ -198,7 +201,7 @@ namespace Sire.Web.Controllers
                     }
                 }
 
-                var url = apiBaseUrl + "/GetSectionListQuestionLibrary";
+                var url = apiBaseUrl + "/GetSectionListQuestionLibrary/" + assessorId + "/" + reviewerId + "/" + vesselId;
                 using var response = await client.GetAsync(url);
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
