@@ -237,8 +237,9 @@ namespace Sire.Web.Controllers
             }
         }
 
-        public async Task<PartialViewResult> GetInspectionApplicableQuestionBySection(int id)
+        public async Task<PartialViewResult> GetInspectionApplicableQuestionBySection(int id, int? displayFlag = 0)
         {
+            ViewBag.DisplayFlag = displayFlag;
             var inspectionId = Convert.ToInt32(TempData["InspectionId"]);
             int assessorId = 1;
             int reviewerId = 1;
