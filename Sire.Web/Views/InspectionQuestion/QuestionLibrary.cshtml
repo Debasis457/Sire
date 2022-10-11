@@ -30,8 +30,8 @@
 
                                     @foreach (var child in item.QuetionSubSection)
                                     {
-                                        <div style="    padding: 2px; border: 1px solid;   margin-bottom: 4px;  border-radius: 5px; cursor:pointer">
-                                            <a onclick="aaaaa(@child.Id, @Model.InspectionDto.Id)">@child.Name</a>
+                                        <div style="padding: 2px; border: 1px solid;   margin-bottom: 4px;  border-radius: 5px; cursor:pointer">
+                                            <a onclick="GetQuestionBySectionWithDisplayFlag(@child.Id)">@child.Name</a>
                                             <span style="float:right; min-width: 60px; border-radius:10px; background: #65adff;color:white;padding: 0px 5px; padding: 0px 5px; white-space:nowrap; text-align:center;"> <b>@child.Total</b></span>
                                         </div>
                                     }

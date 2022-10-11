@@ -176,6 +176,17 @@ function aaaaa(id) {
     });
 }
 
+function GetQuestionBySectionWithDisplayFlag(id) {
+    $.ajax({
+        type: "GET",
+        url: "/Inspection/GetQuestionBySection/" + id,
+        data: {displayFlag:1},
+        success: function (r) {
+            $(".bindPartialQuetion").html(r);
+        }
+    });
+}
+
 function GetInspectionApplicableQuestionBySection(id) {
     $.ajax({
         type: "GET",

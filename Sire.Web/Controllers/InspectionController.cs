@@ -185,8 +185,9 @@ namespace Sire.Web.Controllers
             }
         }
 
-        public async Task<PartialViewResult> GetQuestionBySection(int id)
+        public async Task<PartialViewResult> GetQuestionBySection(int id, int? displayFlag = 0)
         {
+            ViewBag.DisplayFlag = displayFlag;
             var inspectionId = Convert.ToInt32(TempData["InspectionId"]);
             TempData.Keep();
             var endquestion = apiBaseQuestionUrl + "/GetQuestionBySection/" + id;

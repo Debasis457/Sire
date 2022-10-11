@@ -5,41 +5,52 @@
 }
 @foreach (var item in Model)
 {
-    if (item.AssesmentCompleted == true)
+    if (ViewBag.DisplayFlag == 0)
     {
-        inspectionQuestionStatus = "card bg-c-yellow";
-    }
-    else if (item.ReviewCompleted == true)
-    {
-        inspectionQuestionStatus = "card bg-c-green";
-    }
-    else
-    {
-        inspectionQuestionStatus = "card bg-c-red";
+        if (item.AssesmentCompleted == true)
+        {
+            inspectionQuestionStatus = "card bg-c-yellow";
+        }
+        else if (item.ReviewCompleted == true)
+        {
+            inspectionQuestionStatus = "card bg-c-green";
+        }
+        else
+        {
+            inspectionQuestionStatus = "card bg-c-red";
+        }
     }
     <div class="@inspectionQuestionStatus" style="margin-bottom:5px">
         <div class="card-body">
             <div class="row">
-                <a asp-action="AddEdit" asp-controller="InspectionQuestion" asp-route-Id="@item.InspectionQuestionId"> @item.Chapter . @item.Section . @i. @item.Questions</a>
-            </div>
-            <div class="row">
-                <div class="col-md-3">
-                    <i class="fa fa-eye" aria-hidden="true"></i> <b>2</b>
-                </div>
-                <div class="col-md-3">
-                    <i class="fa fa-camera" aria-hidden="true"></i>
-                    <b>3</b>
-                </div>
-                <div class="col-md-3">
-                    <i class="fa fa-microphone" aria-hidden="true"></i>  <b>0</b>
-                </div>
-                <div class="col-md-3">
-                    <i class="fa fa-times" aria-hidden="true"></i>
-                    <b>0</b>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    i++;
-}
+                @{
+                    if (ViewBag.DisplayFlag == 0)
+                    {
+                            <a asp-action="AddEdit" asp-controller="InspectionQuestion" asp-route-Id="@item.InspectionQuestionId"> @item.Chapter . @item.Section . @i. @item.Questions</a>
+                    }
+                    else
+                    {
+                            <a href="javascript:void(0);"> @item.Chapter . @item.Section . @i. @item.Questions</a>
+                    }
+                }
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <i class="fa fa-eye" aria-hidden="true"></i> <b>2</b>
+                            </div>
+                            <div class="col-md-3">
+                                <i class="fa fa-camera" aria-hidden="true"></i>
+                                <b>3</b>
+                            </div>
+                            <div class="col-md-3">
+                                <i class="fa fa-microphone" aria-hidden="true"></i>  <b>0</b>
+                            </div>
+                            <div class="col-md-3">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                                <b>0</b>
+                            </div>
+                        </div>
+                        </div>
+                        </div>
+                        i++;
+                }
