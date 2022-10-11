@@ -237,25 +237,45 @@ namespace Sire.Web.Controllers
             }
         }
 
-        public async Task<PartialViewResult> GetInspectionApplicableQuestionBySection(int sectionId)
+        public async Task<PartialViewResult> GetInspectionApplicableQuestionBySection(int id)
         {
             var inspectionId = Convert.ToInt32(TempData["InspectionId"]);
             int assessorId = 1;
             int reviewerId = 1;
-            int vesselId = 1;
+            int vesselId = 4;
             TempData.Keep();
 
-            var questionSectionUrl = apiBaseAssesorReviewerUrl + "/GetInspectionApplicableQuestionBySection/" + sectionId + "/" + assessorId + "/" + reviewerId + "/" + vesselId;
+            var endquestion = apiBaseQuestionUrl + "/GetQuestionBySection/" + id;
+            var questionSectionUrl = apiBaseAssesorReviewerUrl + "/GetInspectionApplicableQuestionBySection/" + id + "/" + assessorId + "/" + reviewerId + "/" + vesselId;
             //var inspectionQuestion = apiBaseAssesorReviewerUrl + "/GetAssesordataByInspection/" + inspectionId + "/" + id;
             using HttpClient client = new();
-            using var response = await client.GetAsync(questionSectionUrl);
+            using var response = await client.GetAsync(endquestion);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 var inspectionQuestionDtoModel = new List<InspectionQuestionDtoModel>();
                 var result = response.Content.ReadAsStringAsync().Result;
 
-                var data = JsonConvert.DeserializeObject<IEnumerable<Inspection_QuestionDto>>(response.Content.ReadAsStringAsync().Result);
-                inspectionQuestionDtoModel = _mapper.Map<List<InspectionQuestionDtoModel>>(data);
+                var data = JsonConvert.DeserializeObject<IEnumerable<QuestionDto>>(response.Content.ReadAsStringAsync().Result);
+                using var inspectionQuestionResponse = await client.GetAsync(questionSectionUrl);
+
+                if (inspectionQuestionResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var inspectionQuestionData = JsonConvert.DeserializeObject<IEnumerable<Inspection_QuestionDto>>(inspectionQuestionResponse.Content.ReadAsStringAsync().Result);
+
+                    foreach (var item in inspectionQuestionData)
+                    {
+                        var eachQuestion = data.FirstOrDefault(x => x.Id == item.Question_Id);
+                        if (eachQuestion != null)
+                        {
+                            var mappedInspectionQuestion = _mapper.Map<InspectionQuestionDtoModel>(eachQuestion);
+                            mappedInspectionQuestion.InspectionQuestionId = item.Id;
+                            mappedInspectionQuestion.AssesmentCompleted = item.Assesment_Completed;
+                            mappedInspectionQuestion.ReviewCompleted = item.Review_Completed;
+
+                            inspectionQuestionDtoModel.Add(mappedInspectionQuestion);
+                        }
+                    }
+                }
 
                 return PartialView("_InspectionQuetions", inspectionQuestionDtoModel);
             }
