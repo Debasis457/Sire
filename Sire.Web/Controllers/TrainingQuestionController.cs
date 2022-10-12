@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Sire.Data.Dto.Master;
 using Sire.Data.Dto.Operator;
 using Sire.Data.Dto.Question;
+using Sire.Data.Dto.Training;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -27,6 +28,7 @@ namespace Sire.Web.Controllers
         string apiBaseQuestionUrl = string.Empty;
         string apiBaseUserRankUrl = string.Empty;
         string apiBaseRankGroupUrl = string.Empty;
+        string apiBaseTrainingUrl = string.Empty;
         public TrainingQuestionController(ILogger<TrainingQuestionController> logger,
             Microsoft.Extensions.Configuration.IConfiguration iConfig
             )
@@ -37,6 +39,7 @@ namespace Sire.Web.Controllers
             apiBaseQuestionUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/question";
             apiBaseUserRankUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/User_Rank";
             apiBaseRankGroupUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/RankGroup";
+            apiBaseTrainingUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Training";
         }
         //Dharini
        
@@ -45,12 +48,14 @@ namespace Sire.Web.Controllers
             TempData["TrainingId"] = id;
             ViewBag.TrainingId = id == null ? 0 : id;
             id = id == null ? 0 : id;
+            var vesselId = Convert.ToInt32(TempData["vessselId"]);
             try {
 
              
                     using (HttpClient client = new HttpClient())
                     {
                         var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+                        ViewBag.OperatorId=userid;
                         var endpoint = apiBaseUrl + "/" + id + "/" + userid;
 
                         using (var Response = await client.GetAsync(endpoint))
@@ -212,6 +217,26 @@ namespace Sire.Web.Controllers
 
         }
 
+        public async Task<JsonResult> GetDifference(int? id)
+        {
+            TempData["TrainingId"] = id;
+            var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+            var endvessel = apiBaseTrainingUrl + "/GetDifference/" + userid; 
+           
+            using (HttpClient client = new HttpClient())
+            {
+                using (var Response = await client.GetAsync(endvessel))
+                {
+                    var data = JsonConvert.DeserializeObject<int>(Response.Content.ReadAsStringAsync().Result);
+                    //var data = JsonConvert.DeserializeObject<TrainingDto>(Response.Content.ReadAsStringAsync().Result);
+                    
+                    return Json(data);
+
+                }
+            }
+
+        }
+
         public async Task<PartialViewResult> GetApplicableQuestions(int? id)
         {
             TempData["TrainingId"] = id;
@@ -259,6 +284,9 @@ namespace Sire.Web.Controllers
             return PartialView("TaggedQuestions");
         }
 
+
+
+        
 
     }
 

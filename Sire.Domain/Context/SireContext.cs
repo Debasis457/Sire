@@ -31,7 +31,6 @@ namespace Sire.Domain.Context
         public DbSet<Vessel> Vessel { get; set; }
         public DbSet<User_Vessel> User_Vessel { get; set; }
         public DbSet<Piq_Hvpq> Piq_Hvpq { get; set; }
-        public DbSet<PIQ_HVPQ_Response_Mapping1> PIQ_HVPQ_Response_Mapping1 { get; set; }
         public DbSet<Training> Training { get; set; }
         public DbSet<Vessel_Response_Piq_Hvpq> Vessel_Response_Piq_Hvpq { get; set; }
         public DbSet<Training_Question> Training_Question { get; set; }
@@ -51,6 +50,9 @@ namespace Sire.Domain.Context
         public DbSet<Training_Task> Training_Task { get; set; }
         public DbSet<InspectionResponse> InspectionResponse { get; set; }
         public DbSet<PIQ_HVPQ_Response> PIQ_HVPQ_Response { get; set; }
+        public DbSet<Piq_Hvpq_Filter_Quetions> Piq_Hvpq_Filter_Quetions { get; set; }
+
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.DefalutMappingValue();

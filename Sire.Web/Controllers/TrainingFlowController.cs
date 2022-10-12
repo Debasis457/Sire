@@ -30,6 +30,7 @@ namespace Sire.Web.Controllers
         string apiBaseUrl = string.Empty;
         string apiBaseQuestionUrl = string.Empty;
         string apiBaseTrainingResponseUrl = string.Empty;
+        string apiBaseTrainingTaskUrl = string.Empty;
 
         public TrainingFlowController(ILogger<TrainingFlowController> logger,
             Microsoft.Extensions.Configuration.IConfiguration iConfig
@@ -41,7 +42,10 @@ namespace Sire.Web.Controllers
 
             apiBaseQuestionUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Question";
             apiBaseTrainingResponseUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/TraningResponse";
+            apiBaseTrainingTaskUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Training_Task";
         }
+
+
 
             public async Task<PartialViewResult> GetQueCheckList(int? id)
             {
@@ -60,9 +64,9 @@ namespace Sire.Web.Controllers
 
                         var data = JsonConvert.DeserializeObject<QuestionDto>(Response.Content.ReadAsStringAsync().Result);
 
-                        var checklist = data.Checklist.Replace("? ", "<br />");
+                      /*  var checklist = data.Checklist.Replace("? ", "<br />");
 
-                        ViewBag.Check=checklist;
+                        ViewBag.Check=checklist;*/
 
                         return PartialView("CheckList", data);
                     }
@@ -204,5 +208,35 @@ namespace Sire.Web.Controllers
             return RedirectToAction("Index", "TrainingQuestion", new { @id = trainingId });
         }
 
+
+        public async Task<PartialViewResult> GetHint(int? id)
+        {
+            TempData["TrainingId"] = id;
+            var endquestion = apiBaseTrainingTaskUrl + "/" + id;
+
+            using (HttpClient client = new HttpClient())
+            {
+                using (var Response = await client.GetAsync(endquestion))
+                {
+                    if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var result = Response.Content.ReadAsStringAsync().Result;
+
+                        var data = JsonConvert.DeserializeObject<Training_TaskDto>(Response.Content.ReadAsStringAsync().Result);
+
+
+
+                        return PartialView("DisplayHint", data);
+                    }
+                    else
+                    {
+                        ModelState.Clear();
+                        ModelState.AddModelError(string.Empty, "Invalid Data");
+                        return PartialView();
+                    }
+                }
+            }
+
+        }
     }
 }

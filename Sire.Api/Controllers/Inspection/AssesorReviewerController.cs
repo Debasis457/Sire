@@ -312,7 +312,7 @@ namespace Sire.Api.Controllers
                 var piqHvpqQuestionsIds = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == item.Id)
                                          join sub in _uow.Context.QuetionSubSection on sec.Id equals sub.QuetionSectionId
                                          join que in _uow.Context.Question on sub.Id equals que.Section
-                                         join piqque in _uow.Context.PIQ_HVPQ_Response_Mapping1.Where(x => x.VesselId == vesselId) on que.Id equals piqque.QuestionId
+                                         join piqque in _uow.Context.Piq_Hvpq_Filter_Quetions.Where(x => x.VesselId == vesselId) on que.Id equals piqque.QuestionId
                                          select new
                                          {
                                              piqque.Id
@@ -337,7 +337,7 @@ namespace Sire.Api.Controllers
                     var piqHvpqTotalQuestionsIds = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == item.Id)
                                                     join sub in _uow.Context.QuetionSubSection.Where(x => x.Id == subb.Id) on sec.Id equals sub.QuetionSectionId
                                                     join que in _uow.Context.Question on sub.Id equals que.Section
-                                                    join piqque in _uow.Context.PIQ_HVPQ_Response_Mapping1 on que.Id equals piqque.QuestionId
+                                                    join piqque in _uow.Context.Piq_Hvpq_Filter_Quetions on que.Id equals piqque.QuestionId
                                                     select new
                                                     {
                                                         piqque.Id
@@ -473,7 +473,7 @@ namespace Sire.Api.Controllers
                                         from userrew in r.DefaultIfEmpty()
                                         join userass in _uow.Context.User on assessorId equals userass.Id into a
                                         from userass in a.DefaultIfEmpty()
-                                        join piqque in _uow.Context.PIQ_HVPQ_Response_Mapping1.Where(x => x.VesselId == vesselId) on quetion.Id equals piqque.QuestionId
+                                        join piqque in _uow.Context.Piq_Hvpq_Filter_Quetions.Where(x => x.VesselId == vesselId) on quetion.Id equals piqque.QuestionId
                                         select new Inspection_QuestionDto
                                         {
                                             Id = 0,

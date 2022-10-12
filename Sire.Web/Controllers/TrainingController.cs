@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Sire.Data.Dto.Inspection;
 using Sire.Data.Dto.Master;
 using Sire.Data.Dto.Operator;
 using Sire.Data.Dto.Question;
@@ -17,6 +18,7 @@ using Sire.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -206,9 +208,10 @@ namespace Sire.Web.Controllers
 
                     using (var Response = await client.PostAsync(apiBaseUrl, content))
                     {
-                        var adddata = JsonConvert.DeserializeObject<int>(Response.Content.ReadAsStringAsync().Result);
+                        
                         if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                         {
+                            var adddata = JsonConvert.DeserializeObject<int>(Response.Content.ReadAsStringAsync().Result);
                             ViewBag.IsEdit = false;
                             trainingDto = new TrainingDto();
                             using (var TrainingData = await client.GetAsync(apiBaseUrl))
@@ -223,6 +226,7 @@ namespace Sire.Web.Controllers
                         }
                         else
                         {
+                            ViewBag.IsEdit = true;
                             ModelState.Clear();
                             ModelState.AddModelError(string.Empty, "Invalid Data");
                             return View();
@@ -298,6 +302,8 @@ namespace Sire.Web.Controllers
                         {
                             var data = JsonConvert.DeserializeObject<IEnumerable<QuestionDto>>(result);
                             taskModel.QuestionDtos = data;
+                            //dharini
+                            TempData["QuestionIdsBySection"] = string.Join(",", data.Select(x => x.Id).ToArray());
 
                             using var Response1 = await client.GetAsync(taskSubmittedDataUrl);
                             if (Response1.StatusCode == System.Net.HttpStatusCode.OK)
@@ -354,6 +360,6 @@ namespace Sire.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
+       
     }
 }

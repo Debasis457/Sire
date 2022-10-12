@@ -41,9 +41,45 @@ namespace Sire.Web.Controllers
             apiBaseInspectionUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Inspection";
         }
 
-        public IActionResult Index(int? id = 1)
+        public async Task<IActionResult> Index(int? id = 1)
         {
-            ViewBag.InspectionId = id;
+            var inspectionQuestionSectionModel = new InspectionQuestionSectionModel();
+            TempData["InspectionId"] = id;
+            try
+            {
+                using HttpClient client = new();
+                using (var inspectionResponse = await client.GetAsync(apiBaseInspectionUrl + "/" + id))
+                {
+                    if (inspectionResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var data = JsonConvert.DeserializeObject<InspectionDto>(inspectionResponse.Content.ReadAsStringAsync().Result);
+                        inspectionQuestionSectionModel.InspectionDto = data;
+
+                        TempData["InspectionCompleted"] = data.Completed_At != DateTime.MinValue;
+                    }
+                }
+
+                var url = apiBaseUrl + "/GetSectionListByInspectionId" + "/" + id;
+                using var Response = await client.GetAsync(url);
+                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
+                    inspectionQuestionSectionModel.QuetionSectionDtos = data;
+
+                    return View(inspectionQuestionSectionModel);
+                }
+                else
+                {
+                    ModelState.Clear();
+                    ModelState.AddModelError(string.Empty, "Invalid Data");
+                    return View();
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
             return View();
         }
 
@@ -105,6 +141,35 @@ namespace Sire.Web.Controllers
                 }
             }
         }
+		
+        public async Task<IActionResult> GetQuestionDetails(int? inspectionid, int? questionId)
+        {
+            // var endquestion = apiBaseQuestionUrl + "/" + id;
+            ViewBag.InspectionId = inspectionid == null ? 0 : inspectionid;
+            TempData["InspectionId"] = inspectionid;
+            TempData["QuestionId"] = questionId;
+            using (HttpClient client = new HttpClient())
+            {
+                var endquestion = apiBaseQuestionUrl + "/" + questionId;
+                using (var Response = await client.GetAsync(endquestion))
+                {
+                    if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var result = Response.Content.ReadAsStringAsync().Result;
+
+                        var data = JsonConvert.DeserializeObject<InspectionQuestionDtoModel>(Response.Content.ReadAsStringAsync().Result);
+
+                        return View("~/Views/InspectionFlow/Index.cshtml", data);
+                    }
+                    else
+                    {
+                        ModelState.Clear();
+                        ModelState.AddModelError(string.Empty, "Invalid Data");
+                        return PartialView();
+                    }
+                }
+            }
+        }
 
         [HttpGet]
         public async Task<IActionResult> CompleteInspection(int id)
@@ -137,15 +202,6 @@ namespace Sire.Web.Controllers
             try
             {
                 using HttpClient client = new();
-
-                //using (var questionsResponse = await client.GetAsync(apiBaseQuestionUrl + "/" + "GetInspectionQuestionLibrary"))
-                //{
-                //    if (questionsResponse.StatusCode == HttpStatusCode.OK)
-                //    {
-
-                //    }    
-                //}
-
                 using (var inspectionResponse = await client.GetAsync(apiBaseInspectionUrl + "/" + id))
                 {
                     if (inspectionResponse.StatusCode == HttpStatusCode.OK)

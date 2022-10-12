@@ -149,7 +149,7 @@ namespace Sire.Web.Controllers
             }
             else
             {
-                return RedirectToAction("", "InspectionQuestion", new { @id = InspectionId });
+                return RedirectToAction("Index", "InspectionQuestion", new { @id = InspectionId });
             }
 
             return View();

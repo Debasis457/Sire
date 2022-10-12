@@ -1,5 +1,7 @@
 ﻿@model Sire.Data.Dto.Question.QuestionDto
 
+
+<script src="~/js/PageScript/common.js"></script>
 <div class="tab-pane fade show active" id="CheckList" role="tabpanel" aria-labelledby="pills-home-tab">
 @*
     <input type="hidden" id="id" name="REW_ID" value="-1" class="form-control" />*@
@@ -9,15 +11,15 @@
             <div class="card-body">
 
                 <div class="col-lg-12  col-sm-12  pl-5 pr-5">
-                    <img atl="me" src="/Images/Hint.png" /><lable for="Hint"> Hint goes here</lable>
+                    <a href="" data-toggle="modal" data-target="#myCheckListHintModal" data-backdrop="false"><img atl="me" src="/Images/Hint.png" /></a><lable for="Hint"> Hint goes here</lable>
                     
                     <div class="form-group">
                         <div class="card-header" id="Check">
                         <label class="checkbox-bootstrap checkbox-lg">
                             <input type="checkbox" name="Check"@* value="@Model.Checklist"*@>
                             <span class="checkbox-placeholder"></span>
-                         @ViewBag.check
-                             @*@Model.Checklist*@
+                       
+                             @Model.Checklist
                         </label>
                         </div>
                     </div>
@@ -29,3 +31,9 @@
 
     </div>
 </div>
+
+
+
+
+
+       

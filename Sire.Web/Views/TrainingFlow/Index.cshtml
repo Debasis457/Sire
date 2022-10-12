@@ -7,6 +7,31 @@
 
 
 
+@{
+    var trainingId = Convert.ToInt32(TempData["TrainingId"]);
+    var questionsData = TempData["QuestionIdsBySection"];
+    var currentQuestionId = Convert.ToInt32(TempData["QuestionId"]);
+    var splitQuestionsIds = questionsData.ToString().Split(",").Select(x => Convert.ToInt32(x)).ToList();
+    var currentQuestionIndex = splitQuestionsIds.FindIndex(x => x == currentQuestionId);
+
+    var nextQuestionId = -1;
+    if (currentQuestionIndex < splitQuestionsIds.Count)
+        nextQuestionId = currentQuestionIndex == splitQuestionsIds.Count - 1 ? currentQuestionIndex : splitQuestionsIds[currentQuestionIndex + 1];
+
+
+    var previousQuestionId = -1;
+    if (currentQuestionIndex < splitQuestionsIds.Count)
+        previousQuestionId = currentQuestionIndex == 0 ? 0 : splitQuestionsIds[currentQuestionIndex - 1];
+
+    var nextButtonDisable = nextQuestionId == -1 || currentQuestionIndex == splitQuestionsIds.Count - 1 ? "disabled" : "";
+
+    var previousButtonDisable = previousQuestionId == -1 || currentQuestionIndex == 0 ? "disabled" : "";
+
+    TempData.Keep();
+
+}
+
+
 
 <div class="col-md-12">
     <div class="card m-b-0">
@@ -57,7 +82,38 @@
             </div>
         </div>
     </div>
+    <div class="card m-b-0">
+        <div class="card-body head-tit">
+        <div class="col-sm-4">
+             </div>
+            <div class="col-sm-3">
+                @if (previousButtonDisable == "disabled")
+                {
+                    <a class="btn  btn-primary" id="previous" disabled>&laquo; Previous</a>
+                }
+                else
+                {
+                    <a class="btn  btn-primary" id="previous" asp-action="GetDetails" asp-controller="TrainingQuestion" asp-route-trainingId="@trainingId" asp-route-questionId="@previousQuestionId"> &laquo; Previous</a>
+
+                }
+            </div>
+
+            <div class="col-sm-3">
+                @if (nextButtonDisable == "disabled")
+                {
+                    <a class="btn  btn-primary align-right" id="next" disabled>Next  &raquo;</a>
+                }
+                else
+                {
+                    <a class="btn  btn-primary align-right" id="next" asp-action="GetDetails" asp-controller="TrainingQuestion" asp-route-trainingId="@trainingId" asp-route-questionId="@nextQuestionId">Next  &raquo;</a>
+
+                }
+            </div>
+        </div>
+    </div>
 </div>
+
+
 
 
 

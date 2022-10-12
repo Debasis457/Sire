@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Sire.Data.Dto.Master;
+using Sire.Data.Dto.Training;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -22,7 +23,7 @@ namespace Sire.Web.Controllers
         string apiBaseUserUrl = string.Empty;
         string apiBaseVesselUrl = string.Empty;
         string apiBaseOperatorVesselUrl = string.Empty;
-
+        string apiBaseTrainingTaskUrl = string.Empty;
         public VesselPopUpController(ILogger<UserVesselController> logger,
             Microsoft.Extensions.Configuration.IConfiguration iConfig
             )
@@ -32,6 +33,7 @@ namespace Sire.Web.Controllers
 
             apiBaseVesselUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Vessel";
             apiBaseOperatorVesselUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/User_Vessel";
+            apiBaseTrainingTaskUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Training_Task";
         }
 
         public async Task<IActionResult> SelectVessel()
@@ -168,7 +170,37 @@ namespace Sire.Web.Controllers
 
             return View();
         }
+        public async Task<IActionResult> DisplayHint()
+        {
 
+            var endquestion = apiBaseTrainingTaskUrl + "/" + 1;
+
+            using (HttpClient client = new HttpClient())
+            {
+                using (var Response = await client.GetAsync(endquestion))
+                {
+                    if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var result = Response.Content.ReadAsStringAsync().Result;
+
+                        var data = JsonConvert.DeserializeObject<Training_TaskDto>(Response.Content.ReadAsStringAsync().Result);
+
+
+
+                        return PartialView("DisplayHint", data);
+                    }
+                    else
+                    {
+                        ModelState.Clear();
+                        ModelState.AddModelError(string.Empty, "Invalid Data");
+                        return PartialView();
+                    }
+                }
+            }
+
+        }
+
+    
         [ValidateAntiForgeryToken]
         public ActionResult GetVesselWiseInspections(int? Id)
         {

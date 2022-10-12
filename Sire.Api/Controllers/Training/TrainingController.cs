@@ -11,6 +11,8 @@ using Sire.Respository.Training;
 using Microsoft.AspNetCore.Authorization;
 using Sire.Data.Dto.Training;
 using System.Linq;
+using Sire.Respository.Question;
+using Sire.Data.Dto.Question;
 
 namespace Sire.Api.Controllers.Training
 {
@@ -21,7 +23,8 @@ namespace Sire.Api.Controllers.Training
             private readonly IJwtTokenAccesser _jwtTokenAccesser;
             private readonly IMapper _mapper;
             private readonly ITrainingRepository _trainingRepository;
-            private readonly IUnitOfWork<SireContext> _uow;
+            private readonly IQuestionRepository _questionRepository;
+        private readonly IUnitOfWork<SireContext> _uow;
 
             public TrainingController(ITrainingRepository testRepository,
                 IUnitOfWork<SireContext> uow, IMapper mapper,
@@ -44,7 +47,34 @@ namespace Sire.Api.Controllers.Training
 
                 return Ok(testsDto);
             }
-            [AllowAnonymous]
+
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("GetDifference/{id}")]
+        public IActionResult GetDifference(int id)
+        {
+            var QuestionCount = (from quetion in _uow.Context.Question.Where(x => x.Id != null)
+                                 select new QuestionDto
+                                 {
+                                     Id = quetion.Id,
+                                 }
+                                 
+                                 
+                                 ).Count();
+
+           
+
+            var ResponseCount = (from response in _uow.Context.TraningResponse.Where(x => x.Trainee_Id == id)
+                                 select new TraningResponseDto
+                                 {
+                                     Id = response.Id,
+                                 }).Count();
+          
+            var Diff = QuestionCount - ResponseCount;
+            return Ok(Diff);
+        }
+        [AllowAnonymous]
             [HttpGet("{id}")]
             public IActionResult Get(int id)
             {
@@ -60,14 +90,14 @@ namespace Sire.Api.Controllers.Training
             {
                 if (!ModelState.IsValid) return new UnprocessableEntityObjectResult(ModelState);
                 var test = _mapper.Map<Sire.Data.Entities.Training.Training>(TrainingDto);
-                /*var validate = _trainingRepository.Duplicate(test);
-                if (!string.IsNullOrEmpty(validate))
-                {
-                    ModelState.AddModelError("Message", validate);
-                    return BadRequest(ModelState);
-                }*/
+            //var validate = _trainingRepository.Duplicate(test);
+            //if (!string.IsNullOrEmpty(validate))
+            //{
+            //    ModelState.AddModelError("Message", validate);
+            //    return BadRequest(ModelState);
+            //}
 
-                if (TrainingDto.Id == 0)
+            if (TrainingDto.Id == 0)
                 _trainingRepository.Add(test);
                 else
                 _trainingRepository.Update(test);

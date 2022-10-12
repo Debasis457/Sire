@@ -51,7 +51,6 @@ namespace Sire.Api.Controllers.Training
             return Ok(testsDto);
         }
 
-
         [AllowAnonymous]
         [HttpGet("{id}")]
         public IActionResult Get(int id)

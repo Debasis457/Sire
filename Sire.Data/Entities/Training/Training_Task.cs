@@ -50,6 +50,6 @@ namespace Sire.Data.Entities.Training
         public string Manuals_Plans_Procedures { get; set; }
         public string Certificates_Checklists_Records { get; set; }
         public string LogBooks_Entries { get; set; }
-
+        public string Hint { get; set; }
     }
 }

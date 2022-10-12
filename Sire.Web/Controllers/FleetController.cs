@@ -184,7 +184,7 @@ namespace Sire.Web.Controllers
         public async Task<IActionResult> AddEdit(FleetDto fleetDto)
         {
 
-            if (ModelState.IsValid)
+           // if (ModelState.IsValid)
             {
                 try
                 {

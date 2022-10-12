@@ -52,5 +52,7 @@ namespace Sire.Data.Dto.Training
         public string LogBooks_Entries { get; set; }
 
         public bool? IsResponse { get; set; }
+
+        public string Hint { get; set; }
     }
 }

@@ -8,16 +8,36 @@
 
 <script src="~/assets/lib/jquery/jquery-3.3.1.min.js"></script>
 <script src="~/js/PageScript/InspectionResponse.js"></script>
+@{
+    var inspectionid = Convert.ToInt32(TempData["Inspectionid"]);
+    var questionsData = TempData["QuestionIdsBySection"];
+    var currentQuestionId = Model.InspectionQuestionId;
+    var splitQuestionsIds = questionsData.ToString().Split(",").Select(x => Convert.ToInt32(x)).ToList();
+    var currentQuestionIndex = splitQuestionsIds.FindIndex(x => x == currentQuestionId);
+    var nextQuestionId = -1;
+    if (currentQuestionIndex < splitQuestionsIds.Count)
+        nextQuestionId = currentQuestionIndex == splitQuestionsIds.Count - 1 ? currentQuestionIndex : splitQuestionsIds[currentQuestionIndex + 1];
+
+    var previousQuestionId = -1;
+    if (currentQuestionIndex < splitQuestionsIds.Count)
+        previousQuestionId = currentQuestionIndex == 0 ? 0 : splitQuestionsIds[currentQuestionIndex - 1];
+
+    var nextButtonDisable = nextQuestionId == -1 || currentQuestionIndex == splitQuestionsIds.Count - 1 ? "disabled" : "";
+
+    var previousButtonDisable = previousQuestionId == -1 || currentQuestionIndex == 0 ? "disabled" : "";
+    TempData.Keep();
+
+}
 
 <div class="tab-pane fade show active" id="User" role="tabpanel" aria-labelledby="pills-home-tab">
     <!-- End Navigation Fixed Bar-->
     <div class="col-sm-12">
         <div class="card">
-            <p> @Model.Chapter . @Model.Section . @i. @Model.Questions</p>
+            <p> @Model.Chapter . @Model.Section . @Model.Question_Number. @Model.Questions</p>
         </div>
     </div>
 </div>
-
+<input type="hidden" id="hdnInsQuestionId" value="@Model.Id">
 <div class="col-md-12">
     <div class="card m-b-0">
         <div class="card-header sub-head-tit">
@@ -49,9 +69,45 @@
                 </div>
             </div>
         </div>
+
+        <div class="card m-b-0">
+            <div class="card-body head-tit">
+                <div class="col-sm-4">
+                </div>
+                <div class="col-sm-3">
+                    @if (previousButtonDisable == "disabled")
+                    {
+                        <a class="btn  btn-primary" id="previous" disabled>Previous</a>
+                    }
+                    else
+                    {
+                        <a class="btn  btn-primary" id="previous" asp-action="AddEdit" asp-controller="InspectionQuestion" asp-route-id="@previousQuestionId">&laquo;Previous</a>
+
+                    }
+
+                </div>
+                <div class="col-sm-2">
+                </div>
+                <div class="col-sm-3">
+                    @if (nextButtonDisable == "disabled")
+                    {
+                        <a class="btn  btn-primary align-right" id="next" disabled>Next</a>
+                    }
+                    else
+                    {
+                        <a class="btn  btn-primary align-right" id="next" asp-action="AddEdit" asp-controller="InspectionQuestion" asp-route-id="@nextQuestionId">Next&raquo;</a>
+
+                    }
+
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-
+<div class="row fix-footer">
+    <div class="col-md-12">
+    </div>
+</div>
 
 <script src="~/assets/lib/jquery/jquery-3.3.1.min.js"></script>
 

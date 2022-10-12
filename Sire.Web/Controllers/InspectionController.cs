@@ -224,6 +224,7 @@ namespace Sire.Web.Controllers
                             }
                         }
                         //data = data.Where(x => inspectionQuestionData.Any(b => b.Question_Id == x.Id));
+                        TempData["QuestionIdsBySection"] = string.Join(",", inspectionQuestionDtoModel.Select(x => x.InspectionQuestionId).ToArray());
                     }
                 }
 

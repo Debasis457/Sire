@@ -26,31 +26,31 @@
                 @{
                     if (ViewBag.DisplayFlag == 0)
                     {
-                            <a asp-action="AddEdit" asp-controller="InspectionQuestion" asp-route-Id="@item.InspectionQuestionId"> @item.Chapter . @item.Section . @i. @item.Questions</a>
+                        <a asp-action="AddEdit" asp-controller="InspectionQuestion" asp-route-Id="@item.InspectionQuestionId"> @item.Chapter . @item.Section . @i. @item.Questions</a>
                     }
                     else
                     {
-                            <a href="javascript:void(0);"> @item.Chapter . @item.Section . @i. @item.Questions</a>
+                        <a href="javascript:void(0);"> @item.Chapter . @item.Section . @i. @item.Questions</a>
                     }
                 }
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <i class="fa fa-eye" aria-hidden="true"></i> <b>2</b>
-                            </div>
-                            <div class="col-md-3">
-                                <i class="fa fa-camera" aria-hidden="true"></i>
-                                <b>3</b>
-                            </div>
-                            <div class="col-md-3">
-                                <i class="fa fa-microphone" aria-hidden="true"></i>  <b>0</b>
-                            </div>
-                            <div class="col-md-3">
-                                <i class="fa fa-times" aria-hidden="true"></i>
-                                <b>0</b>
-                            </div>
-                        </div>
-                        </div>
-                        </div>
-                        i++;
-                }
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <i class="fa fa-eye" aria-hidden="true"></i> <b>2</b>
+                </div>
+                <div class="col-md-3">
+                    <i class="fa fa-camera" aria-hidden="true"></i>
+                    <b>3</b>
+                </div>
+                <div class="col-md-3">
+                    <i class="fa fa-microphone" aria-hidden="true"></i>  <b>0</b>
+                </div>
+                <div class="col-md-3">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                    <b>0</b>
+                </div>
+            </div>
+        </div>
+    </div>
+    i++;
+}

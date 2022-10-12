@@ -19,4 +19,17 @@ namespace Sire.Data.Dto.ShipManagement
         public string piq_Hvpq_Id { get; set; }
         public string response { get; set; }
     }
+
+    public class Vessel_Response_Piq_HvpqQuetionsDto
+    {
+        public int? Vessel_Id { get; set; }
+        public string Piq_Hvpq_Id { get; set; }
+        public string Response { get; set; }
+        public int? QuetionsId { get; set; }
+    }
+
+    public class QuestionListFilter
+    {
+        public int? QuetionsId { get; set; }
+    }
 }
