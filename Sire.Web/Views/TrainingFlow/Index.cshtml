@@ -2,10 +2,7 @@
 @{
     ViewBag.Title = "TrainingFlow";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
-    int i = 1;
 }
-
-
 
 @{
     var trainingId = Convert.ToInt32(TempData["TrainingId"]);
@@ -39,7 +36,7 @@
     <!-- End Navigation Fixed Bar-->
     <div class="col-sm-12">
        
-             @Model.Chapter . @Model.Section . @i. @Model.Questions
+             @Model.Chapter . @Model.Section . @Model.Question_Number . @Model.Questions
        
     </div>
     <br />

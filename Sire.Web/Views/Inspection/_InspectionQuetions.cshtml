@@ -1,6 +1,5 @@
 ﻿@model IEnumerable<InspectionQuestionDtoModel>
 @{
-    int i = 1;
     var inspectionQuestionStatus = "card";
 }
 @foreach (var item in Model)
@@ -26,11 +25,11 @@
                 @{
                     if (ViewBag.DisplayFlag == 0)
                     {
-                        <a asp-action="AddEdit" asp-controller="InspectionQuestion" asp-route-Id="@item.InspectionQuestionId"> @item.Chapter . @item.Section . @i. @item.Questions</a>
+                        <a asp-action="AddEdit" asp-controller="InspectionQuestion" asp-route-Id="@item.InspectionQuestionId"> @item.Chapter . @item.Section . @item.Question_Number . @item.Questions</a>
                     }
                     else
                     {
-                        <a href="javascript:void(0);"> @item.Chapter . @item.Section . @i. @item.Questions</a>
+                        <a href="javascript:void(0);"> @item.Chapter . @item.Section . @item.Question_Number . @item.Questions</a>
                     }
                 }
             </div>
@@ -52,5 +51,4 @@
             </div>
         </div>
     </div>
-    i++;
 }

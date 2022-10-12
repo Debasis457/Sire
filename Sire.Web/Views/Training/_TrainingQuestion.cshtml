@@ -1,6 +1,5 @@
 ﻿@model QuestionTrainingModel
 @{
-    int i = 1;
     int trainingId = Convert.ToInt32(ViewBag.TrainingId);
     TempData.Keep();
     string trainingAttended = "card bg-c-green";
@@ -11,7 +10,7 @@
     <div class="@trainingAttended" style="margin-bottom:5px">
         <div class="card-body">
             <div class="row">
-                <a asp-action="GetDetails" asp-controller="TrainingQuestion" asp-route-trainingId="@trainingId" asp-route-questionId="@item.Id"> @item.Chapter . @item.Section . @i. @item.Questions</a>
+                <a asp-action="GetDetails" asp-controller="TrainingQuestion" asp-route-trainingId="@trainingId" asp-route-questionId="@item.Id"> @item.Chapter . @item.Section . @item.Question_Number . @item.Questions</a>
             </div>
             <div class="row">
                 <div class="col-md-3">
@@ -31,6 +30,4 @@
             </div>
         </div>
     </div>
-
-    i++;
 }

@@ -156,7 +156,7 @@ namespace Sire.Web.Controllers
                         List<VesselDto> vesselDtos = new List<VesselDto>();
                         foreach (User_VesselDto uvd in VesselData)
                         {
-                            vesselDtos.Add(new VesselDto() { Id = uvd.Id, Name = uvd.Vessel.Name });
+                            vesselDtos.Add(new VesselDto() { Id = uvd.Vessel_Id, Name = uvd.Vessel.Name });
                         }
                         ViewBag.Vessel = vesselDtos;
 
