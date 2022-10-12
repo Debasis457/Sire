@@ -26,12 +26,16 @@ namespace Sire.Api.Controllers
         private readonly IUnitOfWork<SireContext> _uow;
         private readonly IQuetionSectionRepository _quetionSectionRepository;
         private readonly IPiq_HvpqRepository _piq_HvpqRepository;
+        //private readonly IPIQ_HVPQReponseRepository _piq_HvpqReponseRepository;
+        //private readonly IVessel_Response_Piq_HvpqRepository _vessel_Response_Piq_HvpqRepository;
 
         public AssesorReviewerController(
             IInspection_QuestionRepository inspection_QuestionRepository,
             IUnitOfWork<SireContext> uow, IMapper mapper,
             IQuetionSectionRepository quetionSectionRepository,
             IPiq_HvpqRepository piqHvpqRepository,
+            //IPIQ_HVPQReponseRepository piq_HvpqReponseRepository,
+            //IVessel_Response_Piq_HvpqRepository vessel_Response_Piq_HvpqRepository,
             IJwtTokenAccesser jwtTokenAccesser)
         {
             _inspection_QuestionRepository = inspection_QuestionRepository;
@@ -40,6 +44,8 @@ namespace Sire.Api.Controllers
             _jwtTokenAccesser = jwtTokenAccesser;
             _quetionSectionRepository = quetionSectionRepository;
             _piq_HvpqRepository = piqHvpqRepository;
+            //_piq_HvpqReponseRepository = piq_HvpqReponseRepository;
+            //_vessel_Response_Piq_HvpqRepository = vessel_Response_Piq_HvpqRepository;
         }
 
         [AllowAnonymous]
@@ -349,6 +355,100 @@ namespace Sire.Api.Controllers
         [HttpGet("GetInspectionApplicableQuestionBySection/{sectionId}/{assessorId}/{reviewerId}/{vesselId}")]
         public IActionResult GetInspectionApplicableQuestionBySection(int sectionId, int assessorId, int reviewerId, int vesselId)
         {
+            //var piqHvpqQuestions = _piq_HvpqRepository.FindByInclude(x => x.Id > 0, x => x.Question)
+            //                            .Where(x => x.Question.DAssessore == assessorId && x.Question.DReviewer == reviewerId);
+            //var piqHvpqResponses = _piq_HvpqReponseRepository.All;
+            //var vesselResponses = _vessel_Response_Piq_HvpqRepository.FindByInclude(x => x.Vessel_Id == vesselId);
+
+            //var questions = new List<QuestionDto>();
+
+            //foreach (var piqHvpqQuestion in piqHvpqQuestions.GroupBy(x => x.QuestionId))
+            //{
+            //    if (piqHvpqQuestion.Count() == 1)
+            //    {
+            //        var question = piqHvpqQuestion.First();
+            //        var vesselResponse = vesselResponses.FirstOrDefault(x => x.Piq_Hvpq_Id == question.PIQHVPQCode);
+                    
+            //        if (vesselResponse != null)
+            //        {
+            //            if (question.Response.ToUpper().Equals("YES")
+            //                && vesselResponses.Any(x => x.Piq_Hvpq_Id == question.PIQHVPQCode && x.Response.ToUpper().Equals("YES")))
+            //            {
+            //                questions.Add(_mapper.Map<QuestionDto>(question.Question));
+            //            }
+            //            else
+            //            {
+            //                var piqHvpqResponse = piqHvpqResponses.Where(x => x.piq_hvpq_id == question.PIQHVPQCode && x.value == question.Response);
+            //                if (piqHvpqResponse != null && piqHvpqResponse.Any())
+            //                {
+            //                    if (piqHvpqResponse.First().Id.ToString() == vesselResponse.Response)
+            //                    {
+            //                        questions.Add(_mapper.Map<QuestionDto>(question.Question));
+            //                    }
+            //                }
+            //            }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        var piqHvpqQuestionGroup = piqHvpqQuestion.GroupBy(x => x.Type).ToList();
+                    
+            //        if (piqHvpqQuestionGroup.Count() == 1)
+            //        {
+            //            if (piqHvpqQuestionGroup.First().Any(x => x.Response == "Yes"))
+            //            {
+            //                var allCodes = piqHvpqQuestionGroup.First().Select(x => x.PIQHVPQCode).Distinct();
+            //                foreach (var allCode in allCodes)
+            //                {
+            //                    if (vesselResponses.Any(x => x.Piq_Hvpq_Id == allCode && x.Response == "Yes"))
+            //                    {
+            //                        questions.Add(_mapper.Map<QuestionDto>(piqHvpqQuestion.First().Question));
+            //                        break;
+            //                    }
+            //                }
+            //            }
+            //            else
+            //            {
+            //                if (!piqHvpqQuestionGroup.First().Any(x => x.Response == "No"))
+            //                {
+            //                    var allValidResponseValues = piqHvpqQuestionGroup.First().Select(x => x.Response).Distinct().ToList();
+            //                    foreach (var piqHvpqQuestionIndividual in piqHvpqQuestionGroup.First())
+            //                    {
+            //                        var validResponses = piqHvpqResponses.Where(x => x.piq_hvpq_id == piqHvpqQuestionIndividual.PIQHVPQCode
+            //                                                && allValidResponseValues.Contains(x.value)).ToList();
+            //                        if (vesselResponses.Any(x => x.Piq_Hvpq_Id == piqHvpqQuestionIndividual.PIQHVPQCode
+            //                            && validResponses.Any(y => y.Id.ToString() == x.Response)))
+            //                        {
+            //                            questions.Add(_mapper.Map<QuestionDto>(piqHvpqQuestion.First().Question));
+            //                            break;
+            //                        }
+            //                    }
+            //                }
+            //            }
+            //        }
+            //        else
+            //        {
+            //            //Assume count is always 2
+            //            var piqGroup = piqHvpqQuestionGroup.Where(x => x.Key == "PIQ");
+            //            var hvpqGroup = piqHvpqQuestionGroup.Where(x => x.Key == "HVPQ");
+
+            //            //Assume if there are 2 different groups, the value will always be Yes or No. So we need to check only for YES here
+            //            if (piqGroup.First().First().Response == "Yes" && hvpqGroup.First().First().Response == "Yes")
+            //            {
+            //                if (vesselResponses.Any(x => x.Piq_Hvpq_Id == piqGroup.First().First().PIQHVPQCode && x.Response == "Yes")
+            //                    || vesselResponses.Any(x => x.Piq_Hvpq_Id == hvpqGroup.First().First().PIQHVPQCode && x.Response == "Yes"))
+            //                {
+            //                    questions.Add(_mapper.Map<QuestionDto>(piqHvpqQuestion.First().Question));
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+
+
+
+
+
             var assRevQuestionsData = (from quetion in _uow.Context.Question.Where(x => x.Section == sectionId && x.DAssessore == assessorId && x.DReviewer == reviewerId)
                         join userrew in _uow.Context.User on reviewerId equals userrew.Id into r
                         from userrew in r.DefaultIfEmpty()
@@ -392,22 +492,6 @@ namespace Sire.Api.Controllers
             mergedQuestions.AddRange(piqHvpqQuestionsData.Where(p2 => assRevQuestionsData.All(x => x.Question_Id != x.Question_Id)));
 
             return Ok(mergedQuestions);
-
-            //foreach (var piqHvpqQuestion in piqHvpqQuestions.GroupBy(x => x.QuestionId))
-            //{
-            //    if (piqHvpqQuestion.Count() == 1)
-            //    {
-            //        questions.Add(_mapper.Map<QuestionDto>(allQuestions.First(x => x.Id == piqHvpqQuestion.First().QuestionId)));
-            //        // Consider the question if there is only 1 PIQ/HVPQ question
-            //    }
-            //    else if (piqHvpqQuestion.Count() == 2)
-            //    {
-            //        if (piqHvpqQuestion.ElementAt(0).Type == piqHvpqQuestion.ElementAt(1).Type)
-            //        {
-
-            //        }
-            //    }
-            //}
         }
     }
 }

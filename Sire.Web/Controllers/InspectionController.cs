@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -241,9 +242,9 @@ namespace Sire.Web.Controllers
         {
             ViewBag.DisplayFlag = displayFlag;
             var inspectionId = Convert.ToInt32(TempData["InspectionId"]);
-            int assessorId = 1;
-            int reviewerId = 1;
-            int vesselId = 4;
+            int assessorId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+            int reviewerId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+            int vesselId = Convert.ToInt32(TempData["vessselId"]);
             TempData.Keep();
 
             var endquestion = apiBaseQuestionUrl + "/GetQuestionBySection/" + id;

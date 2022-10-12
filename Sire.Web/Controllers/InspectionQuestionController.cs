@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -182,10 +183,14 @@ namespace Sire.Web.Controllers
 
         public async Task<IActionResult> GetApplicableQuestions(int id)
         {
-            var assessorId = 1;
-            var reviewerId = 1;
-            var vesselId = 4;
+            var assessorId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+            var reviewerId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+            var vesselId = Convert.ToInt32(TempData["vessselId"]);
+
             TempData["InspectionId"] = id;
+
+            TempData.Keep();
+
             var inspectionQuestionSectionModel = new InspectionQuestionSectionModel();
             try
             {
