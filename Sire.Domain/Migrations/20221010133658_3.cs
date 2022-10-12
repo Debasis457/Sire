@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Sire.Domain.Migrations
 {
-    public partial class _1 : Migration
+    public partial class _3 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -81,7 +81,7 @@ namespace Sire.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Piq_Hvpq",
+                name: "PIQ_HVPQ_Response_Mapping",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -92,15 +92,13 @@ namespace Sire.Domain.Migrations
                     ModifiedBy = table.Column<int>(nullable: true),
                     DeletedDate = table.Column<DateTime>(nullable: true),
                     DeletedBy = table.Column<int>(nullable: true),
-                    piq_hvpq_question = table.Column<string>(nullable: true),
-                    Operand = table.Column<string>(nullable: true),
-                    Type = table.Column<string>(nullable: true),
-                    Response = table.Column<string>(nullable: true),
-                    ResponseType = table.Column<int>(nullable: true)
+                    PIQHVPQCode = table.Column<string>(nullable: true),
+                    QuestionId = table.Column<int>(nullable: false),
+                    VesselId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Piq_Hvpq", x => x.Id);
+                    table.PrimaryKey("PK_PIQ_HVPQ_Response_Mapping", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -354,32 +352,6 @@ namespace Sire.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PIQ_HVPQ_Response",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedDate = table.Column<DateTime>(nullable: true),
-                    CreatedBy = table.Column<int>(nullable: true),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
-                    ModifiedBy = table.Column<int>(nullable: true),
-                    DeletedDate = table.Column<DateTime>(nullable: true),
-                    DeletedBy = table.Column<int>(nullable: true),
-                    piq_hvpq_id = table.Column<int>(nullable: false),
-                    value = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PIQ_HVPQ_Response", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PIQ_HVPQ_Response_Piq_Hvpq_piq_hvpq_id",
-                        column: x => x.piq_hvpq_id,
-                        principalTable: "Piq_Hvpq",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Vessel_Response_Piq_Hvpq",
                 columns: table => new
                 {
@@ -393,17 +365,11 @@ namespace Sire.Domain.Migrations
                     DeletedBy = table.Column<int>(nullable: true),
                     Vessel_Id = table.Column<int>(nullable: false),
                     Response = table.Column<string>(nullable: true),
-                    Piq_Hvpq_Id = table.Column<int>(nullable: false)
+                    Piq_Hvpq_Id = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Vessel_Response_Piq_Hvpq", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Vessel_Response_Piq_Hvpq_Piq_Hvpq_Vessel_Id",
-                        column: x => x.Vessel_Id,
-                        principalTable: "Piq_Hvpq",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -446,11 +412,11 @@ namespace Sire.Domain.Migrations
                     DeletedBy = table.Column<int>(nullable: true),
                     UserID = table.Column<string>(nullable: true),
                     EmailId = table.Column<string>(nullable: true),
-                    Vessel_Id = table.Column<int>(nullable: false),
+                    Vessel_Id = table.Column<int>(nullable: true),
                     UserName = table.Column<string>(nullable: true),
                     is_admin = table.Column<bool>(nullable: true),
-                    Rank_Id = table.Column<int>(nullable: false),
-                    Rank_Group_Id = table.Column<int>(nullable: false),
+                    Rank_Id = table.Column<int>(nullable: true),
+                    Rank_Group_Id = table.Column<int>(nullable: true),
                     Password = table.Column<string>(nullable: true),
                     UserType = table.Column<int>(nullable: false),
                     MobileNo = table.Column<int>(nullable: false)
@@ -463,13 +429,13 @@ namespace Sire.Domain.Migrations
                         column: x => x.Rank_Group_Id,
                         principalTable: "RankGroup",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_User_User_Rank_Rank_Id",
                         column: x => x.Rank_Id,
                         principalTable: "User_Rank",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -645,6 +611,37 @@ namespace Sire.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Piq_Hvpq",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
+                    CreatedBy = table.Column<int>(nullable: true),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    ModifiedBy = table.Column<int>(nullable: true),
+                    DeletedDate = table.Column<DateTime>(nullable: true),
+                    DeletedBy = table.Column<int>(nullable: true),
+                    PIQHVPQCode = table.Column<string>(nullable: true),
+                    piq_hvpq_question = table.Column<string>(nullable: true),
+                    Operand = table.Column<string>(nullable: true),
+                    Type = table.Column<string>(nullable: true),
+                    Response = table.Column<string>(nullable: true),
+                    QuestionId = table.Column<int>(nullable: true),
+                    ResponseType = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Piq_Hvpq", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Piq_Hvpq_Question_QuestionId",
+                        column: x => x.QuestionId,
+                        principalTable: "Question",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "License",
                 columns: table => new
                 {
@@ -686,17 +683,58 @@ namespace Sire.Domain.Migrations
                     DeletedBy = table.Column<int>(nullable: true),
                     User_Id = table.Column<int>(nullable: false),
                     Vessel_Id = table.Column<int>(nullable: false),
-                    is_own_vessel = table.Column<bool>(nullable: true)
+                    is_own_vessel = table.Column<bool>(nullable: true),
+                    VesselId = table.Column<int>(nullable: true),
+                    FleetId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_User_Vessel", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_User_Vessel_Fleet_FleetId",
+                        column: x => x.FleetId,
+                        principalTable: "Fleet",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_User_Vessel_User_User_Id",
                         column: x => x.User_Id,
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_User_Vessel_Vessel_VesselId",
+                        column: x => x.VesselId,
+                        principalTable: "Vessel",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PIQ_HVPQ_Response",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
+                    CreatedBy = table.Column<int>(nullable: true),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    ModifiedBy = table.Column<int>(nullable: true),
+                    DeletedDate = table.Column<DateTime>(nullable: true),
+                    DeletedBy = table.Column<int>(nullable: true),
+                    piq_hvpq_id = table.Column<string>(nullable: true),
+                    value = table.Column<string>(nullable: true),
+                    Piq_HvpqId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PIQ_HVPQ_Response", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PIQ_HVPQ_Response_Piq_Hvpq_Piq_HvpqId",
+                        column: x => x.Piq_HvpqId,
+                        principalTable: "Piq_Hvpq",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -715,9 +753,14 @@ namespace Sire.Domain.Migrations
                 column: "Vessel_Id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PIQ_HVPQ_Response_piq_hvpq_id",
+                name: "IX_Piq_Hvpq_QuestionId",
+                table: "Piq_Hvpq",
+                column: "QuestionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PIQ_HVPQ_Response_Piq_HvpqId",
                 table: "PIQ_HVPQ_Response",
-                column: "piq_hvpq_id");
+                column: "Piq_HvpqId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Question_UserId",
@@ -745,14 +788,19 @@ namespace Sire.Domain.Migrations
                 column: "Rank_Id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_User_Vessel_FleetId",
+                table: "User_Vessel",
+                column: "FleetId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_User_Vessel_User_Id",
                 table: "User_Vessel",
                 column: "User_Id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_User_Vessel_Vessel_Id",
+                name: "IX_User_Vessel_VesselId",
                 table: "User_Vessel",
-                column: "Vessel_Id");
+                column: "VesselId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Vessel_Fleet_id",
@@ -763,11 +811,6 @@ namespace Sire.Domain.Migrations
                 name: "IX_Vessel_Operator_id",
                 table: "Vessel",
                 column: "Operator_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Vessel_Response_Piq_Hvpq_Vessel_Id",
-                table: "Vessel_Response_Piq_Hvpq",
-                column: "Vessel_Id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -788,7 +831,7 @@ namespace Sire.Domain.Migrations
                 name: "PIQ_HVPQ_Response");
 
             migrationBuilder.DropTable(
-                name: "Question");
+                name: "PIQ_HVPQ_Response_Mapping");
 
             migrationBuilder.DropTable(
                 name: "QuestionResponse");
@@ -824,13 +867,16 @@ namespace Sire.Domain.Migrations
                 name: "Vessel_Response_Piq_Hvpq");
 
             migrationBuilder.DropTable(
+                name: "Piq_Hvpq");
+
+            migrationBuilder.DropTable(
                 name: "QuetionSection");
 
             migrationBuilder.DropTable(
                 name: "Vessel");
 
             migrationBuilder.DropTable(
-                name: "Piq_Hvpq");
+                name: "Question");
 
             migrationBuilder.DropTable(
                 name: "Fleet");

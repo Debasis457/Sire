@@ -44,6 +44,7 @@ namespace Sire.Web.Controllers
         public async Task<IActionResult> Index(int? id = 1)
         {
             var inspectionQuestionSectionModel = new InspectionQuestionSectionModel();
+            ViewBag.InspectionId = id;
             TempData["InspectionId"] = id;
             try
             {

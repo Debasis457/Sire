@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Sire.Domain.Context;
 
 namespace Sire.Domain.Migrations
 {
     [DbContext(typeof(SireContext))]
-    partial class SireContextModelSnapshot : ModelSnapshot
+    [Migration("20221010033348_Piq_Hvpq_Filter_Quetions")]
+    partial class Piq_Hvpq_Filter_Quetions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -616,33 +618,6 @@ namespace Sire.Domain.Migrations
                     b.HasIndex("QuestionId");
 
                     b.ToTable("Piq_Hvpq");
-                });
-
-            modelBuilder.Entity("Sire.Data.Entities.ShipManagement.Piq_Hvpq_Filter_Quetions", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("CreatedBy");
-
-                    b.Property<DateTime?>("CreatedDate");
-
-                    b.Property<int?>("DeletedBy");
-
-                    b.Property<DateTime?>("DeletedDate");
-
-                    b.Property<int?>("ModifiedBy");
-
-                    b.Property<DateTime?>("ModifiedDate");
-
-                    b.Property<int>("QuestionId");
-
-                    b.Property<int>("VesselId");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Piq_Hvpq_Filter_Quetions");
                 });
 
             modelBuilder.Entity("Sire.Data.Entities.ShipManagement.PIQ_HVPQ_Response", b =>

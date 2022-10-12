@@ -10,8 +10,8 @@ using Sire.Domain.Context;
 namespace Sire.Domain.Migrations
 {
     [DbContext(typeof(SireContext))]
-    [Migration("20220930060511_1")]
-    partial class _1
+    [Migration("20221010133658_3")]
+    partial class _3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -349,11 +349,15 @@ namespace Sire.Domain.Migrations
 
                     b.Property<DateTime?>("DeletedDate");
 
+                    b.Property<int?>("FleetId");
+
                     b.Property<int?>("ModifiedBy");
 
                     b.Property<DateTime?>("ModifiedDate");
 
                     b.Property<int>("User_Id");
+
+                    b.Property<int?>("VesselId");
 
                     b.Property<int>("Vessel_Id");
 
@@ -361,9 +365,11 @@ namespace Sire.Domain.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("FleetId");
+
                     b.HasIndex("User_Id");
 
-                    b.HasIndex("Vessel_Id");
+                    b.HasIndex("VesselId");
 
                     b.ToTable("User_Vessel");
                 });
@@ -595,15 +601,21 @@ namespace Sire.Domain.Migrations
 
                     b.Property<string>("Operand");
 
+                    b.Property<string>("PIQHVPQCode");
+
+                    b.Property<int?>("QuestionId");
+
                     b.Property<string>("Response");
 
-                    b.Property<int?>("ResponseType");
+                    b.Property<int>("ResponseType");
 
                     b.Property<string>("Type");
 
                     b.Property<string>("piq_hvpq_question");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
 
                     b.ToTable("Piq_Hvpq");
                 });
@@ -626,15 +638,46 @@ namespace Sire.Domain.Migrations
 
                     b.Property<DateTime?>("ModifiedDate");
 
-                    b.Property<int>("piq_hvpq_id");
+                    b.Property<int?>("Piq_HvpqId");
+
+                    b.Property<string>("piq_hvpq_id");
 
                     b.Property<string>("value");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("piq_hvpq_id");
+                    b.HasIndex("Piq_HvpqId");
 
                     b.ToTable("PIQ_HVPQ_Response");
+                });
+
+            modelBuilder.Entity("Sire.Data.Entities.ShipManagement.PIQ_HVPQ_Response_Mapping", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("CreatedBy");
+
+                    b.Property<DateTime?>("CreatedDate");
+
+                    b.Property<int?>("DeletedBy");
+
+                    b.Property<DateTime?>("DeletedDate");
+
+                    b.Property<int?>("ModifiedBy");
+
+                    b.Property<DateTime?>("ModifiedDate");
+
+                    b.Property<string>("PIQHVPQCode");
+
+                    b.Property<int>("QuestionId");
+
+                    b.Property<int>("VesselId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PIQ_HVPQ_Response_Mapping");
                 });
 
             modelBuilder.Entity("Sire.Data.Entities.ShipManagement.Vessel_Response_Piq_Hvpq", b =>
@@ -655,15 +698,13 @@ namespace Sire.Domain.Migrations
 
                     b.Property<DateTime?>("ModifiedDate");
 
-                    b.Property<int>("Piq_Hvpq_Id");
+                    b.Property<string>("Piq_Hvpq_Id");
 
                     b.Property<string>("Response");
 
                     b.Property<int>("Vessel_Id");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Vessel_Id");
 
                     b.ToTable("Vessel_Response_Piq_Hvpq");
                 });
@@ -929,9 +970,9 @@ namespace Sire.Domain.Migrations
 
                     b.Property<string>("Password");
 
-                    b.Property<int>("Rank_Group_Id");
+                    b.Property<int?>("Rank_Group_Id");
 
-                    b.Property<int>("Rank_Id");
+                    b.Property<int?>("Rank_Id");
 
                     b.Property<string>("UserID");
 
@@ -939,7 +980,7 @@ namespace Sire.Domain.Migrations
 
                     b.Property<int>("UserType");
 
-                    b.Property<int>("Vessel_Id");
+                    b.Property<int?>("Vessel_Id");
 
                     b.Property<bool?>("is_admin");
 
@@ -985,6 +1026,10 @@ namespace Sire.Domain.Migrations
 
             modelBuilder.Entity("Sire.Data.Entities.Master.User_Vessel", b =>
                 {
+                    b.HasOne("Sire.Data.Entities.Master.Fleet", "Fleet")
+                        .WithMany()
+                        .HasForeignKey("FleetId");
+
                     b.HasOne("Sire.Data.Entities.UserMgt.User", "User")
                         .WithMany()
                         .HasForeignKey("User_Id")
@@ -992,8 +1037,7 @@ namespace Sire.Domain.Migrations
 
                     b.HasOne("Sire.Data.Entities.Master.Vessel", "Vessel")
                         .WithMany()
-                        .HasForeignKey("Vessel_Id")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("VesselId");
                 });
 
             modelBuilder.Entity("Sire.Data.Entities.Master.Vessel", b =>
@@ -1016,20 +1060,18 @@ namespace Sire.Domain.Migrations
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("Sire.Data.Entities.ShipManagement.PIQ_HVPQ_Response", b =>
+            modelBuilder.Entity("Sire.Data.Entities.ShipManagement.Piq_Hvpq", b =>
                 {
-                    b.HasOne("Sire.Data.Entities.ShipManagement.Piq_Hvpq", "Piq_Hvpq")
-                        .WithMany("PIQ_HVPQ_Response")
-                        .HasForeignKey("piq_hvpq_id")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("Sire.Data.Entities.Question.Question", "Question")
+                        .WithMany()
+                        .HasForeignKey("QuestionId");
                 });
 
-            modelBuilder.Entity("Sire.Data.Entities.ShipManagement.Vessel_Response_Piq_Hvpq", b =>
+            modelBuilder.Entity("Sire.Data.Entities.ShipManagement.PIQ_HVPQ_Response", b =>
                 {
-                    b.HasOne("Sire.Data.Entities.ShipManagement.Piq_Hvpq", "Piq_Hvpq")
-                        .WithMany()
-                        .HasForeignKey("Vessel_Id")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("Sire.Data.Entities.ShipManagement.Piq_Hvpq")
+                        .WithMany("PIQ_HVPQ_Response")
+                        .HasForeignKey("Piq_HvpqId");
                 });
 
             modelBuilder.Entity("Sire.Data.Entities.UserMgt.Role", b =>
@@ -1044,13 +1086,11 @@ namespace Sire.Domain.Migrations
                 {
                     b.HasOne("Sire.Data.Entities.Master.RankGroup", "RankGroup")
                         .WithMany()
-                        .HasForeignKey("Rank_Group_Id")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("Rank_Group_Id");
 
                     b.HasOne("Sire.Data.Entities.Master.User_Rank", "User_Rank")
                         .WithMany()
-                        .HasForeignKey("Rank_Id")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("Rank_Id");
                 });
 #pragma warning restore 612, 618
         }
