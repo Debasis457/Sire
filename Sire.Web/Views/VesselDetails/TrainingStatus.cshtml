@@ -1,0 +1,83 @@
+﻿@using Sire.Data.Dto.Training
+@model IEnumerable<Sire.Data.Dto.Training.TrainingDto>
+@{
+
+    int i = 0;
+    //var lastTraining = Model.OrderByDescending(x => x.Training.Started_at).FirstOrDefault()?.Inspection;
+}
+
+<script src="~/assets/lib/jquery/jquery-3.3.1.min.js"></script>
+<script src="~/js/pagescript/vesseldetails.js"></script>
+
+<div class="col">
+    <div class="tab-pane fade" id="TrainingStatus" role="tabpanel" aria-labelledby="pills-home-tab">
+        <div class="table-responsive">
+            @*  <h5 class="head-tit-fnt">Training Status</h5>*@
+            <table table id="TrainingStatusDetails" class="table table-bordered table-hover piqhvpq" style="white-space:nowrap;width:100%;">
+
+                @*  <table class="table table-hover" style="overflow:scroll">*@
+                <thead>
+                    <tr>
+                        <th scope="col">User</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Progress</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        string status = "Not Started";
+                        if (item.ResTotal == 0)
+                        {
+                            status = "Not Started";
+                        }
+
+                        else if (item.Difference == 0)
+                        {
+                            status = "Completed";
+                        }
+                        else
+                        {
+                            status = "In Progress";
+                        }
+                        var satus = item.IsDeleted == false ? "Active" : "Deactive";
+                        <tr>
+                            <td>
+                                @item.Operator_id
+                            </td>
+                            <td>
+                                @string.Format("{0:dd-MM-yyyy}", @item.Started_at)
+                            </td>
+                            <td>
+                                @if (status == "In Progress")
+                                {
+                                      <span class="badge bg-warning rounded-pill">@status</span>
+                                }
+                                else
+                                @if (status == "Completed")
+
+                                {
+                                      <span class="badge bg-success rounded-pill">@status</span>
+                                }else
+                                @if(status == "Not Started"){
+                                    <span class="badge bg-danger rounded-pill">@status</span>
+                                }
+                            </td>
+                            <td>
+                                @item.ResTotal / @item.Total
+                            </td>
+
+
+
+                        </tr>
+                        i = i + 1;
+                    }
+
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+</div>

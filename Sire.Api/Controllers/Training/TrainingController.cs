@@ -63,8 +63,6 @@ namespace Sire.Api.Controllers.Training
                                  
                                  ).Count();
 
-           
-
             var ResponseCount = (from response in _uow.Context.TraningResponse.Where(x => x.Trainee_Id == id)
                                  select new TraningResponseDto
                                  {
@@ -74,6 +72,49 @@ namespace Sire.Api.Controllers.Training
             var Diff = QuestionCount - ResponseCount;
             return Ok(Diff);
         }
+
+
+
+        [AllowAnonymous]
+        [HttpGet("GetStatus/{id}")]
+        public IActionResult GetStatus(int id)
+        {
+            var tests = _trainingRepository.FindByInclude(x => x.Operator_id == id)
+                .OrderByDescending(x => x.Id).ToList();
+            var testsDto = _mapper.Map<IEnumerable<TrainingDto>>(tests);
+            /*var user = (from sec in _uow.Context.Training.Where(x => x.Id == id)
+                        join sub in _uow.Context.User on sec.Id equals sub.
+*/
+
+            foreach (var item in testsDto)
+            {
+                /*item.Operator_id = _userRepository.FindByInclude(x => x.Id == item.Operator_id, x => x.User).FirstOrDefault();
+*/
+
+                var QuestionCount = (from quetion in _uow.Context.Question.Where(x => x.Id != null)
+                                     select new QuestionDto
+                                     {
+                                         Id = quetion.Id,
+                                     }).Count();
+                var ResponseCount = (from response in _uow.Context.TraningResponse.Where(x => x.Trainee_Id == id)
+                                     select new TraningResponseDto
+                                     {
+                                         Id = response.Id,
+                                     }).Count();
+
+                item.ResTotal = ResponseCount;
+                item.Total = QuestionCount;
+
+                var Diff = QuestionCount - ResponseCount;
+
+                item.Difference = Diff;
+
+            }
+
+
+            return Ok(testsDto);
+        }
+
         [AllowAnonymous]
             [HttpGet("{id}")]
             public IActionResult Get(int id)

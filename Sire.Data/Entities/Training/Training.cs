@@ -1,4 +1,5 @@
 ﻿using Sire.Data.Entities.Common;
+using Sire.Data.Entities.UserMgt;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -16,6 +17,6 @@ namespace Sire.Data.Entities.Training
         public string Description { get; set; }
         public DateTime? Started_at { get; set; }
         public DateTime? Completed_at { get; set; }
-
+      
     }
 }

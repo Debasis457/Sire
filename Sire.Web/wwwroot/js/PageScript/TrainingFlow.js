@@ -27,7 +27,7 @@ function GetTask(id) {
     debugger;
     $("#Tasks").empty();
     var trainingId = $("#hdnTraningId").val();
-    $("#Tasks").load("/TrainingFlow/GetTasks/" + id + "&trainingId=" + trainingId, function () {
+    $("#Tasks").load("/TrainingFlow/GetTasks?id=" + id + "&trainingId=" + trainingId, function () {
  
         if (trainingId == "0") {
             debugger;
@@ -54,4 +54,19 @@ function UploadFile() {
 
     });
 
+}
+
+function SaveTask(id) {
+    $.ajax({
+        url: '/TrainingFlow/SaveTask/',
+        type: 'POST',
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        data: '',
+        success: function (data) {
+            if (data) {
+                GetTask(id);
+            }
+        }
+    });
 }

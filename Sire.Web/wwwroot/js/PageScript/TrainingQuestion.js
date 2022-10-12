@@ -20,14 +20,7 @@ $(document).ready(function () {
     var clockType = undefined;
 
 
-    $('button#start-cronometer').on('click', function () {
-        clockType = 'cronometer'
-        if ($(ammount).val() != '' && $(measure).val() == 0) {
-            alert('Select the Unit')
-        } else if ($(ammount).val() > -1) {
-            startClock()
-        }
-    })
+    
 
     $('button#stop-timer').on('click', function () {
         pauseClock()
@@ -195,6 +188,72 @@ $(document).ready(function () {
 
 })
 
+$('button#start-cronometer').on('click', function (event) {
+    debugger;
+    var Operatorid = $("#hdnOperatorId").val();
+    var TrainingID = $("#hdnTraningId").val();
+    var OperatorIdList = [];
+    $.ajax({
+        url: "/TrainingQuestion/GetDifference",
+        type: 'GET',
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        data: "{'Operator_id':'" + Operatorid + "'}",
+        success: function (record) {
+            /*  alert(r + " record(s) inserted.");*/
+            debugger;
+            console.log(record);
+            debugger;
+            if (record != 0) {
+              //  (window.confirm("Training for this vessel already exists. Do you still want to proceed with a new Training?"));
+
+
+                var message = "";
+                var message = confirm("Training for this vessel already exists. Do you still want to proceed with a new Training??");
+                if (message == true) {
+                    //return message;
+                    $.ajax({
+                    url: "/Training/Index/" + TrainingID,
+                    type: 'POST',
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    data: '{"Id":' + TrainingID + '}',
+                    success: function (r) {
+                        alert("record inserted");
+                    }
+                    });
+                }
+                else {
+                    return false;
+                }
+
+               
+            }
+          
+            
+            
+
+            //debugger;
+            //if (data.Operator_id == Operatorid)
+            //{
+            //    swal("warning", "Training for this vessel already exists. Do you still want to proceed with a new Training?", "warning");
+            //     window.onkeydown = null;
+            //    window.onfocus = null;
+            //}
+
+
+
+        }
+    });
+
+    
+    //clockType = 'cronometer'
+    //if ($(ammount).val() != '' && $(measure).val() == 0) {
+    //    alert('Select the Unit')
+    //} else if ($(ammount).val() > -1) {
+    //    startClock()
+    //}
+})
 
 function GetQuestion(id) {
     debugger;
@@ -212,7 +271,6 @@ function GetRenkBaseQuestion() {
 
     $("#RankBaseQue").load("/TrainingQuestion/GetRenkBaseQuestion/", function () {
 
-       
        
     });
 }
@@ -244,4 +302,26 @@ function GetTagQuestion() {
 
         });
 
+}
+function GetQuestionByRank() {
+
+    debugger;
+    /*   var traningId = $("#hdnTraningId").val();*/
+    var Rank_Id = $("#Rank_Id option:selected").val();
+    if (Rank_Id != "" && Rank_Id != "Select") {
+        $.ajax({
+            type: "POST",
+            url: "/TrainingQuestion/GetQuestionByRank/" + Rank_Id,
+            data: '{"id":' + Rank_Id + '}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+
+            success: function (result) {
+                debugger;
+                console.log(result);
+                GetRenkBaseQuestion();
+                $("#bindPartialQuetion").html(result);
+            }
+        });
+    }
 }

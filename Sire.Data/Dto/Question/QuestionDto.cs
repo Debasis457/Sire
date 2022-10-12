@@ -37,6 +37,8 @@ namespace Sire.Data.Dto.Question
         public int DAssessore { get; set; }
         public User User { get; set; }
         public int DReviewer { get; set; }
+        public int? Total { get; set; }
+        public int? ResTotal { get; set; }
 
     }
 }

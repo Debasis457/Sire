@@ -59,25 +59,4 @@ function GetApplicableQuestionBySection(id) {
         }
     });
 }
-function GetQuestionByRank() {
 
-    debugger;
- /*   var traningId = $("#hdnTraningId").val();*/
-    var Rank_Id = $("#Rank_Id option:selected").val();
-    if (Rank_Id != "" && Rank_Id != "Select") {
-        $.ajax({
-            type: "POST",
-            url: "/TrainingQuestion/GetQuestionByRank/" + Rank_Id,
-            data: '{"id":' + Rank_Id + '}',
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-
-            success: function (result) {
-                debugger;
-                console.log(result);
-
-                $("#bindPartialQuetion").html(result);
-            }
-        });
-    }
-}

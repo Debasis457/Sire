@@ -275,8 +275,13 @@ $(document).ready(function () {
     $('#myOperatorWiseVesselModal').on('show.bs.modal', function () {
         $("#OperatorWiseVesselModalContent").load("/VesselPopUp/OperatorWiseVessels/");
     });
-
+    $('#myCheckListHintModal').on('show.bs.modal', function () {
+        debugger;
+        var id = $("#hdnTraningId").val();
+        $("#CheckListHintModalContent").load("/TrainingFlow/GetHint/" +id);
+    });
     $("#InspectionsForm").on("submit", function (event) {
+        debugger;
         if ($("#InspectionsForm #InspectionId").val() != "")
             $("#InspectionsForm #IsAllowdForNew").val(window.confirm("An inspection for this vessel already exists. Do you still want to proceed with a new Inspection?"));
         else

@@ -9,11 +9,11 @@ namespace Sire.Data.Dto.Inspection
     {
         public int? Inspection_Id { get; set; }
         public int Question_Id { get; set; }
-        public int Assessor_Id { get; set; }
-        public int Reviewer_Id { get; set; }
-        public bool Comment_By_Reviewer { get; set; } = false;
-        public bool Assesment_Completed { get; set; } = false;
-        public bool Review_Completed { get; set; } = false;
+        public int? Assessor_Id { get; set; }
+        public int? Reviewer_Id { get; set; }
+        public bool? Comment_By_Reviewer { get; set; }
+        public bool? Assesment_Completed { get; set; }
+        public bool? Review_Completed { get; set; }
         public string Assessor_Name { get; set; }
         public string Reviewer_Name { get; set; }
         public string Question_Text { get; set; }

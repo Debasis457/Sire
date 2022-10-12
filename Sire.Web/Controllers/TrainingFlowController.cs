@@ -170,7 +170,7 @@ namespace Sire.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveTask()
+        public async Task<JsonResult> SaveTask()
         {
             var trainingNumber = Convert.ToInt32(TempData["TrainingNumber"]);
             var trainingId = Convert.ToInt32(TempData["TrainingId"]);
@@ -191,13 +191,13 @@ namespace Sire.Web.Controllers
                 using var Response = await client.PostAsync(apiBaseTrainingResponseUrl, content);
                 if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-
+                    return Json(true);
                 }
                 else
                 {
                     ModelState.Clear();
                     ModelState.AddModelError(string.Empty, "Invalid Data");
-                    return PartialView("Tasks");
+                    return Json("Tasks");
                 }
             }
             catch (DbUpdateConcurrencyException)
@@ -205,7 +205,7 @@ namespace Sire.Web.Controllers
                 throw;
             }
 
-            return RedirectToAction("Index", "TrainingQuestion", new { @id = trainingId });
+            //return RedirectToAction("Index", "TrainingQuestion", new { @id = trainingId });
         }
 
 

@@ -8,7 +8,7 @@
         background-color: #9bc3e6 !important;
         color: white;
         font-size: medium;
-        border-radius:5px;
+        border-radius: 5px;
         padding: 7px;
     }
 
@@ -18,15 +18,15 @@
         background-color: #edf7ff;
         border-radius: 5px;
     }
-    .header
-    {
+
+    .header {
         font-size: medium;
         font-weight: 700;
     }
 </style>
 <div class="tab-pane fade" id="Tasks" role="tabpanel" aria-labelledby="pills-home-tab">
-    @using (Html.BeginForm("SaveTask", "TrainingFlow", FormMethod.Post))
-    {
+   @* @using (Html.BeginForm("SaveTask", "TrainingFlow", FormMethod.Post))
+    {*@
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-body">
@@ -40,88 +40,146 @@
                                 </span>
                                 <hr>
                                 @*Familiar  Procedure*@
-                                <div>
-                                    <span class="taskHeader row">
-                                        Familliarity 1
-                                    </span>
-                                    <span class="row taskBody mb-1">
-                                        <span class="col-md-12"> Rank Group 1 : @Model.Familiar1_RG_1 </span>
-                                        <span class="col-md-12"> Rank Group 2 : @Model.Familiar1_RG_2  </span>
-                                        <span class="col-md-12">
-                                            @Model.Familiar1_Procedure
+                                @if (!string.IsNullOrEmpty(Model.Familiar1_RG_1) || !string.IsNullOrEmpty(Model.Familiar1_RG_2))
+                                {
+                                    <div>
+                                        <span class="taskHeader row">
+                                            Familliarity 1
                                         </span>
+                                        <span class="row taskBody mb-1">
+                                            @if (!string.IsNullOrEmpty(Model.Familiar1_RG_1))
+                                            {
+                                                <span class="col-md-12"> Rank Group 1 : @Model.Familiar1_RG_1 </span>
+                                            }
+                                            @if (!string.IsNullOrEmpty(Model.Familiar1_RG_2))
+                                            {
+                                                <span class="col-md-12"> Rank Group 2 : @Model.Familiar1_RG_2  </span>
+                                            }
+                                            <span class="col-md-12">
+                                                @Model.Familiar1_Procedure
+                                            </span>
 
-                                    </span>
-                                </div>
-                                <div>
-                                    <span class="taskHeader row">
-                                        Familliarity 2
-                                    </span>
-                                    <span class="row taskBody mb-1">
-                                        <span class="col-md-12"> Rank Group 1 : @Model.Familiar2_RG_1 </span>
-                                        <span class="col-md-12"> Rank Group 2 : @Model.Familiar2_RG_2  </span>
-                                        <span class="col-md-12">
-                                            @Model.Familiar2_Procedure
                                         </span>
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.Familiar2_RG_1) || !string.IsNullOrEmpty(Model.Familiar2_RG_2))
+                                {
+                                    <div>
+                                        <span class="taskHeader row">
+                                            Familliarity 2
+                                        </span>
+                                        <span class="row taskBody mb-1">
+                                            @if (!string.IsNullOrEmpty(Model.Familiar2_RG_1))
+                                            {
+                                                <span class="col-md-12"> Rank Group 1 : @Model.Familiar2_RG_1 </span>
+                                            }
+                                            @if (!string.IsNullOrEmpty(Model.Familiar2_RG_2))
+                                            {
+                                                <span class="col-md-12"> Rank Group 2 : @Model.Familiar2_RG_2  </span>
+                                            }
+                                            <span class="col-md-12">
+                                                @Model.Familiar2_Procedure
+                                            </span>
 
-                                    </span>
-                                </div>
+                                        </span>
+                                    </div>
+                                }
+
+
 
                                 @*Interviewe  Procedure*@
-                                <div>
-                                    <span class="taskHeader row">
-                                        Interview 1
-                                    </span>
-                                    <span class="row taskBody mb-1">
-                                        <span class="col-md-12"> Rank Group 1 : @Model.Interview1_RG1</span>
-                                        <span class="col-md-12"> Rank Group 2 : @Model.Interview1_RG2  </span>
-                                        <span class="col-md-12">
-                                            @Model.Interview1_Procedure
+                                @if (!string.IsNullOrEmpty(Model.Interview1_RG1) || !string.IsNullOrEmpty(Model.Interview1_RG2))
+                                {
+                                    <div>
+                                        <span class="taskHeader row">
+                                            Interview 1
                                         </span>
+                                        <span class="row taskBody mb-1">
+                                            @if (!string.IsNullOrEmpty(Model.Interview1_RG1))
+                                            {
+                                                <span class="col-md-12"> Rank Group 1 : @Model.Interview1_RG1 </span>
+                                            }
+                                            @if (!string.IsNullOrEmpty(Model.Interview1_RG2))
+                                            {
+                                                <span class="col-md-12"> Rank Group 2 : @Model.Interview1_RG2  </span>
+                                            }
+                                            <span class="col-md-12">
+                                                @Model.Interview1_Procedure
+                                            </span>
 
-                                    </span>
-                                </div>
-                                <div>
-                                    <span class="taskHeader row">
-                                        Interview 2
-                                    </span>
-                                    <span class="row taskBody mb-1">
-                                        <span class="col-md-12"> Rank Group 1 : @Model.Interview2_RG1</span>
-                                        <span class="col-md-12"> Rank Group 2 : @Model.Interview2_RG2  </span>
-                                        <span class="col-md-12">
-                                            @Model.Interview2_Procedure
                                         </span>
+                                    </div>
+                                }
 
-                                    </span>
-                                </div>
+                                @if (!string.IsNullOrEmpty(Model.Interview2_RG1) || !string.IsNullOrEmpty(Model.Interview2_RG2))
+                                {
 
+                                    <div>
+                                        <span class="taskHeader row">
+                                            Interview 2
+                                        </span>
+                                        <span class="row taskBody mb-1">
+                                            @if (!string.IsNullOrEmpty(Model.Interview2_RG1))
+                                            {
+                                                <span class="col-md-12"> Rank Group 1 : @Model.Interview2_RG1 </span>
+                                            }
+                                            @if (!string.IsNullOrEmpty(Model.Interview2_RG2))
+                                            {
+                                                <span class="col-md-12"> Rank Group 2 : @Model.Interview2_RG2  </span>
+                                            }
+                                            <span class="col-md-12">
+                                                @Model.Interview2_Procedure
+                                            </span>
+
+                                        </span>
+                                    </div>
+                                }
                                 @*Demonstrate*@
-                                <div>
-                                    <span class="taskHeader row">
-                                        Demonstrate 1
-                                    </span>
-                                    <span class="row taskBody mb-1">
-                                        <span class="col-md-12"> Rank Group 1 : @Model.Demonstrate1_RG1</span>
-                                        <span class="col-md-12"> Rank Group 2 : @Model.Demonstrate1_RG2  </span>
-                                        <span class="col-md-12">
-                                            @Model.Demonstrate1_Procedure
+                                @if (!string.IsNullOrEmpty(Model.Demonstrate1_RG1) || !string.IsNullOrEmpty(Model.Demonstrate1_RG2))
+                                {
+                                    <div>
+                                        <span class="taskHeader row">
+                                            Demonstrate 1
                                         </span>
+                                        <span class="row taskBody mb-1">
+                                            @if (!string.IsNullOrEmpty(Model.Demonstrate1_RG1))
+                                            {
+                                                <span class="col-md-12"> Rank Group 1 : @Model.Demonstrate1_RG1 </span>
+                                            }
+                                            @if (!string.IsNullOrEmpty(Model.Demonstrate1_RG2))
+                                            {
+                                                <span class="col-md-12"> Rank Group 2 : @Model.Demonstrate1_RG2  </span>
+                                            }
+                                            <span class="col-md-12">
+                                                @Model.Demonstrate1_Procedure
+                                            </span>
 
-                                    </span>
-                                </div>
-                                <div>
-                                    <span class="taskHeader row">
-                                        Demonstrate 2
-                                    </span>
-                                    <span class="row taskBody mb-1">
-                                        <span class="col-md-12"> Rank Group 1 : @Model.Demonstrate2_RG1</span>
-                                        <span class="col-md-12"> Rank Group 2 : @Model.Demonstrate2_RG2  </span>
-                                        <span class="col-md-12">
-                                            @Model.Demonstrate2_Procedure
                                         </span>
+                                    </div>
+                                }
 
-                                    </span>
-                                </div>
+                                @if (!string.IsNullOrEmpty(Model.Demonstrate2_RG1) || !string.IsNullOrEmpty(Model.Demonstrate2_RG2))
+                                {
+                                    <div>
+                                        <span class="taskHeader row">
+                                            Demonstrate 2
+                                        </span>
+                                        <span class="row taskBody mb-1">
+                                            @if (!string.IsNullOrEmpty(Model.Demonstrate2_RG1))
+                                            {
+                                                <span class="col-md-12"> Rank Group 1 : @Model.Demonstrate2_RG1 </span>
+                                            }
+                                            @if (!string.IsNullOrEmpty(Model.Demonstrate2_RG2))
+                                            {
+                                                <span class="col-md-12"> Rank Group 2 : @Model.Demonstrate2_RG2  </span>
+                                            }
+                                            <span class="col-md-12">
+                                                @Model.Demonstrate2_Procedure
+                                            </span>
+
+                                        </span>
+                                    </div>
+                                }
                             </div>
                             <div class="col-md-1">
                             </div>
@@ -174,9 +232,9 @@
             }
             else
             {
-                <button type="submit" id="taskButton" class="btn btn-success"><span class="fa fa-check"></span></button>
+            <button type="button" onclick="SaveTask('@TempData["QuestionId"]')" id="taskButton" class="btn btn-success"><span class="fa fa-check"></span></button>
             }
 
         </div>
-    }
+   @* }*@
 </div>

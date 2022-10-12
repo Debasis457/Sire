@@ -1,5 +1,6 @@
 ﻿@model QuestionTrainingModel
 @{
+    int i = 1;
     int trainingId = Convert.ToInt32(ViewBag.TrainingId);
     TempData.Keep();
     string trainingAttended = "card bg-c-green";
@@ -30,4 +31,6 @@
             </div>
         </div>
     </div>
+
+    i++;
 }
