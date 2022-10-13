@@ -52,10 +52,10 @@ function GetApplicableQuestionBySection(id) {
     var traningId = $("#hdnTraningId").val();
     $.ajax({
         type: "GET",
-        url: "/Training/GetQuestionBySection?id=" + id + "&traningId=" + traningId,
+        url: "/Training/GetApplicableQuestionBySection?id=" + id + "&traningId=" + traningId,
 
         success: function (r) {
-            $(".bindPartialQuetion").html(r);
+            $(".bindApplicableQuetion").html(r);
         }
     });
 }

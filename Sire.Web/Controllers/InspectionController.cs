@@ -245,7 +245,7 @@ namespace Sire.Web.Controllers
             var inspectionId = Convert.ToInt32(TempData["InspectionId"]);
             int assessorId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
             int reviewerId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
-            int vesselId = Convert.ToInt32(TempData["vessselId"]);
+            int vesselId = Convert.ToInt32(TempData["InspectionVesselId"]);
             TempData.Keep();
 
             var endquestion = apiBaseQuestionUrl + "/GetQuestionBySection/" + id;

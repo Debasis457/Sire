@@ -204,7 +204,7 @@ namespace Sire.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult GetVesselWiseInspections(int? Id)
         {
-            TempData["vessselId"] = Id;
+            TempData["InspectionVesselId"] = Id;
             return RedirectToAction("Index", "OngoingInspection");
         }
     }

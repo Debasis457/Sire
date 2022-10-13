@@ -290,8 +290,8 @@ namespace Sire.Api.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("GetSectionListQuestionLibrary/{assessorId}/{reviewerId}/{vesselId}")]
-        public IActionResult GetSectionListQuestionLibrary(int assessorId, int reviewerId, int vesselId)
+        [HttpGet("GetSectionListApplicableQuestions/{assessorId}/{reviewerId}/{vesselId}")]
+        public IActionResult GetSectionListApplicableQuestions(int assessorId, int reviewerId, int vesselId)
         {
             var tests = _quetionSectionRepository.FindByInclude(x => x.Id > 0, x => x.QuetionSubSection)
                 .ToList();
@@ -305,7 +305,7 @@ namespace Sire.Api.Controllers
                                             on sub.Id equals que.Section
                                          select new
                                          {
-                                             que.Id
+                                             Id = que.Id
 
                                          }).ToList();
 
@@ -315,7 +315,7 @@ namespace Sire.Api.Controllers
                                          join piqque in _uow.Context.Piq_Hvpq_Filter_Quetions.Where(x => x.VesselId == vesselId) on que.Id equals piqque.QuestionId
                                          select new
                                          {
-                                             piqque.Id
+                                             Id = piqque.QuestionId
 
                                          }).ToList();
 
@@ -330,17 +330,17 @@ namespace Sire.Api.Controllers
                                                     on sub.Id equals que.Section
                                                   select new
                                                   {
-                                                      que.Id
+                                                      Id = que.Id
 
                                                   }).ToList();
 
                     var piqHvpqTotalQuestionsIds = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == item.Id)
                                                     join sub in _uow.Context.QuetionSubSection.Where(x => x.Id == subb.Id) on sec.Id equals sub.QuetionSectionId
                                                     join que in _uow.Context.Question on sub.Id equals que.Section
-                                                    join piqque in _uow.Context.Piq_Hvpq_Filter_Quetions on que.Id equals piqque.QuestionId
+                                                    join piqque in _uow.Context.Piq_Hvpq_Filter_Quetions.Where(x => x.VesselId == vesselId) on que.Id equals piqque.QuestionId
                                                     select new
                                                     {
-                                                        piqque.Id
+                                                        Id = piqque.QuestionId
 
                                                     }).ToList();
 

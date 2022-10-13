@@ -47,7 +47,7 @@ namespace Sire.Web.Controllers
                                    Name = e.ToString()
                                };
 
-            var vesselId = Convert.ToInt32(TempData["vessselId"]);
+            var vesselId = Convert.ToInt32(TempData["InspectionVesselId"]);
             TempData.Keep();
             var operatorid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
             if (vesselId > 0)
@@ -88,7 +88,7 @@ namespace Sire.Web.Controllers
         {
             var userId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
             var rankGroupId = Convert.ToInt32(HttpContext.Session.GetString("RankGroupId"));
-            var vesselId = Convert.ToInt32(TempData["vessselId"]);
+            var vesselId = Convert.ToInt32(TempData["InspectionVesselId"]);
             TempData.Keep();
             if (IsAllowdForNew == true)
             {

@@ -242,7 +242,7 @@ namespace Sire.Web.Controllers
         {
             var assessorId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
             var reviewerId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
-            var vesselId = Convert.ToInt32(TempData["vessselId"]);
+            var vesselId = Convert.ToInt32(TempData["InspectionVesselId"]);
 
             TempData["InspectionId"] = id;
 
@@ -263,7 +263,7 @@ namespace Sire.Web.Controllers
                     }
                 }
 
-                var url = apiBaseUrl + "/GetSectionListQuestionLibrary/" + assessorId + "/" + reviewerId + "/" + vesselId;
+                var url = apiBaseUrl + "/GetSectionListApplicableQuestions/" + assessorId + "/" + reviewerId + "/" + vesselId;
                 using var response = await client.GetAsync(url);
                 if (response.StatusCode == HttpStatusCode.OK)
                 {

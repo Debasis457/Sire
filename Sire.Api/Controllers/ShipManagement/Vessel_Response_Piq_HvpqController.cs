@@ -223,7 +223,7 @@ namespace Sire.Api.Controllers.ShipManagement
             //}
             #endregion
 
-            List<int?> FilterQuestionList = new List<int?>();
+            List<int> FilterQuestionList = new List<int>();
             #region Third Logic
             var PIQDataGruopByType = _uow.Context.Piq_Hvpq.ToList().GroupBy(x => x.QuestionId)
                 .Select(aa => new
@@ -232,7 +232,7 @@ namespace Sire.Api.Controllers.ShipManagement
                     PIQList = aa.ToList()
                 }).ToList();
 
-            int? vesselid = HVPQResponseDto.FirstOrDefault().Vessel_Id ;
+            int vesselid = HVPQResponseDto.FirstOrDefault().Vessel_Id ?? 0;
             var databasePIQ = _uow.Context.Vessel_Response_Piq_Hvpq.Where(x => x.Vessel_Id == vesselid).ToList();
             HVPQResponseDto = _mapper.Map<List<Vessel_Response_Piq_HvpqDto>>(databasePIQ);
             foreach (var item in PIQDataGruopByType)
@@ -277,7 +277,7 @@ namespace Sire.Api.Controllers.ShipManagement
                                 //aa.QuestionId = que.QuestionId;
                                 //_uow.Context.Piq_Hvpq_Filter_Quetions.Add(aa);
                                 //_uow.Save();
-                                FilterQuestionList.Add(que.QuestionId);
+                                FilterQuestionList.Add(que.QuestionId ?? 0);
                             }
 
                         }
@@ -325,7 +325,7 @@ namespace Sire.Api.Controllers.ShipManagement
                             //aa.QuestionId = q.QuestionId;
                             //_uow.Context.Piq_Hvpq_Filter_Quetions.Add(aa);
                             //_uow.Save();
-                            FilterQuestionList.Add(q.QuestionId);
+                            FilterQuestionList.Add(q.QuestionId ?? 0);
                         }
                     }
                 }

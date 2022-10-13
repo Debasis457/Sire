@@ -33,6 +33,7 @@ namespace Sire.Web.Controllers
         string apiBaseOperatorUrl = string.Empty;
         string apiBaseVesselUrl = string.Empty;
         string apiBaseQuestionUrl = string.Empty;
+        string apiBaseTrainingQuestionUrl = string.Empty;
         string apiBaseTrainingResponseUrl = string.Empty;
 
         public TrainingController(ILogger<TrainingController> logger,
@@ -45,6 +46,7 @@ namespace Sire.Web.Controllers
             apiBaseOperatorUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/operator";
             apiBaseVesselUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/vessel";
             apiBaseQuestionUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Question";
+            apiBaseTrainingQuestionUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/TrainingQuestion";
             apiBaseTrainingResponseUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/TraningResponse";
         }
 
@@ -133,7 +135,6 @@ namespace Sire.Web.Controllers
             }
         }
 
-
         public async Task<IActionResult> TrainingList()
         {
             try
@@ -170,8 +171,6 @@ namespace Sire.Web.Controllers
             }
             return View();
         }
-
-
 
         public async Task<JsonResult> GetVessel(int Id)
         {
@@ -242,7 +241,6 @@ namespace Sire.Web.Controllers
             return View();
         }
 
-
         public async Task<PartialViewResult> GetCheck()
         {
 
@@ -278,6 +276,7 @@ namespace Sire.Web.Controllers
             }
 
         }
+
         public async Task<PartialViewResult> GetQuestionBySection(int? id, int? traningId)
         {
             var trainingNumber = traningId;
@@ -329,6 +328,56 @@ namespace Sire.Web.Controllers
             return PartialView("_TrainingQuestion", taskModel);
         }
 
+        public async Task<PartialViewResult> GetApplicableQuestionBySection(int? id, int? trainingId)
+        {
+            var traningId = trainingId ??= 0;
+            var traineeId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+            var assessorId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+            var reviewerId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+            var vesselId = Convert.ToInt32(HttpContext.Session.GetString("VesselId"));
+            var endquestion = $"{apiBaseTrainingQuestionUrl}/GetApplicationQuestionsBySection/{id}/{assessorId}/{reviewerId}/{traningId}/{vesselId}/{traineeId}";
+            var taskSubmittedDataUrl = apiBaseTrainingResponseUrl + "/GetTriningResponseByTraning/" + traningId;
+
+            ViewBag.TrainingId = trainingId;
+            QuestionTrainingModel taskModel = new()
+            {
+                QuestionDtos = new List<QuestionDto>()
+            };
+
+            using HttpClient client = new();
+            using var response = await client.GetAsync(endquestion);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var result = response.Content.ReadAsStringAsync().Result;
+                if (result.Length > 2)
+                {
+                    var data = JsonConvert.DeserializeObject<IEnumerable<QuestionDto>>(result);
+                    taskModel.QuestionDtos = data;
+                    //dharini
+                    TempData["QuestionIdsBySection"] = string.Join(",", data.Select(x => x.Id).ToArray());
+
+                    using var response1 = await client.GetAsync(taskSubmittedDataUrl);
+                    if (response1.StatusCode == HttpStatusCode.OK)
+                    {
+                        string traningResponse = response1.Content.ReadAsStringAsync().Result;
+                        if (traningResponse.Length > 2)
+                        {
+                            var traningResponseData = JsonConvert.DeserializeObject<IList<TraningResponseDto>>(traningResponse);
+                            taskModel.TraningResponseDtos = traningResponseData.Where(d => d.Trainee_Id == traineeId).ToList();
+                        }
+                    }
+                }
+            }
+            else
+            {
+                ModelState.Clear();
+                ModelState.AddModelError(string.Empty, "Invalid Data");
+                return PartialView();
+            }
+
+            return PartialView("_TrainingQuestion", taskModel);
+        }
+
         public async Task<IActionResult> Delete(int Id)
         {
             string endpoint = apiBaseUrl + "/" + Id;
@@ -359,7 +408,5 @@ namespace Sire.Web.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
-
-       
     }
 }

@@ -171,7 +171,7 @@ namespace Sire.Web.Controllers
     {
         if (type == 1)
         {
-            TempData["vessselId"] = vesselId;
+            TempData["InspectionVesselId"] = vesselId;
             return RedirectToAction("Index", "OngoingInspection");
         }
         return RedirectToAction("Index", "TrainingQuestion");

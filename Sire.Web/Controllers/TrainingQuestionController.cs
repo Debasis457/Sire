@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -6,32 +11,23 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Sire.Data.Dto.Master;
-using Sire.Data.Dto.Operator;
 using Sire.Data.Dto.Question;
-using Sire.Data.Dto.Training;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sire.Web.Controllers
 {
     [Authorize]
     public class TrainingQuestionController : Controller
     {
-
-
         private readonly ILogger<TrainingQuestionController> _logger;
-        private readonly Microsoft.Extensions.Configuration.IConfiguration _iConfig;
-        string apiBaseUrl = string.Empty;
-        string apiBaseQuestionUrl = string.Empty;
-        string apiBaseUserRankUrl = string.Empty;
-        string apiBaseRankGroupUrl = string.Empty;
-        string apiBaseTrainingUrl = string.Empty;
-        public TrainingQuestionController(ILogger<TrainingQuestionController> logger,
-            Microsoft.Extensions.Configuration.IConfiguration iConfig
-            )
+        private readonly IConfiguration _iConfig;
+
+        readonly string apiBaseUrl = string.Empty;
+        readonly string apiBaseQuestionUrl = string.Empty;
+        readonly string apiBaseUserRankUrl = string.Empty;
+        readonly string apiBaseRankGroupUrl = string.Empty;
+        readonly string apiBaseTrainingUrl = string.Empty;
+
+        public TrainingQuestionController(ILogger<TrainingQuestionController> logger, IConfiguration iConfig)
         {
             _logger = logger;
             _iConfig = iConfig;
@@ -42,48 +38,39 @@ namespace Sire.Web.Controllers
             apiBaseTrainingUrl = _iConfig.GetValue<string>("apiUrl:url").ToString() + "/Training";
         }
         //Dharini
-       
-            public async Task<IActionResult> Index(int? id)
+
+        public async Task<IActionResult> Index(int? id)
         {
             TempData["TrainingId"] = id;
             ViewBag.TrainingId = id == null ? 0 : id;
             id = id == null ? 0 : id;
             var vesselId = Convert.ToInt32(TempData["vessselId"]);
-            try {
+            try
+            {
+                using HttpClient client = new();
+                var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+                ViewBag.OperatorId = userid;
+                var endpoint = apiBaseUrl + "/" + id + "/" + userid;
 
-             
-                    using (HttpClient client = new HttpClient())
-                    {
-                        var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
-                        ViewBag.OperatorId=userid;
-                        var endpoint = apiBaseUrl + "/" + id + "/" + userid;
-
-                        using (var Response = await client.GetAsync(endpoint))
-                        {
-                            if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                            {
-
-                                var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
-                            return View(data);
-                        }
-                            else
-                            {
-                                ModelState.Clear();
-                                ModelState.AddModelError(string.Empty, "Invalid Data");
-                                return View();
-                            }
-                        }
-
-
-                    }
-                
+                using var Response = await client.GetAsync(endpoint);
+                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
+                    return View(data);
+                }
+                else
+                {
+                    ModelState.Clear();
+                    ModelState.AddModelError(string.Empty, "Invalid Data");
+                    return View();
+                }
             }
             catch (DbUpdateConcurrencyException)
             {
                 throw;
             }
+
             return View();
-           
         }
 
         [Route("TrainingQuestion/GetDetails/{trainingId}/{questionId}")]
@@ -95,55 +82,46 @@ namespace Sire.Web.Controllers
             //trainingId = (int) TempData["TrainingId"];
             var endquestion = apiBaseQuestionUrl + "/" + questionId;
 
-            using (HttpClient client = new HttpClient())
+            using HttpClient client = new();
+            using var Response = await client.GetAsync(endquestion);
+            if (Response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                using (var Response = await client.GetAsync(endquestion))
-                {
-                    if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        var result = Response.Content.ReadAsStringAsync().Result;
+                var result = Response.Content.ReadAsStringAsync().Result;
 
-                        var data = JsonConvert.DeserializeObject<QuestionDto>(Response.Content.ReadAsStringAsync().Result);
+                var data = JsonConvert.DeserializeObject<QuestionDto>(Response.Content.ReadAsStringAsync().Result);
 
-                        return View("~/Views/TrainingFlow/Index.cshtml", data);
-                    }
-                    else
-                    {
-                        ModelState.Clear();
-                        ModelState.AddModelError(string.Empty, "Invalid Data");
-                        return View();
-                    }
-                }
+                return View("~/Views/TrainingFlow/Index.cshtml", data);
+            }
+            else
+            {
+                ModelState.Clear();
+                ModelState.AddModelError(string.Empty, "Invalid Data");
+                return View();
             }
         }
+
         public async Task<PartialViewResult> GetQuestion(int? id)
         {
             TempData["TrainingId"] = id;
             id = id == null ? 0 : id;
             try
             {
-                using (HttpClient client = new HttpClient())
+                using HttpClient client = new();
+                var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+                var endpoint = apiBaseUrl + "/" + id + "/" + userid;
+
+                using var Response = await client.GetAsync(endpoint);
+                if (Response.StatusCode == HttpStatusCode.OK)
                 {
-                    var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
-                    var endpoint = apiBaseUrl + "/" + id + "/" + userid;
-
-                    using (var Response = await client.GetAsync(endpoint))
-                    {
-                        if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                        {
-
-                            var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
-                            return PartialView("QuestionLibrary", data);
-                        }
-                        else
-                        {
-                            ModelState.Clear();
-                            ModelState.AddModelError(string.Empty, "Invalid Data");
-                            return PartialView();
-                        }
-                    }
+                    var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
+                    return PartialView("QuestionLibrary", data);
                 }
-
+                else
+                {
+                    ModelState.Clear();
+                    ModelState.AddModelError(string.Empty, "Invalid Data");
+                    return PartialView();
+                }
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -159,39 +137,35 @@ namespace Sire.Web.Controllers
             var endUserRank = apiBaseRankGroupUrl + "/GetRankGroupDropDown";
             try
             {
-                using (HttpClient client = new HttpClient())
-                {
-                    var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
-                    var endpoint = apiBaseUrl + "/" + id + "/" + userid;
+                using HttpClient client = new();
+                var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+                var endpoint = apiBaseUrl + "/" + id + "/" + userid;
 
-                    using (var Response = await client.GetAsync(endpoint))
+                using var Response = await client.GetAsync(endpoint);
+                if (Response.StatusCode == HttpStatusCode.OK)
+                {
+                    var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
+                    using (var IUserResponse = await client.GetAsync(endUserRank))
                     {
-                        if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                        if (Response.StatusCode == HttpStatusCode.OK)
                         {
-                            var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
-                            using (var IUserResponse = await client.GetAsync(endUserRank))
-                            {
-                                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                                {
-                                    var RankData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
-                                    ViewBag.Rank = RankData;
-                                }
-                                else
-                                {
-                                    ModelState.Clear();
-                                }
-                            }
-                            return PartialView("RankBaseQuestion", data);
+                            var RankData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+                            ViewBag.Rank = RankData;
                         }
                         else
                         {
                             ModelState.Clear();
-                            ModelState.AddModelError(string.Empty, "Invalid Data");
-                            return PartialView();
                         }
                     }
-                }
 
+                    return PartialView("RankBaseQuestion", data);
+                }
+                else
+                {
+                    ModelState.Clear();
+                    ModelState.AddModelError(string.Empty, "Invalid Data");
+                    return PartialView();
+                }
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -199,74 +173,59 @@ namespace Sire.Web.Controllers
             }
         }
 
-
         public async Task<JsonResult> GetQuestionByRank(int Id)
         {
             var endvessel = apiBaseQuestionUrl + "/GetQuestionsByRankId/" + Id;
 
-            using (HttpClient client = new HttpClient())
-            {
-                using (var Response = await client.GetAsync(endvessel))
-                {
+            using HttpClient client = new();
+            using var Response = await client.GetAsync(endvessel);
 
-                    var data = JsonConvert.DeserializeObject<List<QuestionDto>>(Response.Content.ReadAsStringAsync().Result);
-                    return Json(data);
-
-                }
-            }
-
+            var data = JsonConvert.DeserializeObject<List<QuestionDto>>(Response.Content.ReadAsStringAsync().Result);
+            
+            return Json(data);
         }
 
         public async Task<JsonResult> GetDifference(int? id)
         {
             TempData["TrainingId"] = id;
             var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
-            var endvessel = apiBaseTrainingUrl + "/GetDifference/" + userid; 
-           
-            using (HttpClient client = new HttpClient())
-            {
-                using (var Response = await client.GetAsync(endvessel))
-                {
-                    var data = JsonConvert.DeserializeObject<int>(Response.Content.ReadAsStringAsync().Result);
-                    //var data = JsonConvert.DeserializeObject<TrainingDto>(Response.Content.ReadAsStringAsync().Result);
-                    
-                    return Json(data);
+            var endvessel = apiBaseTrainingUrl + "/GetDifference/" + userid;
 
-                }
-            }
+            using HttpClient client = new();
+            using var Response = await client.GetAsync(endvessel);
+            var data = JsonConvert.DeserializeObject<int>(Response.Content.ReadAsStringAsync().Result);
+            //var data = JsonConvert.DeserializeObject<TrainingDto>(Response.Content.ReadAsStringAsync().Result);
 
+            return Json(data);
         }
 
         public async Task<PartialViewResult> GetApplicableQuestions(int? id)
         {
             TempData["TrainingId"] = id;
             id = id == null ? 0 : id;
+            var assessorId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+            var reviewerId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+            var userId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+            var vesselId = Convert.ToInt32(HttpContext.Session.GetString("VesselId"));
+
             try
             {
-                using (HttpClient client = new HttpClient())
+                using HttpClient client = new();
+                var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+                var endpoint = apiBaseUrl + "/GetSectionListApplicableQuestions/" + assessorId + "/" + reviewerId + "/" + id + "/" + vesselId + "/" + userid;
+
+                using var Response = await client.GetAsync(endpoint);
+                if (Response.StatusCode == HttpStatusCode.OK)
                 {
-                    var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
-                    var endpoint = apiBaseUrl + "/" + id + "/" + userid;
-
-                    using (var Response = await client.GetAsync(endpoint))
-                    {
-                        if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                        {
-
-                            var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
-                            return PartialView("ApplicableQuestions", data);
-                        }
-                        else
-                        {
-                            ModelState.Clear();
-                            ModelState.AddModelError(string.Empty, "Invalid Data");
-                            return PartialView();
-                        }
-                    }
-
-
+                    var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
+                    return PartialView("ApplicableQuestions", data);
                 }
-
+                else
+                {
+                    ModelState.Clear();
+                    ModelState.AddModelError(string.Empty, "Invalid Data");
+                    return PartialView();
+                }
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -283,12 +242,5 @@ namespace Sire.Web.Controllers
         {
             return PartialView("TaggedQuestions");
         }
-
-
-
-        
-
     }
-
 }
-
