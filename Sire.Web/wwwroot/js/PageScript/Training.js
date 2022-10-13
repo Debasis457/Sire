@@ -34,12 +34,27 @@
         return false;
     });
 });
+
 function GetQuestionBySection(id) {
     debugger
     var traningId = $("#hdnTraningId").val();
     $.ajax({
         type: "GET",
         url: "/Training/GetQuestionBySection?id=" + id + "&traningId=" + traningId,
+
+        success: function (r) {
+            $(".bindPartialQuetion").html(r);
+        }
+    });
+}
+
+function GetRankBasedQuestionBySection(id) {
+    debugger
+    var trainingId = $("#hdnTraningId").val();
+    var rankGroupId = $("#hdnRankGroupId").val();
+    $.ajax({
+        type: "GET",
+        url: "/Training/GetRankBasedQuestionsBySection?id=" + id + "&rankGroupId=" + rankGroupId + "&trainingId=" + trainingId,
 
         success: function (r) {
             $(".bindPartialQuetion").html(r);
@@ -60,3 +75,21 @@ function GetApplicableQuestionBySection(id) {
     });
 }
 
+$(document).ready(function () {
+    debugger;
+    $('#Rank_Id').change(function () {
+        debugger;
+        GetRankBasedQuestion($('#hdnTraningId').val(), $(this).val());
+    });
+});
+
+function GetRankBasedQuestion(id, rankGroupId) {
+    $.ajax({
+        type: "GET",
+        url: "/TrainingQuestion/GetRenkBaseQuestion?id=" + id,
+        data: { rankGroupId: rankGroupId },
+        success: function (r) {
+            $("#RankBaseQue").html(r);
+        }
+    });
+}

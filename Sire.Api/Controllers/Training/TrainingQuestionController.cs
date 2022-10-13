@@ -12,7 +12,6 @@ using System.Linq;
 using Sire.Data.Entities.Training;
 using Sire.Data.Dto.Master;
 using Sire.Respository.Master;
-using Sire.Data.Dto.Inspection;
 using Sire.Data.Dto.Question;
 using Sire.Respository.Question;
 
@@ -136,6 +135,84 @@ namespace Sire.Api.Controllers.Training
                 item.ResTotal = responseCount;
             }
             return Ok(testsDto);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("GetSectionListRankBasedQuestions/{rankGroupId}/{trainingId}/{userId}")]
+        public IActionResult GetSectionListRankBasedQuestions(int rankGroupId, int trainingId, int userId)
+        {
+            var questionSections = _quetionSectionRepository.FindByInclude(x => x.Id > 0, x => x.QuetionSubSection).ToList();
+            var questionSectionsDto = _mapper.Map<IEnumerable<QuetionSectionDto>>(questionSections);
+
+            foreach (var questionSectionDto in questionSectionsDto)
+            {
+                var count = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == questionSectionDto.Id)
+                             join sub in _uow.Context.QuetionSubSection
+                                on sec.Id equals sub.QuetionSectionId
+                             join que in _uow.Context.Question.Where(x => x.Rank_Group_Id == rankGroupId)
+                                on sub.Id equals que.Section
+                             select new
+                             {
+                                 que.Id
+
+                             }).ToList().Count;
+
+                var responseCount = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == questionSectionDto.Id)
+                                     join sub in _uow.Context.QuetionSubSection on sec.Id equals sub.QuetionSectionId
+                                     join que in _uow.Context.Question on sub.Id equals que.Section
+                                     join res in _uow.Context.TraningResponse.Where(x => x.Training_Id == trainingId && x.Trainee_Id == userId) on que.Id equals res.Question_Id
+                                     select new
+                                     {
+                                         que.Id
+
+                                     }).ToList().Count;
+
+                foreach (var subb in questionSectionDto.QuetionSubSection)
+                {
+                    subb.Total = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == questionSectionDto.Id)
+                                  join sub in _uow.Context.QuetionSubSection.Where(x => x.Id == subb.Id) on sec.Id equals sub.QuetionSectionId
+                                  join que in _uow.Context.Question.Where(x => x.Rank_Group_Id == rankGroupId)
+                                    on sub.Id equals que.Section
+                                  select new
+                                  {
+                                      que.Id
+
+                                  }).ToList().Count;
+
+                    subb.ResTotal = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == questionSectionDto.Id)
+                                     join sub in _uow.Context.QuetionSubSection.Where(x => x.Id == subb.Id) on sec.Id equals sub.QuetionSectionId
+                                     join que in _uow.Context.Question on sub.Id equals que.Section
+                                     join res in _uow.Context.TraningResponse.Where(x => x.Training_Id == trainingId && x.Trainee_Id == userId) on que.Id equals res.Question_Id
+                                     select new
+                                     {
+                                         que.Id
+
+                                     }).ToList().Count;
+                }
+
+                questionSectionDto.Total = count;
+                questionSectionDto.ResTotal = responseCount;
+            }
+
+            return Ok(questionSectionsDto);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("GetRankBasedQuestionsBySection/{sectionId}/{rankGroupId}/{trainingId}/{userId}")]
+        public IActionResult GetRankBasedQuestionsBySection(int sectionId, int rankGroupId, int trainingId, int userId)
+        {
+            var questionDtos = new List<QuestionDto>();
+
+            var rankBasedQuestionIds = (from quetion in _uow.Context.Question.Where(x => x.Section == sectionId && x.Rank_Group_Id == rankGroupId)
+                                      select new
+                                      {
+                                          Id = quetion.Id
+
+                                      }).ToList();
+
+            questionDtos = _mapper.Map<IEnumerable<QuestionDto>>(_questionRepository.FindByInclude(x => rankBasedQuestionIds.Select(y => y.Id).Contains(x.Id))).ToList();
+
+            return Ok(questionDtos);
         }
 
         [AllowAnonymous]

@@ -20,7 +20,7 @@ $(document).ready(function () {
     var clockType = undefined;
 
 
-    
+
 
     $('button#stop-timer').on('click', function () {
         pauseClock()
@@ -205,7 +205,7 @@ $('button#start-cronometer').on('click', function (event) {
             console.log(record);
             debugger;
             if (record != 0) {
-              //  (window.confirm("Training for this vessel already exists. Do you still want to proceed with a new Training?"));
+                //  (window.confirm("Training for this vessel already exists. Do you still want to proceed with a new Training?"));
 
 
                 var message = "";
@@ -213,25 +213,25 @@ $('button#start-cronometer').on('click', function (event) {
                 if (message == true) {
                     //return message;
                     $.ajax({
-                    url: "/Training/Index/" + TrainingID,
-                    type: 'POST',
-                    dataType: 'json',
-                    contentType: 'application/json; charset=utf-8',
-                    data: '{"Id":' + TrainingID + '}',
-                    success: function (r) {
-                        alert("record inserted");
-                    }
+                        url: "/Training/Index/" + TrainingID,
+                        type: 'POST',
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        data: '{"Id":' + TrainingID + '}',
+                        success: function (r) {
+                            alert("record inserted");
+                        }
                     });
                 }
                 else {
                     return false;
                 }
 
-               
+
             }
-          
-            
-            
+
+
+
 
             //debugger;
             //if (data.Operator_id == Operatorid)
@@ -246,7 +246,7 @@ $('button#start-cronometer').on('click', function (event) {
         }
     });
 
-    
+
     //clockType = 'cronometer'
     //if ($(ammount).val() != '' && $(measure).val() == 0) {
     //    alert('Select the Unit')
@@ -258,10 +258,10 @@ $('button#start-cronometer').on('click', function (event) {
 function GetQuestion(id) {
     debugger;
     $("#QueLibrary").empty();
-    
-   
+
+
     $("#QueLibrary").load("/TrainingQuestion/GetQuestion/" + id, function () {
-     
+
     });
 
 }
@@ -271,41 +271,41 @@ function GetRenkBaseQuestion() {
 
     $("#RankBaseQue").load("/TrainingQuestion/GetRenkBaseQuestion/", function () {
 
-       
+
     });
 }
 
 
 function GetApplicableQuestions(id) {
-        debugger;
+    debugger;
     $("#ApplicableQue").empty();
 
     $("#ApplicableQue").load("/TrainingQuestion/GetApplicableQuestions/" + id, function () {
 
-        });
-    }
+    });
+}
 
-    function GetCIVQquestion() {
-        debugger;
-        $("#CIVQ").empty();
+function GetCIVQquestion() {
+    debugger;
+    $("#CIVQ").empty();
 
-        $("#CIVQ").load("/TrainingQuestion/GetCIVQquestion/", function () {
+    $("#CIVQ").load("/TrainingQuestion/GetCIVQquestion/", function () {
 
-        });
-    }
+    });
+}
 
 function GetTagQuestion() {
-        debugger;
-        $("#TagQuestion").empty();
+    debugger;
+    $("#TagQuestion").empty();
 
-        $("#TagQuestion").load("/TrainingQuestion/GetTagQuestion/", function () {
+    $("#TagQuestion").load("/TrainingQuestion/GetTagQuestion/", function () {
 
-        });
+    });
 
 }
+
 function GetQuestionByRank() {
 
-    debugger;
     /*   var traningId = $("#hdnTraningId").val();*/
     var Rank_Id = $("#Rank_Id option:selected").val();
     if (Rank_Id != "" && Rank_Id != "Select") {

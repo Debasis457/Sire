@@ -273,12 +273,13 @@ function setMd5Password(event, event2 = null) {
 
 $(document).ready(function () {
     $('#myOperatorWiseVesselModal').on('show.bs.modal', function () {
+        $("#input[name='type']").val('1');
         $("#OperatorWiseVesselModalContent").load("/VesselPopUp/OperatorWiseVessels/");
     });
     $('#myCheckListHintModal').on('show.bs.modal', function () {
         debugger;
         var id = $("#hdnTraningId").val();
-        $("#CheckListHintModalContent").load("/TrainingFlow/GetHint/" +id);
+        $("#CheckListHintModalContent").load("/TrainingFlow/GetHint/" + id);
     });
     $("#InspectionsForm").on("submit", function (event) {
         debugger;
@@ -290,7 +291,7 @@ $(document).ready(function () {
 });
 
 function gotoOngoingInspection(event, vesselId) {
-    debugger
+    $("#input[name='type']").val('1');
     if (vesselId == 0) {
         event.preventDefault();
         swal({
@@ -305,5 +306,14 @@ function gotoOngoingInspection(event, vesselId) {
 
         });
         return false;
+    }
+}
+
+function validateType(type) {
+    if (type == 'training') {
+        $("#input[name='type']").val('0');
+    }
+    else if (type == 'inspection') {
+        $("#input[name='type']").val('1');
     }
 }

@@ -1,34 +1,28 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Azure.Amqp.Framing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Sire.Data.Dto.Inspection;
-using Sire.Data.Dto.Master;
-using Sire.Data.Dto.Operator;
-using Sire.Data.Dto.Question;
-using Sire.Data.Dto.Training;
-using Sire.Data.Dto.UserMgt;
-using Sire.Data.Entities.UserMgt;
-using Sire.Domain.Context;
-using Sire.Web.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Sire.Data.Dto.Master;
+using Sire.Data.Dto.Question;
+using Sire.Data.Dto.Training;
+using Sire.Web.Models;
 
 namespace Sire.Web.Controllers
 {
     public class TrainingController : Controller
     {
         private readonly ILogger<TrainingController> _logger;
-        private readonly Microsoft.Extensions.Configuration.IConfiguration _iConfig;
+        private readonly IConfiguration _iConfig;
+
         string apiBaseUrl = string.Empty;
         string apiBaseOperatorUrl = string.Empty;
         string apiBaseVesselUrl = string.Empty;
@@ -37,7 +31,7 @@ namespace Sire.Web.Controllers
         string apiBaseTrainingResponseUrl = string.Empty;
 
         public TrainingController(ILogger<TrainingController> logger,
-            Microsoft.Extensions.Configuration.IConfiguration iConfig
+            IConfiguration iConfig
             )
         {
             _logger = logger;
@@ -58,135 +52,105 @@ namespace Sire.Web.Controllers
             {
                 ViewBag.IsEdit = false;
 
-                using (HttpClient client = new HttpClient())
+                using (HttpClient client = new())
                 {
                     string endpoint = apiBaseUrl + "/" + Id;
-                    using (var Response = await client.GetAsync(endpoint))
+                    using var Response = await client.GetAsync(endpoint);
+                    if (Response.StatusCode == HttpStatusCode.OK)
                     {
+                        ViewBag.IsEdit = true;
+
+                        using var IUserResponse = await client.GetAsync(enduser);
                         if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                         {
-                            ViewBag.IsEdit = true;
-
-
-                            using (var IUserResponse = await client.GetAsync(enduser))
-                            {
-                                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                                {
-                                    var OperatorData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
-                                    ViewBag.Operator_Id = OperatorData;
-                                }
-                                else
-                                {
-                                    ModelState.Clear();
-                                }
-                            }
-
+                            var OperatorData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+                            ViewBag.Operator_Id = OperatorData;
                         }
                         else
                         {
                             ModelState.Clear();
-                            ModelState.AddModelError(string.Empty, "Invalid Data");
-                            return View();
                         }
                     }
+                    else
+                    {
+                        ModelState.Clear();
+                        ModelState.AddModelError(string.Empty, "Invalid Data");
+                        return View();
+                    }
                 }
-
 
                 return View();
             }
             else
             {
+                using HttpClient client = new();
 
-                using (HttpClient client = new HttpClient())
+                string endpoint = apiBaseUrl + "/" + Id;
+                using (var Response = await client.GetAsync(endpoint))
                 {
-
-                    string endpoint = apiBaseUrl + "/" + Id;
-                    using (var Response = await client.GetAsync(endpoint))
+                    if (Response.StatusCode == HttpStatusCode.OK)
                     {
-                        if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                        ViewBag.IsEdit = true;
+
+                        var data = JsonConvert.DeserializeObject<TrainingDto>(Response.Content.ReadAsStringAsync().Result);
+
+                        using var IOperatorResponse = await client.GetAsync(enduser);
+                        if (Response.StatusCode == HttpStatusCode.OK)
                         {
-                            ViewBag.IsEdit = true;
-
-                            var data = JsonConvert.DeserializeObject<TrainingDto>(Response.Content.ReadAsStringAsync().Result);
-
-                            using (var IOperatorResponse = await client.GetAsync(enduser))
-                            {
-                                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                                {
-                                    var OperatorData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IOperatorResponse.Content.ReadAsStringAsync().Result);
-                                    ViewBag.Operator_Id = OperatorData;
-                                }
-                                else
-                                {
-                                    ModelState.Clear();
-                                }
-                            }
+                            var OperatorData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IOperatorResponse.Content.ReadAsStringAsync().Result);
+                            ViewBag.Operator_Id = OperatorData;
                         }
                         else
                         {
                             ModelState.Clear();
-                            ModelState.AddModelError(string.Empty, "Invalid Data");
-                            return View();
                         }
                     }
-                    return View();
+                    else
+                    {
+                        ModelState.Clear();
+                        ModelState.AddModelError(string.Empty, "Invalid Data");
+                        return View();
+                    }
                 }
 
+                return View();
             }
         }
 
         public async Task<IActionResult> TrainingList()
         {
             try
-
             {
-                using (HttpClient client = new HttpClient())
+                using HttpClient client = new();
+
+                using var Response = await client.GetAsync(apiBaseUrl);
+                if (Response.StatusCode == HttpStatusCode.OK)
                 {
+                    var data = JsonConvert.DeserializeObject<List<TrainingDto>>(Response.Content.ReadAsStringAsync().Result);
 
-
-                    using (var Response = await client.GetAsync(apiBaseUrl))
-                    {
-                        if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                        {
-
-                            var data = JsonConvert.DeserializeObject<List<TrainingDto>>(Response.Content.ReadAsStringAsync().Result);
-
-
-                            return View(data);
-                        }
-                        else
-                        {
-                            ModelState.Clear();
-                            ModelState.AddModelError(string.Empty, "Invalid Data");
-                            return View();
-                        }
-                    }
-
-
+                    return View(data);
+                }
+                else
+                {
+                    ModelState.Clear();
+                    ModelState.AddModelError(string.Empty, "Invalid Data");
+                    return View();
                 }
             }
             catch (DbUpdateConcurrencyException)
             {
                 throw;
             }
-            return View();
         }
 
         public async Task<JsonResult> GetVessel(int Id)
         {
             var endvessel = apiBaseVesselUrl + "/GetVesselbyOperator/" + Id;
 
-            using (HttpClient client = new HttpClient())
-            {
-                using (var Response = await client.GetAsync(endvessel))
-                {
-
-                    var data = JsonConvert.DeserializeObject<List<VesselDto>>(Response.Content.ReadAsStringAsync().Result).ToList();
-                    return Json(data);
-
-                }
-            }
-
+            using HttpClient client = new();
+            using var Response = await client.GetAsync(endvessel);
+            var data = JsonConvert.DeserializeObject<List<VesselDto>>(Response.Content.ReadAsStringAsync().Result).ToList();
+            return Json(data);
         }
 
         [HttpPost]
@@ -200,51 +164,38 @@ namespace Sire.Web.Controllers
             trainingDto.Vessel_Id = vesselid;
             try
             {
-                using (HttpClient client = new HttpClient())
+                using HttpClient client = new();
+
+                var content = new StringContent(JsonConvert.SerializeObject(trainingDto), Encoding.UTF8, "application/json");
+
+                using var Response = await client.PostAsync(apiBaseUrl, content);
+
+                if (Response.StatusCode == HttpStatusCode.OK)
                 {
+                    var adddata = JsonConvert.DeserializeObject<int>(Response.Content.ReadAsStringAsync().Result);
+                    ViewBag.IsEdit = false;
+                    trainingDto = new TrainingDto();
+                    using var TrainingData = await client.GetAsync(apiBaseUrl);
+                    var data = JsonConvert.DeserializeObject<List<TrainingDto>>(TrainingData.Content.ReadAsStringAsync().Result);
 
-                    StringContent content = new StringContent(JsonConvert.SerializeObject(trainingDto), Encoding.UTF8, "application/json");
-
-                    using (var Response = await client.PostAsync(apiBaseUrl, content))
-                    {
-                        
-                        if (Response.StatusCode == System.Net.HttpStatusCode.OK)
-                        {
-                            var adddata = JsonConvert.DeserializeObject<int>(Response.Content.ReadAsStringAsync().Result);
-                            ViewBag.IsEdit = false;
-                            trainingDto = new TrainingDto();
-                            using (var TrainingData = await client.GetAsync(apiBaseUrl))
-                            {
-                                var data = JsonConvert.DeserializeObject<List<TrainingDto>>(TrainingData.Content.ReadAsStringAsync().Result);
-
-                                return RedirectToAction("Index", "TrainingQuestion", new {@id = adddata});
-
-
-                            }
-
-                        }
-                        else
-                        {
-                            ViewBag.IsEdit = true;
-                            ModelState.Clear();
-                            ModelState.AddModelError(string.Empty, "Invalid Data");
-                            return View();
-                        }
-                    }
+                    return RedirectToAction("Index", "TrainingQuestion", new { @id = adddata });
+                }
+                else
+                {
+                    ViewBag.IsEdit = true;
+                    ModelState.Clear();
+                    ModelState.AddModelError(string.Empty, "Invalid Data");
+                    return View();
                 }
             }
             catch (DbUpdateConcurrencyException)
             {
                 throw;
             }
-
-            return View();
         }
 
         public async Task<PartialViewResult> GetCheck()
         {
-
-
             var endquestion = apiBaseQuestionUrl + "/GetQuestion";
 
             using (HttpClient client = new HttpClient())
@@ -268,13 +219,9 @@ namespace Sire.Web.Controllers
                         return PartialView();
                     }
 
-
-
                     //  return PartialView("data");
-
                 }
             }
-
         }
 
         public async Task<PartialViewResult> GetQuestionBySection(int? id, int? traningId)
@@ -289,39 +236,37 @@ namespace Sire.Web.Controllers
                 QuestionDtos = new List<QuestionDto>()
             };
 
-            using (HttpClient client = new HttpClient())
+            using (HttpClient client = new())
             {
-                using (var Response = await client.GetAsync(endquestion))
+                using var Response = await client.GetAsync(endquestion);
+                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                    var result = Response.Content.ReadAsStringAsync().Result;
+
+                    if (result.Length > 2)
                     {
-                        var result = Response.Content.ReadAsStringAsync().Result;
+                        var data = JsonConvert.DeserializeObject<IEnumerable<QuestionDto>>(result);
+                        taskModel.QuestionDtos = data;
+                        //dharini
+                        TempData["QuestionIdsBySection"] = string.Join(",", data.Select(x => x.Id).ToArray());
 
-                        if (result.Length > 2)
+                        using var Response1 = await client.GetAsync(taskSubmittedDataUrl);
+                        if (Response1.StatusCode == HttpStatusCode.OK)
                         {
-                            var data = JsonConvert.DeserializeObject<IEnumerable<QuestionDto>>(result);
-                            taskModel.QuestionDtos = data;
-                            //dharini
-                            TempData["QuestionIdsBySection"] = string.Join(",", data.Select(x => x.Id).ToArray());
-
-                            using var Response1 = await client.GetAsync(taskSubmittedDataUrl);
-                            if (Response1.StatusCode == System.Net.HttpStatusCode.OK)
+                            string traningResponse = Response1.Content.ReadAsStringAsync().Result;
+                            if (traningResponse.Length > 2)
                             {
-                                string traningResponse = Response1.Content.ReadAsStringAsync().Result;
-                                if (traningResponse.Length > 2)
-                                {
-                                    var traningResponseData = JsonConvert.DeserializeObject<IList<TraningResponseDto>>(traningResponse);
-                                    taskModel.TraningResponseDtos = traningResponseData.Where(d => d.Trainee_Id == traineeId).ToList();
-                                }
+                                var traningResponseData = JsonConvert.DeserializeObject<IList<TraningResponseDto>>(traningResponse);
+                                taskModel.TraningResponseDtos = traningResponseData.Where(d => d.Trainee_Id == traineeId).ToList();
                             }
                         }
                     }
-                    else
-                    {
-                        ModelState.Clear();
-                        ModelState.AddModelError(string.Empty, "Invalid Data");
-                        return PartialView();
-                    }
+                }
+                else
+                {
+                    ModelState.Clear();
+                    ModelState.AddModelError(string.Empty, "Invalid Data");
+                    return PartialView();
                 }
             }
 
@@ -378,35 +323,74 @@ namespace Sire.Web.Controllers
             return PartialView("_TrainingQuestion", taskModel);
         }
 
-        public async Task<IActionResult> Delete(int Id)
+        public async Task<PartialViewResult> GetRankBasedQuestionsBySection(int? id, int? rankGroupId, int? trainingId)
         {
-            string endpoint = apiBaseUrl + "/" + Id;
-            using (HttpClient client = new HttpClient())
+            var userId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+            var endquestion = $"{apiBaseTrainingQuestionUrl}/GetRankBasedQuestionsBySection/{id}/{rankGroupId}/{trainingId}/{userId}";
+            var taskSubmittedDataUrl = apiBaseTrainingResponseUrl + "/GetTriningResponseByTraning/" + trainingId;
+
+            ViewBag.TrainingId = trainingId;
+            QuestionTrainingModel taskModel = new()
             {
-                using (var UserData = await client.DeleteAsync(endpoint))
+                QuestionDtos = new List<QuestionDto>()
+            };
+
+            using HttpClient client = new();
+            using var response = await client.GetAsync(endquestion);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var result = response.Content.ReadAsStringAsync().Result;
+                if (result.Length > 2)
                 {
-                    var data = JsonConvert.DeserializeObject<IEnumerable<TrainingDto>>(UserData.Content.ReadAsStringAsync().Result);
-                    using (var Response = await client.GetAsync(apiBaseUrl))
+                    var data = JsonConvert.DeserializeObject<IEnumerable<QuestionDto>>(result);
+                    taskModel.QuestionDtos = data;
+                    //dharini
+                    TempData["QuestionIdsBySection"] = string.Join(",", data.Select(x => x.Id).ToArray());
+
+                    using var response1 = await client.GetAsync(taskSubmittedDataUrl);
+                    if (response1.StatusCode == HttpStatusCode.OK)
                     {
-                        if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+                        string traningResponse = response1.Content.ReadAsStringAsync().Result;
+                        if (traningResponse.Length > 2)
                         {
-
-                            var getall = JsonConvert.DeserializeObject<List<TrainingDto>>(Response.Content.ReadAsStringAsync().Result);
-
-
-                            //return View(getall);
-                            return View("TrainingList", getall);
-                        }
-                        else
-                        {
-                            ModelState.Clear();
-                            ModelState.AddModelError(string.Empty, "Invalid Data");
-                            return View();
+                            var traningResponseData = JsonConvert.DeserializeObject<IList<TraningResponseDto>>(traningResponse);
+                            taskModel.TraningResponseDtos = traningResponseData.Where(d => d.Trainee_Id == userId).ToList();
                         }
                     }
                 }
             }
-            return RedirectToAction(nameof(Index));
+            else
+            {
+                ModelState.Clear();
+                ModelState.AddModelError(string.Empty, "Invalid Data");
+                return PartialView();
+            }
+
+            return PartialView("_TrainingQuestion", taskModel);
+        }
+
+        public async Task<IActionResult> Delete(int Id)
+        {
+            string endpoint = apiBaseUrl + "/" + Id;
+            using (HttpClient client = new())
+            {
+                using var UserData = await client.DeleteAsync(endpoint);
+                var data = JsonConvert.DeserializeObject<IEnumerable<TrainingDto>>(UserData.Content.ReadAsStringAsync().Result);
+                using var Response = await client.GetAsync(apiBaseUrl);
+                if (Response.StatusCode == HttpStatusCode.OK)
+                {
+                    var getall = JsonConvert.DeserializeObject<List<TrainingDto>>(Response.Content.ReadAsStringAsync().Result);
+
+                    //return View(getall);
+                    return View("TrainingList", getall);
+                }
+                else
+                {
+                    ModelState.Clear();
+                    ModelState.AddModelError(string.Empty, "Invalid Data");
+                    return View();
+                }
+            }
         }
     }
 }

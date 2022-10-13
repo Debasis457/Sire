@@ -30,12 +30,11 @@
 
     .childTableRow {
         display: none;
-       
     }
 
     /*.childTableRow table {
-                    border:solid #555;
-                }*/
+                        border:solid #555;
+                    }*/
 </style>
 
 <!-- Navigation Fixed Bar-->
@@ -55,19 +54,19 @@
 <form asp-action="GoToAction" asp-controller="OperatorDashboard">
 
     <!--Upper-Section-->
+    <input type="hidden" name="type" value="0">
 
     <div class="col-sm-12">
 
         <nav class="navbar navbar-light bg-light">
             <div class="row-sm-12" style="margin-right:50%">
                 <div class="col-lg-2">
-                    <button class="btn btn-outline-success" type="submit">Training</button>
+                    <button class="btn btn-outline-success" type="submit" onclick="return validateType('training');">Training</button>
                 </div>
                 <div class="col-lg-2">
                     @if (ViewBag.UserType == 1)
                     {
                         <button class="btn btn-outline-success" type="submit" onclick="return gotoOngoingInspection(event,@ViewBag.VesselId);">Inspection</button>
-                        <input type="hidden" name="type" value="1">
                         <input type="hidden" name="vesselId" value="@ViewBag.VesselId">
                     }
                     else if (ViewBag.UserType == 2)
@@ -76,7 +75,7 @@
                     }
                     else
                     {
-                        <button class="btn btn-outline-success" type="button">Inspection</button>
+                        <button class="btn btn-outline-success" type="button" onclick="return validateType('inspection');">>Inspection</button>
                     }
 
                 </div>

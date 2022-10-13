@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -129,9 +130,14 @@ namespace Sire.Web.Controllers
             }
         }
 
-        public async Task<PartialViewResult> GetRenkBaseQuestion(int? id)
+        public async Task<PartialViewResult> GetRenkBaseQuestion(int? id, int? rankGroupId)
         {
+            id ??= 0;
             TempData["TrainingId"] = id;
+
+            rankGroupId ??= Convert.ToInt32(HttpContext.Session.GetString("RankGroupId"));
+            ViewBag.TrainingId = id;
+            ViewBag.RankGroupId = rankGroupId;
 
             id = id == null ? 0 : id;
             var endUserRank = apiBaseRankGroupUrl + "/GetRankGroupDropDown";
@@ -139,7 +145,7 @@ namespace Sire.Web.Controllers
             {
                 using HttpClient client = new();
                 var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
-                var endpoint = apiBaseUrl + "/" + id + "/" + userid;
+                var endpoint = $"{apiBaseUrl}/GetSectionListRankBasedQuestions/{rankGroupId}/{id}/{userid}";
 
                 using var Response = await client.GetAsync(endpoint);
                 if (Response.StatusCode == HttpStatusCode.OK)
@@ -150,7 +156,19 @@ namespace Sire.Web.Controllers
                         if (Response.StatusCode == HttpStatusCode.OK)
                         {
                             var RankData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
-                            ViewBag.Rank = RankData;
+                            
+                            var RankGroupListData = new List<SelectListItem>();
+                            foreach (var rankGroup in RankData)
+                            {
+                                RankGroupListData.Add(new SelectListItem()
+                                {
+                                    Text = rankGroup.Value,
+                                    Value = rankGroup.Id.ToString(),
+                                    Selected = rankGroup.Id == rankGroupId
+                                });
+                            }
+                            //ViewBag.RankGroupData = RankGroupListData;
+                            ViewBag.Rank = RankGroupListData;
                         }
                         else
                         {
