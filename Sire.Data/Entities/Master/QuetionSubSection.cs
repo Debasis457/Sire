@@ -8,6 +8,7 @@ namespace Sire.Data.Entities.Master
         [ForeignKey("QuetionSection")]
         public int QuetionSectionId { get; set; }
         public string Name { get; set; }
+        public  int? SectionId{ get; set; }
         public QuetionSection QuetionSection { get; set; }
     }
 }

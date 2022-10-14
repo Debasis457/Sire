@@ -19,8 +19,7 @@
     </div>
     <div class="col-sm-2 pr-4 h-40">
 
-        @Html.DropDownList("Rank_Id", ViewBag.Rank, "Select", new { @class = "form-control select2"})
-
+        @Html.DropDownList("Rank_Id", ViewBag.Rank, null, new { @class = "form-control select2"})
         <input type="hidden" id="hdnTraningId" value="@ViewBag.TrainingId" />
         <input type="hidden" id="hdnRankGroupId" value="@ViewBag.RankGroupId" />
 
@@ -54,7 +53,7 @@
                                         @* <a style="text-decoration:underline; color:blue; cursor:pointer" onclick="GetQuestionBySection(@child.Id)">@child.Name</a> <br />
                                 *@
                                         <div style="    padding: 2px; /*border: 1px solid;*/   margin-bottom: 4px;  border-radius: 5px; cursor:pointer">
-                                            <a onclick="GetRankBasedQuestionBySection(@child.Id)">@child.Name</a>
+                                            <a onclick="GetRankBasedQuestionBySection(@child.QuetionSectionId, @child.SectionId)">@child.Name</a>
                                             <span style="float:right;text-align:center; width: 60px;   border-radius:10px; background: #65adff;color:white;padding: 0px 5px;"> <b>@child.ResTotal / @child.Total</b></span>
                                         </div>
                                     }

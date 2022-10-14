@@ -54,6 +54,27 @@ namespace Sire.Web.Controllers
 
         }
 
+
+        public async Task<IActionResult> OngoingTraining(int id)
+        {
+            var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+            id = userid;
+            using (HttpClient client = new HttpClient())
+            {
+                string endpoint = apiTrainingUrl + "/GetLastTrainingID/" + id;
+                using (var Response = await client.GetAsync(endpoint))
+                {
+                    var data = JsonConvert.DeserializeObject<TrainingDto>(Response.Content.ReadAsStringAsync().Result);
+                    var lastdata= data.Id;
+                    ViewBag.lasttrainingid = lastdata;
+                   
+                    return RedirectToAction("Index", "TrainingQuestion", new { @id = lastdata });
+                }
+            }
+            return View();
+
+        }
+
         public async Task<PartialViewResult> GetTrainingList()
         {
 

@@ -15,6 +15,7 @@
     .taskBody {
         /*border: 1px solid green;*/
         padding: 4px;
+        padding: 4px;
         background-color: #edf7ff;
         border-radius: 5px;
     }
@@ -25,169 +26,180 @@
     }
 </style>
 <div class="tab-pane fade" id="Tasks" role="tabpanel" aria-labelledby="pills-home-tab">
-   @* @using (Html.BeginForm("SaveTask", "TrainingFlow", FormMethod.Post))
+    @* @using (Html.BeginForm("SaveTask", "TrainingFlow", FormMethod.Post))
     {*@
-        <div class="col-sm-12">
-            <div class="card">
-                <div class="card-body">
-                    @if (Model != null)
-                    {
+       
+         <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @Html.Raw(@ViewBag.Alert)
+                        </div>
+                    </div>
+                </div>
+              
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-body">
+                @if (Model != null)
+                {
 
-                        <div class="row">
-                            <div class="col-md-5">
-                                <span class="header">
-                                    Human Tasks
-                                </span>
-                                <hr>
-                                @*Familiar  Procedure*@
-                                @if (!string.IsNullOrEmpty(Model.Familiar1_RG_1) || !string.IsNullOrEmpty(Model.Familiar1_RG_2))
-                                {
-                                    <div>
-                                        <span class="taskHeader row">
-                                            Familliarity 1
+                    <div class="row">
+                        <div class="col-md-5">
+                            <span class="header">
+                                Human Tasks
+                            </span>
+                            <hr>
+                            @*Familiar  Procedure*@
+                            @if (!string.IsNullOrEmpty(Model.Familiar1_RG_1) || !string.IsNullOrEmpty(Model.Familiar1_RG_2))
+                            {
+                                <div>
+                                    <span class="taskHeader row">
+                                        Familliarity 1
+                                    </span>
+                                    <span class="row taskBody mb-1">
+                                        @if (!string.IsNullOrEmpty(Model.Familiar1_RG_1))
+                                        {
+                                            <span class="col-md-12"> Rank Group 1 : @Model.Familiar1_RG_1 </span>
+                                        }
+                                        @if (!string.IsNullOrEmpty(Model.Familiar1_RG_2))
+                                        {
+                                            <span class="col-md-12"> Rank Group 2 : @Model.Familiar1_RG_2  </span>
+                                        }
+                                        <span class="col-md-12">
+                                            @Model.Familiar1_Procedure
                                         </span>
-                                        <span class="row taskBody mb-1">
-                                            @if (!string.IsNullOrEmpty(Model.Familiar1_RG_1))
-                                            {
-                                                <span class="col-md-12"> Rank Group 1 : @Model.Familiar1_RG_1 </span>
-                                            }
-                                            @if (!string.IsNullOrEmpty(Model.Familiar1_RG_2))
-                                            {
-                                                <span class="col-md-12"> Rank Group 2 : @Model.Familiar1_RG_2  </span>
-                                            }
-                                            <span class="col-md-12">
-                                                @Model.Familiar1_Procedure
-                                            </span>
 
+                                    </span>
+                                </div>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.Familiar2_RG_1) || !string.IsNullOrEmpty(Model.Familiar2_RG_2))
+                            {
+                                <div>
+                                    <span class="taskHeader row">
+                                        Familliarity 2
+                                    </span>
+                                    <span class="row taskBody mb-1">
+                                        @if (!string.IsNullOrEmpty(Model.Familiar2_RG_1))
+                                        {
+                                            <span class="col-md-12"> Rank Group 1 : @Model.Familiar2_RG_1 </span>
+                                        }
+                                        @if (!string.IsNullOrEmpty(Model.Familiar2_RG_2))
+                                        {
+                                            <span class="col-md-12"> Rank Group 2 : @Model.Familiar2_RG_2  </span>
+                                        }
+                                        <span class="col-md-12">
+                                            @Model.Familiar2_Procedure
                                         </span>
-                                    </div>
-                                }
-                                @if (!string.IsNullOrEmpty(Model.Familiar2_RG_1) || !string.IsNullOrEmpty(Model.Familiar2_RG_2))
-                                {
-                                    <div>
-                                        <span class="taskHeader row">
-                                            Familliarity 2
+
+                                    </span>
+                                </div>
+                            }
+
+
+
+                            @*Interviewe  Procedure*@
+                            @if (!string.IsNullOrEmpty(Model.Interview1_RG1) || !string.IsNullOrEmpty(Model.Interview1_RG2))
+                            {
+                                <div>
+                                    <span class="taskHeader row">
+                                        Interview 1
+                                    </span>
+                                    <span class="row taskBody mb-1">
+                                        @if (!string.IsNullOrEmpty(Model.Interview1_RG1))
+                                        {
+                                            <span class="col-md-12"> Rank Group 1 : @Model.Interview1_RG1 </span>
+                                        }
+                                        @if (!string.IsNullOrEmpty(Model.Interview1_RG2))
+                                        {
+                                            <span class="col-md-12"> Rank Group 2 : @Model.Interview1_RG2  </span>
+                                        }
+                                        <span class="col-md-12">
+                                            @Model.Interview1_Procedure
                                         </span>
-                                        <span class="row taskBody mb-1">
-                                            @if (!string.IsNullOrEmpty(Model.Familiar2_RG_1))
-                                            {
-                                                <span class="col-md-12"> Rank Group 1 : @Model.Familiar2_RG_1 </span>
-                                            }
-                                            @if (!string.IsNullOrEmpty(Model.Familiar2_RG_2))
-                                            {
-                                                <span class="col-md-12"> Rank Group 2 : @Model.Familiar2_RG_2  </span>
-                                            }
-                                            <span class="col-md-12">
-                                                @Model.Familiar2_Procedure
-                                            </span>
 
+                                    </span>
+                                </div>
+                            }
+
+                            @if (!string.IsNullOrEmpty(Model.Interview2_RG1) || !string.IsNullOrEmpty(Model.Interview2_RG2))
+                            {
+
+                                <div>
+                                    <span class="taskHeader row">
+                                        Interview 2
+                                    </span>
+                                    <span class="row taskBody mb-1">
+                                        @if (!string.IsNullOrEmpty(Model.Interview2_RG1))
+                                        {
+                                            <span class="col-md-12"> Rank Group 1 : @Model.Interview2_RG1 </span>
+                                        }
+                                        @if (!string.IsNullOrEmpty(Model.Interview2_RG2))
+                                        {
+                                            <span class="col-md-12"> Rank Group 2 : @Model.Interview2_RG2  </span>
+                                        }
+                                        <span class="col-md-12">
+                                            @Model.Interview2_Procedure
                                         </span>
-                                    </div>
-                                }
 
-
-
-                                @*Interviewe  Procedure*@
-                                @if (!string.IsNullOrEmpty(Model.Interview1_RG1) || !string.IsNullOrEmpty(Model.Interview1_RG2))
-                                {
-                                    <div>
-                                        <span class="taskHeader row">
-                                            Interview 1
+                                    </span>
+                                </div>
+                            }
+                            @*Demonstrate*@
+                            @if (!string.IsNullOrEmpty(Model.Demonstrate1_RG1) || !string.IsNullOrEmpty(Model.Demonstrate1_RG2))
+                            {
+                                <div>
+                                    <span class="taskHeader row">
+                                        Demonstrate 1
+                                    </span>
+                                    <span class="row taskBody mb-1">
+                                        @if (!string.IsNullOrEmpty(Model.Demonstrate1_RG1))
+                                        {
+                                            <span class="col-md-12"> Rank Group 1 : @Model.Demonstrate1_RG1 </span>
+                                        }
+                                        @if (!string.IsNullOrEmpty(Model.Demonstrate1_RG2))
+                                        {
+                                            <span class="col-md-12"> Rank Group 2 : @Model.Demonstrate1_RG2  </span>
+                                        }
+                                        <span class="col-md-12">
+                                            @Model.Demonstrate1_Procedure
                                         </span>
-                                        <span class="row taskBody mb-1">
-                                            @if (!string.IsNullOrEmpty(Model.Interview1_RG1))
-                                            {
-                                                <span class="col-md-12"> Rank Group 1 : @Model.Interview1_RG1 </span>
-                                            }
-                                            @if (!string.IsNullOrEmpty(Model.Interview1_RG2))
-                                            {
-                                                <span class="col-md-12"> Rank Group 2 : @Model.Interview1_RG2  </span>
-                                            }
-                                            <span class="col-md-12">
-                                                @Model.Interview1_Procedure
-                                            </span>
 
-                                        </span>
-                                    </div>
-                                }
+                                    </span>
+                                </div>
+                            }
 
-                                @if (!string.IsNullOrEmpty(Model.Interview2_RG1) || !string.IsNullOrEmpty(Model.Interview2_RG2))
-                                {
+                            @if (!string.IsNullOrEmpty(Model.Demonstrate2_RG1) || !string.IsNullOrEmpty(Model.Demonstrate2_RG2))
+                            {
+                                <div>
+                                    <span class="taskHeader row">
+                                        Demonstrate 2
+                                    </span>
+                                    <span class="row taskBody mb-1">
+                                        @if (!string.IsNullOrEmpty(Model.Demonstrate2_RG1))
+                                        {
+                                            <span class="col-md-12"> Rank Group 1 : @Model.Demonstrate2_RG1 </span>
+                                        }
+                                        @if (!string.IsNullOrEmpty(Model.Demonstrate2_RG2))
+                                        {
+                                            <span class="col-md-12"> Rank Group 2 : @Model.Demonstrate2_RG2  </span>
+                                        }
+                                        <span class="col-md-12">
+                                            @Model.Demonstrate2_Procedure
+                                        </span>
 
-                                    <div>
-                                        <span class="taskHeader row">
-                                            Interview 2
-                                        </span>
-                                        <span class="row taskBody mb-1">
-                                            @if (!string.IsNullOrEmpty(Model.Interview2_RG1))
-                                            {
-                                                <span class="col-md-12"> Rank Group 1 : @Model.Interview2_RG1 </span>
-                                            }
-                                            @if (!string.IsNullOrEmpty(Model.Interview2_RG2))
-                                            {
-                                                <span class="col-md-12"> Rank Group 2 : @Model.Interview2_RG2  </span>
-                                            }
-                                            <span class="col-md-12">
-                                                @Model.Interview2_Procedure
-                                            </span>
-
-                                        </span>
-                                    </div>
-                                }
-                                @*Demonstrate*@
-                                @if (!string.IsNullOrEmpty(Model.Demonstrate1_RG1) || !string.IsNullOrEmpty(Model.Demonstrate1_RG2))
-                                {
-                                    <div>
-                                        <span class="taskHeader row">
-                                            Demonstrate 1
-                                        </span>
-                                        <span class="row taskBody mb-1">
-                                            @if (!string.IsNullOrEmpty(Model.Demonstrate1_RG1))
-                                            {
-                                                <span class="col-md-12"> Rank Group 1 : @Model.Demonstrate1_RG1 </span>
-                                            }
-                                            @if (!string.IsNullOrEmpty(Model.Demonstrate1_RG2))
-                                            {
-                                                <span class="col-md-12"> Rank Group 2 : @Model.Demonstrate1_RG2  </span>
-                                            }
-                                            <span class="col-md-12">
-                                                @Model.Demonstrate1_Procedure
-                                            </span>
-
-                                        </span>
-                                    </div>
-                                }
-
-                                @if (!string.IsNullOrEmpty(Model.Demonstrate2_RG1) || !string.IsNullOrEmpty(Model.Demonstrate2_RG2))
-                                {
-                                    <div>
-                                        <span class="taskHeader row">
-                                            Demonstrate 2
-                                        </span>
-                                        <span class="row taskBody mb-1">
-                                            @if (!string.IsNullOrEmpty(Model.Demonstrate2_RG1))
-                                            {
-                                                <span class="col-md-12"> Rank Group 1 : @Model.Demonstrate2_RG1 </span>
-                                            }
-                                            @if (!string.IsNullOrEmpty(Model.Demonstrate2_RG2))
-                                            {
-                                                <span class="col-md-12"> Rank Group 2 : @Model.Demonstrate2_RG2  </span>
-                                            }
-                                            <span class="col-md-12">
-                                                @Model.Demonstrate2_Procedure
-                                            </span>
-
-                                        </span>
-                                    </div>
-                                }
-                            </div>
-                            <div class="col-md-1">
-                            </div>
-                            <div class="col-md-5">
-                                <span class="header">
-                                    Process Tasks
-                                </span>
-                                <hr>
+                                    </span>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-md-1">
+                        </div>
+                        <div class="col-md-5">
+                            <span class="header">
+                                Process Tasks
+                            </span>
+                            <hr>
+                            @if (!string.IsNullOrEmpty(@Model.Manuals_Plans_Procedures))
+                            {
                                 <div>
                                     <span class="taskHeader row">
                                         Manuals/Plans
@@ -199,17 +211,23 @@
 
                                     </span>
                                 </div>
-                                <div>
-                                    <span class="taskHeader row">
-                                        Certificate/Checklists/ Records
+                            }
+                            @if (!string.IsNullOrEmpty(@Model.Certificates_Checklists_Records))
+                            {
+                            <div>
+                                <span class="taskHeader row">
+                                    Certificate/Checklists/ Records
+                                </span>
+                                <span class="row taskBody mb-1">
+                                    <span class="col-md-12">
+                                        @Model.Certificates_Checklists_Records
                                     </span>
-                                    <span class="row taskBody mb-1">
-                                        <span class="col-md-12">
-                                            @Model.Certificates_Checklists_Records
-                                        </span>
 
-                                    </span>
-                                </div>
+                                </span>
+                            </div>
+                            }
+                            @if (!string.IsNullOrEmpty(@Model.LogBooks_Entries))
+                            {
                                 <div>
                                     <span class="taskHeader row">
                                         Log Book /Entires
@@ -220,21 +238,22 @@
                                         </span>
                                     </span>
                                 </div>
-                            </div>
+                            }
                         </div>
-                    }
-                </div>
+                    </div>
+                }
             </div>
-            @if (Model?.IsResponse == true)
-            {
-                <span style="color: red; font-size:16px">You have already attend this quetions...</span>
-
-            }
-            else
-            {
-            <button type="button" onclick="SaveTask('@TempData["QuestionId"]')" id="taskButton" class="btn btn-success"><span class="fa fa-check"></span></button>
-            }
-
         </div>
-   @* }*@
+        @if (Model?.IsResponse == true)
+        {
+            <button type="button" disabled id="taskButton" class="btn btn-success"><span class="fa fa-check"></span></button>
+
+        }
+        else
+        {
+            <button type="button" onclick="SaveTask('@TempData["QuestionId"]')" id="taskButton" class="btn btn-primary"><span class="fa fa-check"></span></button>
+        }
+
+    </div>
+    @* }*@
 </div>

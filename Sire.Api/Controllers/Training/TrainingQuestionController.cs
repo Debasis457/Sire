@@ -92,16 +92,18 @@ namespace Sire.Api.Controllers.Training
             var testsDto = _mapper.Map<IEnumerable<QuetionSectionDto>>(tests);
             foreach (var item in testsDto)
             {
-                var count = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == item.Id)
-                             join sub in _uow.Context.QuetionSubSection on sec.Id equals sub.QuetionSectionId
-                             join que in _uow.Context.Question on sub.Id equals que.Section
-                             select new
-                             {
-                                 que.Id
+                //var count = (from sec in _uow.Context.QuetionSection
+                //             join sub in _uow.Context.QuetionSubSection.Where(x => x.QuetionSectionId == item.Id) on sec.Id equals sub.QuetionSectionId
+                //             join que in _uow.Context.Question on sub.Id equals que.Section
+                //             select new
+                //             {
+                //                 que.Id
 
-                             }).ToList().Count;
+                //             }).ToList().Count;
+
+                var count =  _uow.Context.QuetionSubSection.Where(x => x.QuetionSectionId == item.Id).ToList().Count;
                 var responseCount = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == item.Id)
-                                     join sub in _uow.Context.QuetionSubSection on sec.Id equals sub.QuetionSectionId
+                                     join sub in _uow.Context.QuetionSubSection.Where(x => x.QuetionSectionId == item.Id) on sec.Id equals sub.QuetionSectionId
                                      join que in _uow.Context.Question on sub.Id equals que.Section
                                      join res in _uow.Context.TraningResponse.Where(x => x.Training_Id == traningid && x.Trainee_Id == userid) on que.Id equals res.Question_Id
                                      select new
@@ -112,15 +114,7 @@ namespace Sire.Api.Controllers.Training
 
                 foreach (var subb in item.QuetionSubSection)
                 {
-                    subb.Total = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == item.Id)
-                                  join sub in _uow.Context.QuetionSubSection.Where(x => x.Id == subb.Id) on sec.Id equals sub.QuetionSectionId
-                                  join que in _uow.Context.Question on sub.Id equals que.Section
-                                  select new
-                                  {
-                                      que.Id
-
-                                  }).ToList().Count;
-
+                    subb.Total =  _uow.Context.Question.Where(x => x.Chapter == subb.QuetionSectionId && x.Section == subb.SectionId).ToList().Count;
                     subb.ResTotal = (from sec in _uow.Context.QuetionSection.Where(x => x.Id == item.Id)
                                      join sub in _uow.Context.QuetionSubSection.Where(x => x.Id == subb.Id) on sec.Id equals sub.QuetionSectionId
                                      join que in _uow.Context.Question on sub.Id equals que.Section
@@ -198,17 +192,17 @@ namespace Sire.Api.Controllers.Training
         }
 
         [AllowAnonymous]
-        [HttpGet("GetRankBasedQuestionsBySection/{sectionId}/{rankGroupId}/{trainingId}/{userId}")]
-        public IActionResult GetRankBasedQuestionsBySection(int sectionId, int rankGroupId, int trainingId, int userId)
+        [HttpGet("GetRankBasedQuestionsBySection/{sectionId}/{rankGroupId}/{trainingId}/{userId}/{chepter}")]
+        public IActionResult GetRankBasedQuestionsBySection(int sectionId, int rankGroupId, int trainingId, int userId, int? chepter)
         {
             var questionDtos = new List<QuestionDto>();
 
-            var rankBasedQuestionIds = (from quetion in _uow.Context.Question.Where(x => x.Section == sectionId && x.Rank_Group_Id == rankGroupId)
-                                      select new
-                                      {
-                                          Id = quetion.Id
+            var rankBasedQuestionIds = (from quetion in _uow.Context.Question.Where(x => x.Chapter == chepter && x.Section == sectionId && x.Rank_Group_Id == rankGroupId)
+                                        select new
+                                        {
+                                            Id = quetion.Id
 
-                                      }).ToList();
+                                        }).ToList();
 
             questionDtos = _mapper.Map<IEnumerable<QuestionDto>>(_questionRepository.FindByInclude(x => rankBasedQuestionIds.Select(y => y.Id).Contains(x.Id))).ToList();
 
@@ -302,8 +296,8 @@ namespace Sire.Api.Controllers.Training
         }
 
         [AllowAnonymous]
-        [HttpGet("GetApplicationQuestionsBySection/{sectionId}/{assessorId}/{reviewerId}/{trainingId}/{vesselId}/{userId}")]
-        public IActionResult GetApplicationQuestionsBySection(int sectionId, int assessorId, int reviewerId, int trainingId, int vesselId, int userId)
+        [HttpGet("GetApplicationQuestionsBySection/{sectionId}/{assessorId}/{reviewerId}/{trainingId}/{vesselId}/{userId}/{chepter}")]
+        public IActionResult GetApplicationQuestionsBySection(int sectionId, int assessorId, int reviewerId, int trainingId, int vesselId, int userId, int? chepter)
         {
             var questionDtos = new List<QuestionDto>();
             //var assRevQuestionsData = (from quetion in _uow.Context.Question.Where(x => x.Section == sectionId && x.DAssessore == assessorId && x.DReviewer == reviewerId)
@@ -340,7 +334,7 @@ namespace Sire.Api.Controllers.Training
 
                                        }).ToList();
 
-            var piqHvpqQuestionsData = (from quetion in _uow.Context.Question.Where(x => x.Section == sectionId)
+            var piqHvpqQuestionsData = (from quetion in _uow.Context.Question.Where(x => x.Chapter == chepter &&  x.Section == sectionId)
                                         join piqque in _uow.Context.Piq_Hvpq_Filter_Quetions.Where(x => x.VesselId == vesselId) on quetion.Id equals piqque.QuestionId
                                         select new
                                         {

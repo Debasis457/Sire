@@ -143,7 +143,16 @@
                                         <td>@totalQuestions</td>
                                         <td>@assesmentCompleted</td>
                                         <td>@reviewCompleted</td>
-                                        <td>@status</td>
+                                        <td> @if(status=="In Progress")
+                                            {  <span class="badge bg-warning rounded-pill">@status</span>}
+                                            else 
+                                            @if(status=="Completed")
+                                           
+                                               {  <span class="badge bg-success rounded-pill">@status</span>}
+                                               else
+                                               @if(status=="Not Started")
+                                           
+                                               {  <span class="badge bg-danger rounded-pill">@status</span>}</td>
                                     </tr>
                                 }
                             </tbody>

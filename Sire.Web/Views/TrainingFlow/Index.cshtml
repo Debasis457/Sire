@@ -32,24 +32,36 @@
 }
 
 
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    @Html.Raw(@ViewBag.Alert)
+                </div>
+            </div>
+        </div>
+
 
 <div class="col-md-12">
     <div class="card m-b-0">
         <br />
-    <!-- End Navigation Fixed Bar-->
-    <div class="col-sm-12">
+        <!-- End Navigation Fixed Bar-->
+        <div class="col-sm-12">
 
             @Model.Chapter.@Model.Section.@Model.Question_Number.@Model.Questions
-       
-    </div>
-    <br />
-      <div class="col-sm-12">
-       </div>
+
+        </div>
+        <br />
+        <div class="col-sm-12">
+        </div>
     </div>
 </div>
-
-   <input type="hidden" id="hdnQuestionId" value="@Model.Id" > 
-          <input type="hidden" id="hdnTraningId" value="@ViewBag.TrainingId" />
+<div class="row mt-1">
+    <div class="col-md-12">
+        <a class="ml-4 btn btn-primary" asp-controller="TrainingQuestion" asp-action="Index"  asp-route-id="@ViewBag.TrainingId">Back To All Quetions</a>
+    </div>
+</div>
+<input type="hidden" id="hdnQuestionId" value="@Model.Id">
+<input type="hidden" id="hdnTraningId" value="@ViewBag.TrainingId" />
 <div class="col-md-12 mt-2">
     <div class="card m-b-0">
         <div class="card-header sub-head-tit">
@@ -71,6 +83,7 @@
         </div>
         <div class="card-body p-0  pb-5" id="card5_b">
             <div class="tab-content" id="pills-tabContent">
+
                 <div class="tab-pane fade show active" id="CheckList" role="tabpanel" aria-labelledby="pills-home-tab">
                 </div>
                 <div class="tab-pane fade" id="Tasks" role="tabpanel" aria-labelledby="pills-home-tab">
@@ -83,10 +96,12 @@
         </div>
     </div>
     <div class="card m-b-0">
+
+
+
+
         <div class="card-body head-tit">
-        <div class="col-sm-4">
-             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-1">
                 @if (previousButtonDisable == "disabled")
                 {
                     <a class="btn  btn-primary" id="previous" disabled>&laquo; Previous</a>

@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
     $("#Operator_Id").change(function () {
-     
+
         $("#Vessel_Id").empty();
         debugger;
         $.ajax({
@@ -24,7 +24,7 @@
                         $("#Vessel_Id").append('<option value="' + items.id + '" data-Id="' + k + '">' + items.name + '</option>');
                     });
 
-               }
+                }
 
             },
             error: function (ex) {
@@ -35,12 +35,12 @@
     });
 });
 
-function GetQuestionBySection(id) {
+function GetQuestionBySection(chepter,id) {
     debugger
     var traningId = $("#hdnTraningId").val();
     $.ajax({
         type: "GET",
-        url: "/Training/GetQuestionBySection?id=" + id + "&traningId=" + traningId,
+        url: "/Training/GetQuestionBySection?id=" + id + "&traningId=" + traningId + "&chepter=" + chepter,
 
         success: function (r) {
             $(".bindPartialQuetion").html(r);
@@ -48,13 +48,13 @@ function GetQuestionBySection(id) {
     });
 }
 
-function GetRankBasedQuestionBySection(id) {
+function GetRankBasedQuestionBySection(chepter , id) {
     debugger
     var trainingId = $("#hdnTraningId").val();
     var rankGroupId = $("#hdnRankGroupId").val();
     $.ajax({
         type: "GET",
-        url: "/Training/GetRankBasedQuestionsBySection?id=" + id + "&rankGroupId=" + rankGroupId + "&trainingId=" + trainingId,
+        url: "/Training/GetRankBasedQuestionsBySection?id=" + id + "&rankGroupId=" + rankGroupId + "&trainingId=" + trainingId + "&chepter=" + chepter ,
 
         success: function (r) {
             $(".bindPartialQuetion").html(r);
@@ -62,12 +62,12 @@ function GetRankBasedQuestionBySection(id) {
     });
 }
 
-function GetApplicableQuestionBySection(id) {
+function GetApplicableQuestionBySection(chepter, id) {
     debugger
     var traningId = $("#hdnTraningId").val();
     $.ajax({
         type: "GET",
-        url: "/Training/GetApplicableQuestionBySection?id=" + id + "&traningId=" + traningId,
+        url: "/Training/GetApplicableQuestionBySection?id=" + id + "&traningId=" + traningId + "&chepter=" + chepter,
 
         success: function (r) {
             $(".bindApplicableQuetion").html(r);

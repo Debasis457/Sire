@@ -85,10 +85,10 @@ namespace Sire.Api.Controllers.Question
         }
 
         [AllowAnonymous]
-        [HttpGet("GetQuestionBySection/{id}")]
-        public IActionResult GetQuestionBySection(int? id)
+        [HttpGet("GetQuestionBySection/{id}/{chepter}")]
+        public IActionResult GetQuestionBySection(int? id, int? chepter)
         {
-            var questions = _questionRepository.FindBy(x => x.Section == id).OrderByDescending(x => x.Id).ToList();
+            var questions = _questionRepository.FindBy(x =>  x.Chapter == chepter && x.Section == id).OrderByDescending(x => x.Id).ToList();
             var questionsDto = _mapper.Map<IEnumerable<QuestionDto>>(questions);
 
             return Ok(questionsDto);

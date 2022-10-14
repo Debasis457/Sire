@@ -3,17 +3,23 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
     int n = 1;
-  
+
 }
 
-
+<style>
+    .disabled {
+        pointer-events: none;
+        //This makes it not clickable opacity:0.6;
+        //This grays it out to look disabled
+    }
+</style>
 
 <script src="~/assets/lib/jquery/jquery-3.3.1.min.js"></script>
 <script src="~/js/pagescript/training.js"></script>
 @*<script src="~/js/pagescript/clock.js"></script>*@
 
 <form asp-action="Index" asp-controller="Training">
-@*    <form>*@
+    @*    <form>*@
     <div class="row fix-head">
         <div class="col-md-12">
 
@@ -25,31 +31,38 @@
                     </div>
                     <div class="col-sm-1 pr-4 h-40">
                         <input type="hidden" id="hdnTraningId" value="@ViewBag.TrainingId" />
-                         <input type="hidden" id="hdnOperatorId" value="@ViewBag.OperatorId" />
+                        <input type="hidden" id="hdnOperatorId" value="@ViewBag.OperatorId" />
                         <div id="timer">
                             <span class="hours">00</span>:<span class="minutes">00</span>:<span class="seconds">00</span>
                         </div>
-                       </div>
-                      @*  <div class="col-sm-3 pr-4 h-40">
-                            <button class="btn btn-primary btn-sm" id="resume-timer">Resume Timer</button>
-                        <button class="btn btn-primary btn-sm" id="stop-timer">Stop Timer</button>
-                        <button class="btn btn-primary btn-sm" id="reset-timer">Reset Timer</button>
-                       </div>*@
-                        <div class="input-wrapper">
-                            <span id="num" class="form-control hidden" min="0"></span>
-                        <button type="submit" id="start-cronometer" class="btn btn-primary float-right">Start Training</button>
-                       @*<a href="" data-toggle="modal" data-target="#myCheckListHintModal" data-backdrop="false"><img atl="me" src="/Images/Hint.png" /></a><lable for="Hint"> Hint goes here</lable>*@
+                    </div>
+                    @*  <div class="col-sm-3 pr-4 h-40">
+                    <button class="btn btn-primary btn-sm" id="resume-timer">Resume Timer</button>
+                    <button class="btn btn-primary btn-sm" id="stop-timer">Stop Timer</button>
+                    <button class="btn btn-primary btn-sm" id="reset-timer">Reset Timer</button>
+                    </div>*@
+                    <div class="input-wrapper">
+                        <span id="num" class="form-control hidden" min="0"></span>
+                        @if (ViewBag.TrainingId == null || ViewBag.TrainingId == 0)
+                        {
+                            <button type="submit" id="start-cronometer" class="btn btn-primary float-right">Start Training</button>
+                        }
+                        else
+                        {
+                            <label style="color:green; font-weight:600; font-size:medium; float:right">Traning Started</label>
+                        }
+                        @*<a href="" data-toggle="modal" data-target="#myCheckListHintModal" data-backdrop="false"><img atl="me" src="/Images/Hint.png" /></a><lable for="Hint"> Hint goes here</lable>*@
                     </div>
 
-                        @*
-                            9
-                        <div class="col-sm-7 pt-2 input-wrapper">
-                        <span id="num" class="form-control" min="0"></span>
-                        <button type="submit" id="start-cronometer" class="btn btn-primary float-right">Start Training</button>
-                        </div>
-                        <div id="timer" class="col-sm-7 pt-2">
-                        <span class="hours">00</span>:<span class="minutes">00</span>:<span class="seconds">00</span>
-                        </div>*@
+                    @*
+                    9
+                    <div class="col-sm-7 pt-2 input-wrapper">
+                    <span id="num" class="form-control" min="0"></span>
+                    <button type="submit" id="start-cronometer" class="btn btn-primary float-right">Start Training</button>
+                    </div>
+                    <div id="timer" class="col-sm-7 pt-2">
+                    <span class="hours">00</span>:<span class="minutes">00</span>:<span class="seconds">00</span>
+                    </div>*@
 
                 </div>
             </div>
@@ -66,15 +79,43 @@
         <br />
         <div class="card-header sub-head-tit">
             <ul class="nav nav-pills nav-fill mt-3 border-bottom pb-3" id="pills-tab" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#QueLibrary" role="tab" aria-controls="pills-home" aria-selected="true" onfocus="GetQuestion(@ViewBag.TrainingId)">Question Library</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#ApplicableQue" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="GetApplicableQuestions(@ViewBag.TrainingId)">Applicable Questions</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#RankBaseQue" role="tab" aria-controls="pills-contact" aria-selected="false" onclick="GetRenkBaseQuestion()">Rank Base Questions</a>
-                </li>
+                @if (ViewBag.TrainingId == null || ViewBag.TrainingId == 0)
+                {
+                    <li class="nav-item aaa ">
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#QueLibrary" role="tab" aria-controls="pills-home" aria-selected="true" onfocus="GetQuestion(@ViewBag.TrainingId)">Question Library</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item" style="cursor:not-allowed">
+                        <a class="nav-link" id="pills-home-tab" data-toggle="pill" href="#QueLibrary" role="tab" aria-controls="pills-home" aria-selected="true" onfocus="GetQuestion(@ViewBag.TrainingId)">Question Library</a>
+                    </li>
+                }
+
+                @if (ViewBag.TrainingId == null || ViewBag.TrainingId == 0)
+                {
+                    <li class="nav-item disabled">
+                        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#ApplicableQue" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="GetApplicableQuestions(@ViewBag.TrainingId)">Applicable Questions</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a class="nav-link active" id="pills-profile-tab" data-toggle="pill" href="#ApplicableQue" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="GetApplicableQuestions(@ViewBag.TrainingId)">Applicable Questions</a>
+                    </li>
+                }
+                @if (ViewBag.TrainingId == null || ViewBag.TrainingId == 0)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link " id="pills-contact-tab" data-toggle="pill" href="#RankBaseQue" role="tab" aria-controls="pills-contact" aria-selected="false" onclick="GetRenkBaseQuestion()">Rank Base Questions</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#RankBaseQue" role="tab" aria-controls="pills-contact" aria-selected="false" onclick="GetRenkBaseQuestion()">Rank Base Questions</a>
+                    </li>
+                }
                 <li class="nav-item">
                     <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#CIVQ" role="tab" aria-controls="pills-contact" aria-selected="false" onclick="GetCIVQquestion()">Predicated CIVQ</a>
                 </li>

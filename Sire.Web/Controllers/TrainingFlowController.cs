@@ -18,7 +18,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Net.WebRequestMethods;
-
+using static Sire.Common.CommonServices;
+using Sire.Common;
 
 namespace Sire.Web.Controllers
 {
@@ -140,7 +141,17 @@ namespace Sire.Web.Controllers
                         //if (result.Length > 2)
                         //{
                         var data = JsonConvert.DeserializeObject<Training_TaskDto>(result);
+                    if (data.IsResponse == null)
+                    {
+                        
                         return PartialView("Tasks", data);
+                    }
+                    else
+                    {
+                        ViewBag.Alert = CommonServices.ShowAlert(Alerts.Success, "Task Saved Successfully");
+                        return PartialView("Tasks", data);
+                    }
+                   
                         //}
                     }
                     else
@@ -191,7 +202,10 @@ namespace Sire.Web.Controllers
                 using var Response = await client.PostAsync(apiBaseTrainingResponseUrl, content);
                 if (Response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
+                    
                     return Json(true);
+
+                   
                 }
                 else
                 {

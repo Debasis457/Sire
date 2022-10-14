@@ -2,14 +2,14 @@
 
 $(document).ready(function () {
    
-   /* GetTrainingList();*/
+    GetTrainingList();
 });
 
 function GetTrainingList() {
-    debugger;
-    $("#TrainingStatus").empty();
+  /*  debugger;*/
+   /* $("#TrainingStatus").empty();*/
     $("#TrainingStatus").load("/VesselDetails/GetTrainingList/", function () {
-        
+       
     });
 
 }

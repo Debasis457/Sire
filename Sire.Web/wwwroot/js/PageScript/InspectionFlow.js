@@ -1,6 +1,9 @@
 ﻿var Question = [];
 var QuestionResult = [];
 
+$(document).ready(function () {
+    GetQueCheckList($("#hdnInsQuestionId").val());
+})
 function GetQueCheckList(Id) {
     debugger;
     $("#InspCheckList").empty();

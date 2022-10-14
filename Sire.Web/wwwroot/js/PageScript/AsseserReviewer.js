@@ -70,7 +70,7 @@ $("#btnSubmitRew").click(function () {
     }
     if ($(".quetionlist").is(':checked')) {
         var CheckedList = [];
-       
+
         $("#ASSREWDetailsBody input[type=checkbox]:checked").each(function () {
             var ass = $("#AssesorId option:selected").val() == "" || $("#AssesorId option:selected").val() == null ? 0 : $("#AssesorId option:selected").val();
             var rew = $("#ReviewerId option:selected").val() == "" || $("#ReviewerId option:selected").val() == null ? 0 : $("#ReviewerId option:selected").val();
@@ -180,7 +180,7 @@ function GetQuestionBySectionWithDisplayFlag(id) {
     $.ajax({
         type: "GET",
         url: "/Inspection/GetQuestionBySection/" + id,
-        data: {displayFlag:1},
+        data: { displayFlag: 1 },
         success: function (r) {
             $(".bindPartialQuetion").html(r);
         }

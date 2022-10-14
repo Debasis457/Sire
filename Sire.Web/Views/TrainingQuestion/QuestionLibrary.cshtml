@@ -34,7 +34,7 @@
                                             @* <a style="text-decoration:underline; color:blue; cursor:pointer" onclick="GetQuestionBySection(@child.Id)">@child.Name</a> <br />
                                     *@
                                             <div style="    padding: 2px; /*border: 1px solid;*/   margin-bottom: 4px;  border-radius: 5px; cursor:pointer">
-                                                <a onclick="GetQuestionBySection(@child.Id)">@child.Name</a>
+                                                <a onclick="GetQuestionBySection(@child.QuetionSectionId, @child.SectionId)">@child.Name</a>
                                                 <span style="float:right;text-align:center; width: 60px;   border-radius:10px; background: #65adff;color:white;padding: 0px 5px;"> <b>@child.ResTotal / @child.Total</b></span>
                                             </div>
                                         }

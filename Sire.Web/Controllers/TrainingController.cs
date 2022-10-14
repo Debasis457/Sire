@@ -159,7 +159,7 @@ namespace Sire.Web.Controllers
             /* trainingDto.Operator_id = trainingDto.Id;
              trainingDto.Id = 0;*/
             var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
-            trainingDto.Operator_id  = userid;
+            trainingDto.Operator_id = userid;
             var vesselid = Convert.ToInt32(HttpContext.Session.GetString("VesselId"));
             trainingDto.Vessel_Id = vesselid;
             try
@@ -224,11 +224,11 @@ namespace Sire.Web.Controllers
             }
         }
 
-        public async Task<PartialViewResult> GetQuestionBySection(int? id, int? traningId)
+        public async Task<PartialViewResult> GetQuestionBySection(int? id, int? traningId, int? chepter)
         {
             var trainingNumber = traningId;
             var traineeId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
-            var endquestion = apiBaseQuestionUrl + "/GetQuestionBySection/" + id;
+            var endquestion = $"{apiBaseQuestionUrl}/GetQuestionBySection/{id}/{chepter}";
             var taskSubmittedDataUrl = apiBaseTrainingResponseUrl + "/GetTriningResponseByTraning/" + trainingNumber;
             ViewBag.TrainingId = traningId;
             QuestionTrainingModel taskModel = new()
@@ -273,14 +273,14 @@ namespace Sire.Web.Controllers
             return PartialView("_TrainingQuestion", taskModel);
         }
 
-        public async Task<PartialViewResult> GetApplicableQuestionBySection(int? id, int? trainingId)
+        public async Task<PartialViewResult> GetApplicableQuestionBySection(int? id, int? trainingId, int? chepter)
         {
             var traningId = trainingId ??= 0;
             var traineeId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
             var assessorId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
             var reviewerId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
             var vesselId = Convert.ToInt32(HttpContext.Session.GetString("VesselId"));
-            var endquestion = $"{apiBaseTrainingQuestionUrl}/GetApplicationQuestionsBySection/{id}/{assessorId}/{reviewerId}/{traningId}/{vesselId}/{traineeId}";
+            var endquestion = $"{apiBaseTrainingQuestionUrl}/GetApplicationQuestionsBySection/{id}/{assessorId}/{reviewerId}/{traningId}/{vesselId}/{traineeId}/{chepter}";
             var taskSubmittedDataUrl = apiBaseTrainingResponseUrl + "/GetTriningResponseByTraning/" + traningId;
 
             ViewBag.TrainingId = trainingId;
@@ -323,10 +323,10 @@ namespace Sire.Web.Controllers
             return PartialView("_TrainingQuestion", taskModel);
         }
 
-        public async Task<PartialViewResult> GetRankBasedQuestionsBySection(int? id, int? rankGroupId, int? trainingId)
+        public async Task<PartialViewResult> GetRankBasedQuestionsBySection(int? id, int? rankGroupId, int? trainingId, int? chepter)
         {
             var userId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
-            var endquestion = $"{apiBaseTrainingQuestionUrl}/GetRankBasedQuestionsBySection/{id}/{rankGroupId}/{trainingId}/{userId}";
+            var endquestion = $"{apiBaseTrainingQuestionUrl}/GetRankBasedQuestionsBySection/{id}/{rankGroupId}/{trainingId}/{userId}/{chepter}";
             var taskSubmittedDataUrl = apiBaseTrainingResponseUrl + "/GetTriningResponseByTraning/" + trainingId;
 
             ViewBag.TrainingId = trainingId;

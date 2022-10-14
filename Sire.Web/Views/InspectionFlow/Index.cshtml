@@ -1,5 +1,7 @@
 ﻿@model InspectionQuestionDtoModel
 @{
+    int i = 1;
+
     ViewBag.Title = "InspectionFlow";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
 }
@@ -17,8 +19,8 @@
         nextQuestionId = currentQuestionIndex == splitQuestionsIds.Count - 1 ? currentQuestionIndex : splitQuestionsIds[currentQuestionIndex + 1];
 
     var previousQuestionId = -1;
-    if (currentQuestionIndex < splitQuestionsIds.Count)
-        previousQuestionId = currentQuestionIndex == 0 ? 0 : splitQuestionsIds[currentQuestionIndex - 1];
+    if (currentQuestionIndex < splitQuestionsIds.Count && currentQuestionIndex > 0)
+        previousQuestionId = splitQuestionsIds[currentQuestionIndex - 1];
 
     var nextButtonDisable = nextQuestionId == -1 || currentQuestionIndex == splitQuestionsIds.Count - 1 ? "disabled" : "";
 

@@ -294,27 +294,27 @@ namespace Sire.Api.Controllers.ShipManagement
                         {
                             //foreach (var que in QuetionsList)
                             //{
-                                var ActualResponse = piqhvpq.Response;
-                                var UserResponse = HVPQResponseDto.Where(x => x.Piq_Hvpq_Id == piqhvpq.PIQHVPQCode).FirstOrDefault().Response;
-                                if (ActualResponse == UserResponse)
-                                {
-                                    PIQType = true;
-                                }
+                            var ActualResponse = piqhvpq.Response;
+                            var UserResponse = HVPQResponseDto.Where(x => x.Piq_Hvpq_Id == piqhvpq.PIQHVPQCode).FirstOrDefault().Response;
+                            if (ActualResponse == UserResponse)
+                            {
+                                PIQType = true;
+                            }
                             //}
                         }
                         else if (piqhvpq.Type == "HVPQ")
                         {
                             //foreach (var que in QuetionsList)
                             //{
-                                var ActualResponse = piqhvpq.Response;
-                                var UserResponse = HVPQResponseDto.Where(x => x.Piq_Hvpq_Id == piqhvpq.PIQHVPQCode).FirstOrDefault().Response;
-                                if (ActualResponse == UserResponse)
-                                {
-                                    HVPQType = true;
-                                }
+                            var ActualResponse = piqhvpq.Response;
+                            var UserResponse = HVPQResponseDto.Where(x => x.Piq_Hvpq_Id == piqhvpq.PIQHVPQCode).FirstOrDefault().Response;
+                            if (ActualResponse == UserResponse)
+                            {
+                                HVPQType = true;
+                            }
                             //}
                         }
-                        
+
                     }
                     if (PIQType && HVPQType)
                     {
@@ -330,18 +330,18 @@ namespace Sire.Api.Controllers.ShipManagement
                     }
                 }
             }
-            if(FilterQuestionList.Count > 0)
+            if (FilterQuestionList.Count > 0)
             {
                 foreach (var que in FilterQuestionList.Distinct())
                 {
-                     Piq_Hvpq_Filter_Quetions aa = new Piq_Hvpq_Filter_Quetions();
-                     aa.VesselId = vesselid;
-                     aa.QuestionId = que;
-                     _uow.Context.Piq_Hvpq_Filter_Quetions.Add(aa);
-                     _uow.Save();
+                    Piq_Hvpq_Filter_Quetions aa = new Piq_Hvpq_Filter_Quetions();
+                    aa.VesselId = vesselid;
+                    aa.QuestionId = que;
+                    _uow.Context.Piq_Hvpq_Filter_Quetions.Add(aa);
+                    _uow.Save();
                 }
             }
-          
+
             #endregion
             return Ok(0);
         }

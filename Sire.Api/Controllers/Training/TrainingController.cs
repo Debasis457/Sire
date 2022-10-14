@@ -73,7 +73,23 @@ namespace Sire.Api.Controllers.Training
             return Ok(Diff);
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("GetLastTrainingID/{id}")]
+        public IActionResult GetLastTrainingID(int id)
+        {
+            var LastId = (from training in _uow.Context.Training.Where(x => x.Operator_id == id)
+                                 select new TrainingDto
+                                 {
+                                     Id = training.Id,
+                                 }
 
+
+                                 ).LastOrDefault();
+
+            
+            return Ok(LastId);
+        }
 
         [AllowAnonymous]
         [HttpGet("GetStatus/{id}")]
