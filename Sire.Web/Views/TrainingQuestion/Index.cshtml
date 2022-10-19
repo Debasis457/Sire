@@ -18,7 +18,7 @@
 <script src="~/js/pagescript/training.js"></script>
 @*<script src="~/js/pagescript/clock.js"></script>*@
 
-<form asp-action="Index" asp-controller="Training">
+<form asp-action="Index" asp-controller="TrainingQuestion">
     @*    <form>*@
     <div class="row fix-head">
         <div class="col-md-12">
@@ -45,7 +45,7 @@
                         <span id="num" class="form-control hidden" min="0"></span>
                         @if (ViewBag.TrainingId == null || ViewBag.TrainingId == 0)
                         {
-                            <button type="submit" id="start-cronometer" class="btn btn-primary float-right">Start Training</button>
+                            <button type="button" id="start-cronometer" class="btn btn-primary float-right">Start Training</button>
                         }
                         else
                         {
@@ -87,33 +87,44 @@
                 }
                 else
                 {
-                    <li class="nav-item" style="cursor:not-allowed">
-                        <a class="nav-link" id="pills-home-tab" data-toggle="pill" href="#QueLibrary" role="tab" aria-controls="pills-home" aria-selected="true" onfocus="GetQuestion(@ViewBag.TrainingId)">Question Library</a>
+                    <li class="nav-item disabled" style="cursor:not-allowed">
+                        <a class="nav-link" id="pills-home-tab" data-toggle="pill" href="#QueLibrary" role="tab" aria-controls="pills-home" aria-selected="true" onclick="GetQuestion(@ViewBag.TrainingId)">Question Library</a>
                     </li>
                 }
-
                 @if (ViewBag.TrainingId == null || ViewBag.TrainingId == 0)
                 {
-                    <li class="nav-item disabled">
+                    <li class="nav-item">
                         <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#ApplicableQue" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="GetApplicableQuestions(@ViewBag.TrainingId)">Applicable Questions</a>
                     </li>
                 }
                 else
                 {
-                    <li class="nav-item">
-                        <a class="nav-link active" id="pills-profile-tab" data-toggle="pill" href="#ApplicableQue" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="GetApplicableQuestions(@ViewBag.TrainingId)">Applicable Questions</a>
+                    <li class="nav-item disabled">
+                        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#ApplicableQue" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="GetApplicableQuestions(@ViewBag.TrainingId)">Applicable Questions</a>
                     </li>
                 }
                 @if (ViewBag.TrainingId == null || ViewBag.TrainingId == 0)
                 {
                     <li class="nav-item">
-                        <a class="nav-link " id="pills-contact-tab" data-toggle="pill" href="#RankBaseQue" role="tab" aria-controls="pills-contact" aria-selected="false" onclick="GetRenkBaseQuestion()">Rank Base Questions</a>
+                        <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#RankBaseQue" role="tab" aria-controls="pills-contact" aria-selected="false" onclick="GetRenkBaseQuestion()">Rank Base Questions</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item disabled">
+                        <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#RankBaseQue" role="tab" aria-controls="pills-contact" aria-selected="false" onclick="GetRenkBaseQuestion()">Rank Base Questions</a>
+                    </li>
+                }
+                @if (ViewBag.TrainingId == null || ViewBag.TrainingId == 0)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#OnGoingTraining" role="tab" aria-controls="pills-contact" aria-selected="false" onclick="GetOnGoingTrainingQuestions(@ViewBag.TrainingId)">On Going Training Questions</a>
                     </li>
                 }
                 else
                 {
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#RankBaseQue" role="tab" aria-controls="pills-contact" aria-selected="false" onclick="GetRenkBaseQuestion()">Rank Base Questions</a>
+                        <a class="nav-link active" id="pills-contact-tab" data-toggle="pill" href="#OnGoingTraining" role="tab" aria-controls="pills-contact" aria-selected="true" onfocus="GetOnGoingTrainingQuestions(@ViewBag.TrainingId)">On Going Training Questions</a>
                     </li>
                 }
                 <li class="nav-item">
@@ -132,6 +143,8 @@
                 <div class="tab-pane fade" id="ApplicableQue" role="tabpanel" aria-labelledby="pills-home-tab">
                 </div>
                 <div class="tab-pane fade" id="RankBaseQue" role="tabpanel" aria-labelledby="pills-home-tab">
+                </div>
+                <div class="tab-pane fade" id="OnGoingTraining" role="tabpanel" aria-labelledby="pills-home-tab">
                 </div>
                 <div class="tab-pane fade" id="CIVQ" role="tabpanel" aria-labelledby="pills-home-tab">
                 </div>

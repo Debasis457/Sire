@@ -191,6 +191,41 @@ namespace Sire.Web.Controllers
             }
         }
 
+        public async Task<PartialViewResult> GetOnGoingTrainingQuestions(int? id)
+        {
+            id ??= 0;
+            TempData["TrainingId"] = id;
+
+            int? rankGroupId = Convert.ToInt32(HttpContext.Session.GetString("RankGroupId"));
+            ViewBag.TrainingId = id;
+            ViewBag.RankGroupId = rankGroupId;
+
+            id = id == null ? 0 : id;
+            try
+            {
+                using HttpClient client = new();
+                var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+                var endpoint = $"{apiBaseUrl}/GetSectionListRankBasedQuestions/{rankGroupId}/{id}/{userid}";
+
+                using var Response = await client.GetAsync(endpoint);
+                if (Response.StatusCode == HttpStatusCode.OK)
+                {
+                    var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
+                    return PartialView("OnGoingTrainingQuestions", data);
+                }
+                else
+                {
+                    ModelState.Clear();
+                    ModelState.AddModelError(string.Empty, "Invalid Data");
+                    return PartialView();
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+        }
+
         public async Task<JsonResult> GetQuestionByRank(int Id)
         {
             var endvessel = apiBaseQuestionUrl + "/GetQuestionsByRankId/" + Id;
