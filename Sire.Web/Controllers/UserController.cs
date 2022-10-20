@@ -232,7 +232,7 @@ namespace Sire.Web.Controllers
         public async Task<IActionResult> AddEdit(UserDto UserDto)
         {
 
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
             {
                 try
                 {
@@ -331,7 +331,7 @@ namespace Sire.Web.Controllers
                     throw;
                 }
            }
-            using (HttpClient client = new HttpClient())
+        /*    using (HttpClient client = new HttpClient())
             {
                 StringContent content = new StringContent(JsonConvert.SerializeObject(UserDto), Encoding.UTF8, "application/json");
                 var enduser = apiBaseVesselUrl + "/GetVesselDropDown";
@@ -376,7 +376,7 @@ namespace Sire.Web.Controllers
                         ModelState.Clear();
                     }
                 }
-            }
+            }*/
             ViewBag.IsEdit = false;
             ViewBag.Alert = "";
             return View();

@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
 }
 
+@Html.HiddenFor(Model => Model.Id)
 <div class="row fix-head">
         <div class="col-md-12">
             <div class="card m-b-0">
@@ -60,7 +61,7 @@
                      <div class="col-sm-2 pr-4 h-40">
                     
                         <label class="switch">
-                            <input class="switch-input" id="is_own_vessel" type="checkbox" value="is_own_vessel"  />
+                            <input class="switch-input" id="is_own_vessel" type="checkbox" value="No"   />
                             <span class="switch-label" data-on="Yes" data-off="No"></span>
                             <span class="switch-handle"></span>
                              
@@ -68,7 +69,7 @@
 
                     </div>
                     <div class="col-sm-7 pt-2">
-                        <button type="submit" class="n-btn  btn-success" id="btnSubmitOpt">Submit</button>
+                        <button type="submit" class="n-btn  btn-primary" id="btnSubmitOpt">Submit</button>
                         <a class="n-btn btn-danger" asp-action="Index">Back</a>
                         <input type="reset" name="Clear" value="Clear" class="n-btn btn-warning" />
                     </div>
@@ -79,3 +80,8 @@
     </div>
 
 </div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

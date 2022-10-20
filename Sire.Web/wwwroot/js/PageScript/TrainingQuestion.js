@@ -211,23 +211,17 @@ $('button#start-cronometer').on('click', function (event) {
                 var message = "";
                 var message = confirm("Training for this vessel already exists. Do you still want to proceed with a new Training??");
                 if (message == true) {
-                    ////return message;
-                    //$.ajax({
-                    //    url: "/Training/Index/" + TrainingID,
-                    //    type: 'POST',
-                    //    dataType: 'json',
-                    //    contentType: 'application/json; charset=utf-8',
-                    //    data: '{"Id":' + TrainingID + '}',
-                    //    success: function (r) {
-                    //        alert("record inserted");
-                    //    }
-                    //});
-
-                    var tabElement = $('#pills-tab a[href="#OnGoingTraining"]');
-                    var tab = new bootstrap.Tab(tabElement[0]);
-                    tab.show();
-                    GetOnGoingTrainingQuestions(TrainingID);
-                    return false;
+                    //return message;
+                    $.ajax({
+                        url: "/Training/Index/" + TrainingID,
+                        type: 'POST',
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        data: '{"Id":' + TrainingID + '}',
+                        success: function (r) {
+                            alert("record inserted");
+                        }
+                    });
                 }
                 else {
                     return false;
@@ -281,22 +275,19 @@ function GetRenkBaseQuestion() {
     });
 }
 
-function GetOnGoingTrainingQuestions(id) {
-    debugger;
-    $("#OnGoingTraining").empty();
-
-    $("#OnGoingTraining").load("/TrainingQuestion/GetOnGoingTrainingQuestions/" + id, function () {
-
-
-    });
-}
 
 function GetApplicableQuestions(id) {
     debugger;
     $("#ApplicableQue").empty();
-
+ var trainingId = $("#hdnTraningId").val();
     $("#ApplicableQue").load("/TrainingQuestion/GetApplicableQuestions/" + id, function () {
-
+        if (trainingId == "0") {
+            debugger;
+            $("#taskButton").hide();
+        } else {
+            $("#taskButton").hide();
+        }
+       
     });
 }
 
@@ -317,6 +308,15 @@ function GetTagQuestion() {
 
     });
 
+}
+function OngoingTraining(id) {
+    debugger;
+    $("#ongoingTraining").empty();
+
+    $("#ongoingTraining").load("/TrainingQuestion/OngoingTraining/" + id , function () {
+
+
+    });
 }
 
 function GetQuestionByRank() {

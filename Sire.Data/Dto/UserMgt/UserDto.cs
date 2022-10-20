@@ -36,7 +36,11 @@ namespace Sire.Data.Dto.UserMgt
 
         public RankGroup RankGroup { get; set; }
         public User_Types UserType { get; set; }
-        public int MobileNo { get; set; }
+
+        [Display(Name = "Mobile Number:")]
+        [Required(ErrorMessage = "Mobile Number is required.")]
+        [RegularExpression(@"^([0-9]{10})$", ErrorMessage = "Please Enter Valid Mobile Number.")]     
+        public string MobileNo { get; set; }
 
     }
 

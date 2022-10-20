@@ -201,8 +201,8 @@ namespace Sire.Web.Controllers
         public async Task<IActionResult> AddEdit(User_VesselDto User_VesselDto)
         {
 
-            /*if (ModelState.IsValid)
-            {*/
+           // if (ModelState.IsValid)
+            {
                 try
                 {
                     using (HttpClient client = new HttpClient())
@@ -244,10 +244,59 @@ namespace Sire.Web.Controllers
                 {
                     throw;
                 }
-         /*}*/
+            }
 
-           
-            
+            //using (HttpClient client = new HttpClient())
+            //{
+               
+
+            //    using (var Response = await client.GetAsync(apiBaseUrl))
+            //    {
+            //        if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+            //        {
+            //            ViewBag.IsEdit = true;
+
+            //            var enduser = apiBaseUserUrl + "/GetUserDropDown";
+            //            var endvessel = apiBaseVesselUrl + "/GetVesselDropDown";
+            //            using (var IUserResponse = await client.GetAsync(enduser))
+            //            {
+            //                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+            //                {
+            //                    var UserData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+            //                    ViewBag.User = UserData;
+
+            //                }
+            //                else
+            //                {
+            //                    ModelState.Clear();
+            //                }
+            //            }
+            //            using (var IVesselResponse = await client.GetAsync(endvessel))
+            //            {
+            //                if (Response.StatusCode == System.Net.HttpStatusCode.OK)
+            //                {
+            //                    var VesselData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IVesselResponse.Content.ReadAsStringAsync().Result);
+            //                    ViewBag.Vessel = VesselData;
+
+            //                }
+            //                else
+            //                {
+            //                    ModelState.Clear();
+            //                }
+            //            }
+
+            //            // return View(data);
+            //        }
+            //        else
+            //        {
+            //            ModelState.Clear();
+            //            ModelState.AddModelError(string.Empty, "Invalid Data");
+            //            return View();
+            //        }
+            //    }
+            //}
+            ViewBag.IsEdit = false;
+            ViewBag.Alert = "";
             return View();
         }
 

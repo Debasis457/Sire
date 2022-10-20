@@ -20,7 +20,7 @@ namespace Sire.Data.Entities.UserMgt
         public virtual User_Rank User_Rank { get; set; }
         public virtual RankGroup RankGroup { get; set; }
         public virtual User_Types UserType { get; set; }
-        public int MobileNo { get; set; }
+        public string MobileNo { get; set; }
         
     }
     public enum User_Types

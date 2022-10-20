@@ -3,7 +3,7 @@
     ViewBag.Title = "Fleet";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
 }
-
+@Html.HiddenFor(Model => Model.Id)
 <div class="row fix-head">
         <div class="col-md-12">
             <div class="card m-b-0">
@@ -41,13 +41,14 @@
                     </div>
                     <div class="col-sm-3 pr-4 h-40">                       
                         @Html.DropDownList("Fleet_Head_Id",new SelectList(ViewBag.Fleet, "Id", "Value"),"Select", new { @class = "form-control select2"})
-                      <span asp-validation-for="Fleet_Head_Id" class="text-danger"></span>
+                    
+                          <span asp-validation-for="Fleet_Head_Id" class="text-danger"></span>
                     </div>
                     <div class="col-sm-2 pr-0 h-40">
                         <label class="fnt-lable" for="Name">Fleet Name</label>
                     </div>
                     <div class="col-sm-3 pr-4 h-40">
-                        <input type="text" asp-for="Name" class="form-control inp" />
+                        <input type="text" asp-for="Name" class="form-control inp required" />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
                     <div class="col-sm-7 pt-2">
@@ -62,4 +63,11 @@
     </div>
 
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }
+
 

@@ -156,7 +156,7 @@ namespace Sire.Web.Controllers
                         if (Response.StatusCode == HttpStatusCode.OK)
                         {
                             var RankData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
-                            
+
                             var RankGroupListData = new List<SelectListItem>();
                             foreach (var rankGroup in RankData)
                             {
@@ -191,41 +191,6 @@ namespace Sire.Web.Controllers
             }
         }
 
-        public async Task<PartialViewResult> GetOnGoingTrainingQuestions(int? id)
-        {
-            id ??= 0;
-            TempData["TrainingId"] = id;
-
-            int? rankGroupId = Convert.ToInt32(HttpContext.Session.GetString("RankGroupId"));
-            ViewBag.TrainingId = id;
-            ViewBag.RankGroupId = rankGroupId;
-
-            id = id == null ? 0 : id;
-            try
-            {
-                using HttpClient client = new();
-                var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
-                var endpoint = $"{apiBaseUrl}/GetSectionListRankBasedQuestions/{rankGroupId}/{id}/{userid}";
-
-                using var Response = await client.GetAsync(endpoint);
-                if (Response.StatusCode == HttpStatusCode.OK)
-                {
-                    var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
-                    return PartialView("OnGoingTrainingQuestions", data);
-                }
-                else
-                {
-                    ModelState.Clear();
-                    ModelState.AddModelError(string.Empty, "Invalid Data");
-                    return PartialView();
-                }
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-        }
-
         public async Task<JsonResult> GetQuestionByRank(int Id)
         {
             var endvessel = apiBaseQuestionUrl + "/GetQuestionsByRankId/" + Id;
@@ -234,7 +199,7 @@ namespace Sire.Web.Controllers
             using var Response = await client.GetAsync(endvessel);
 
             var data = JsonConvert.DeserializeObject<List<QuestionDto>>(Response.Content.ReadAsStringAsync().Result);
-            
+
             return Json(data);
         }
 
@@ -285,6 +250,67 @@ namespace Sire.Web.Controllers
                 throw;
             }
         }
+
+        public async Task<PartialViewResult> OngoingTraining(int? id, int? rankGroupId)
+        {
+            id ??= 0;
+            TempData["TrainingId"] = id;
+
+            rankGroupId ??= Convert.ToInt32(HttpContext.Session.GetString("RankGroupId"));
+            ViewBag.TrainingId = id;
+            ViewBag.RankGroupId = rankGroupId;
+
+            id = id == null ? 0 : id;
+            var endUserRank = apiBaseRankGroupUrl + "/GetRankGroupDropDown";
+            try
+            {
+                using HttpClient client = new();
+                var userid = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+                var endpoint = $"{apiBaseUrl}/GetSectionListRankBasedQuestions/{rankGroupId}/{id}/{userid}";
+
+                using var Response = await client.GetAsync(endpoint);
+                if (Response.StatusCode == HttpStatusCode.OK)
+                {
+                    var data = JsonConvert.DeserializeObject<List<QuetionSectionDto>>(Response.Content.ReadAsStringAsync().Result);
+                    using (var IUserResponse = await client.GetAsync(endUserRank))
+                    {
+                        if (Response.StatusCode == HttpStatusCode.OK)
+                        {
+                            var RankData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+
+                            var RankGroupListData = new List<SelectListItem>();
+                            foreach (var rankGroup in RankData)
+                            {
+                                RankGroupListData.Add(new SelectListItem()
+                                {
+                                    Text = rankGroup.Value,
+                                    Value = rankGroup.Id.ToString(),
+                                    Selected = rankGroup.Id == rankGroupId
+                                });
+                            }
+                            //ViewBag.RankGroupData = RankGroupListData;
+                            ViewBag.Rank = RankGroupListData;
+                        }
+                        else
+                        {
+                            ModelState.Clear();
+                        }
+                    }
+                    return PartialView("OngoingTraining", data);
+                }
+                else
+                {
+                    ModelState.Clear();
+                    ModelState.AddModelError(string.Empty, "Invalid Data");
+                    return PartialView();
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+        }
+
 
         public async Task<PartialViewResult> GetCIVQquestion(int? id)
         {

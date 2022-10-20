@@ -111,10 +111,12 @@ namespace Sire.Web.Controllers
         }
 
 
-        public async Task<PartialViewResult> GetTasks(int? id,  int? trainingId)
+        public async Task<PartialViewResult> GetTasks(int? id,  int? trainingId,int? rankgroupid)
         {
 
-
+            rankgroupid ??= Convert.ToInt32(HttpContext.Session.GetString("RankGroupId"));
+           
+            ViewBag.RankGroupId = rankgroupid;
             TempData["TrainingId"] = trainingId;
             ViewBag.TrainingId = id == null ? 0 : id;
             var trainingNumber = Convert.ToInt32(TempData["TrainingNumber"]);

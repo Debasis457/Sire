@@ -94,7 +94,7 @@ namespace Sire.Web.Controllers
                                 {
                                     var UserData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
                                     ViewBag.Fleet = UserData;
-                                    TempData["result1"] = UserData;
+                                  //  TempData["result1"] = UserData;
                                 }
                                 else
                                 {
@@ -136,7 +136,7 @@ namespace Sire.Web.Controllers
                                 {
                                     var UserData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
                                     ViewBag.Fleet = UserData;
-                                    TempData["result1"] = UserData;
+                                  //  TempData["result1"] = UserData;
                                 }
                                 else
                                 {
@@ -183,8 +183,8 @@ namespace Sire.Web.Controllers
        [ValidateAntiForgeryTokenAttribute]
         public async Task<IActionResult> AddEdit(FleetDto fleetDto)
         {
-
-           // if (ModelState.IsValid)
+          
+   if (ModelState.IsValid)
             {
                 try
                 {
@@ -218,30 +218,30 @@ namespace Sire.Web.Controllers
                             }
                             else
                             {
-                            ViewBag.IsEdit = true; 
-                            var enduser = apiBaseUserUrl + "/GetUserDropDown";
-                           
-                            using (var IUserResponse = await client.GetAsync(enduser))
-                            {
-                                if (IUserResponse.StatusCode == System.Net.HttpStatusCode.OK)
-                                {
-                                    var UserData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
-                                    ViewBag.Fleet = UserData;
-                                    TempData["result1"] = UserData;
-                                }
-                                else
-                                {
-                                    ModelState.Clear();
-                                }
-                            }
-                            ModelState.Clear();
-                            ViewBag.Alert = CommonServices.ShowAlert(Alerts.Warning, "Fleet Name Already Exists");
-                           
+                                ViewBag.IsEdit = true;
+                                var enduser = apiBaseUserUrl + "/GetUserDropDown";
 
-                            
-                            //ModelState.Clear();
-                            //    ModelState.AddModelError(string.Empty, "Invalid Data");
-                            return View();
+                                using (var IUserResponse = await client.GetAsync(enduser))
+                                {
+                                    if (IUserResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                                    {
+                                        var UserData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(IUserResponse.Content.ReadAsStringAsync().Result);
+                                        ViewBag.Fleet = UserData;
+                                        // TempData["result1"] = UserData;
+                                    }
+                                    else
+                                    {
+                                        ModelState.Clear();
+                                    }
+                                }
+                                ModelState.Clear();
+                         ViewBag.Alert = CommonServices.ShowAlert(Alerts.Warning, "Fleet Name Already Exists");
+
+
+
+                                //ModelState.Clear();
+                                //    ModelState.AddModelError(string.Empty, "Invalid Data");
+                                return View();
                             }
                         }
                     }
@@ -251,29 +251,7 @@ namespace Sire.Web.Controllers
                     throw;
                 }
          }
-            using (HttpClient client = new HttpClient())
-            {
-                StringContent content = new StringContent(JsonConvert.SerializeObject(fleetDto), Encoding.UTF8, "application/json");
-
-                var enduser = apiBaseUserUrl + "/GetUserDropDown";
-                using (var Response = await client.PostAsync(apiBaseUrl, content))
-                {
-
-                    using (var FleetResponse = await client.GetAsync(enduser))
-                    {
-                        if (FleetResponse.StatusCode == System.Net.HttpStatusCode.OK)
-                        {
-                            var UserData = JsonConvert.DeserializeObject<IEnumerable<DropDownDto>>(FleetResponse.Content.ReadAsStringAsync().Result);
-                            ViewBag.Fleet = UserData;
-
-                        }
-                        else
-                        {
-                            ModelState.Clear();
-                        }
-                    }
-                }
-            }
+           
             ViewBag.IsEdit = false;
             ViewBag.Alert = "";
             return View();

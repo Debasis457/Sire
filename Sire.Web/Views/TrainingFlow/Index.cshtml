@@ -62,6 +62,7 @@
 </div>
 <input type="hidden" id="hdnQuestionId" value="@Model.Id">
 <input type="hidden" id="hdnTraningId" value="@ViewBag.TrainingId" />
+<input type="hidden" id="hdnRankGroupId" value="@ViewBag.RankGroupId" />
 <div class="col-md-12 mt-2">
     <div class="card m-b-0">
         <div class="card-header sub-head-tit">
@@ -69,6 +70,7 @@
                 <li class="nav-item">
                     <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#CheckList" role="tab" aria-controls="pills-home" aria-selected="true" onfocus="GetQueCheckList(@Model.Id)">CheckList</a>
                 </li>
+                
                 <li class="nav-item">
                     <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#Tasks" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="GetTask(@Model.Id, @ViewBag.TraningId)">Task</a>
                 </li>

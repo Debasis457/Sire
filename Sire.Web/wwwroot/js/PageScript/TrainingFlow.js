@@ -27,6 +27,7 @@ function GetTask(id) {
     debugger;
     $("#Tasks").empty();
     var trainingId = $("#hdnTraningId").val();
+    var rankgroupid = $("#hdnRankGroupId").val();
     $("#Tasks").load("/TrainingFlow/GetTasks?id=" + id + "&trainingId=" + trainingId, function () {
  
         if (trainingId == "0") {

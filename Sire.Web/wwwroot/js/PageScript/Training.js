@@ -80,6 +80,9 @@ $(document).ready(function () {
     $('#Rank_Id').change(function () {
         debugger;
         GetRankBasedQuestion($('#hdnTraningId').val(), $(this).val());
+
+        OngoingTraining($('#hdnTraningId').val(), $(this).val());
+
     });
 });
 
@@ -93,3 +96,15 @@ function GetRankBasedQuestion(id, rankGroupId) {
         }
     });
 }
+function OngoingTraining(id, rankGroupId) {
+    debugger;
+    $.ajax({
+        type: "GET",
+        url: "/TrainingQuestion/OngoingTraining?id=" + id,
+        data: { rankGroupId: rankGroupId },
+        success: function (r) {
+            $("#ongoingTraining").html(r);
+        }
+    });
+}
+

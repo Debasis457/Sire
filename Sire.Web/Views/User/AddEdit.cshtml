@@ -4,7 +4,7 @@
     ViewBag.Title = "User";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
 }
-
+@Html.HiddenFor(Model => Model.Id)
 <script src="~/assets/lib/jquery/jquery-3.3.1.min.js"></script>
 <script src="~/js/pagescript/user.js"></script>
 <div class="row fix-head">
@@ -98,8 +98,8 @@
                     </div>
                     <div class="col-sm-2 pr-4 h-40">
                         <input type="text" asp-for="MobileNo" class="form-control inp" />
-                        <span asp-validation-for="MobileNo" class="text-danger"></span>
-                       
+                       @* <span asp-validation-for="MobileNo" class="text-danger"></span>*@
+                       @Html.ValidationMessageFor(m => m.MobileNo, "", new { @class="text-danger" })
                     </div>
                      <div class="col-sm-2 pr-0 h-40">
                         <label class="fnt-lable">Rank Name</label>
@@ -152,7 +152,7 @@
                    *@
 
                     <div class="col-sm-7 pt-2">
-                        <button type="submit" class="n-btn  btn-success" id="btnSubmitOpt" onclick="return setMd5Password('Password', 'ConfirmPassword');">Submit</button>
+                        <button type="submit" class="n-btn  btn-primary" id="btnSubmitOpt" onclick="return setMd5Password('Password', 'ConfirmPassword');">Submit</button>
                                         <a class="n-btn btn-danger" asp-action="Index">Back</a>
                        <input type="reset" name="Clear" value="Clear" class="n-btn btn-warning" />
                     </div>
@@ -165,3 +165,8 @@
 
 </div>
 
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

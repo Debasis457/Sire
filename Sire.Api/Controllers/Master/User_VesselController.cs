@@ -71,7 +71,7 @@ namespace Sire.Api.Controllers.Master
                 _user_VesselRepository.Add(test);
             else
                 _user_VesselRepository.Update(test);
-            _user_VesselRepository.Add(test);
+            //_user_VesselRepository.Add(test);
             if (_uow.Save() <= 0) throw new Exception("Creating Test failed on save.");
             return Ok(test.Id);
         }
